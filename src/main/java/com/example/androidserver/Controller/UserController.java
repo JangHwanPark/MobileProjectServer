@@ -4,19 +4,17 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class UserController {
 
     private final JdbcTemplate jdbcTemplate;
-
-    public UserController(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     // 데이터베이스에서 사용자 데이터를 조회하는 API
     @GetMapping("/users")
