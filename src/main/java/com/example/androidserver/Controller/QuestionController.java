@@ -28,6 +28,7 @@ public class QuestionController {
     }
 
     // 프로시저를 호출하는 메소드
+    // 저희는 이걸 서비스로 분리 하기로 했어요
     private List<Question> callGetAllQuestionProcedure() {
         return jdbcTemplate.execute((Connection conn) -> {
             CallableStatement callableStatement = conn.prepareCall("{call getAllQuestion()}");
