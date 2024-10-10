@@ -31,7 +31,7 @@ public class UserController {
         @Override
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
             User user = new User();
-            user.setUid(rs.getLong("uid"));
+            user.setUid(rs.getInt("uid"));
             user.setEmail(rs.getString("email"));
             user.setInterest(rs.getString("interest"));
             return user;
