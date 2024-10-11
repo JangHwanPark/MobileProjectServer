@@ -1,5 +1,5 @@
-package com.example.androidserver.Controller;
-import com.example.androidserver.Entity.User;
+package com.example.androidserver.web.Controller;
+import com.example.androidserver.user.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.bind.annotation.GetMapping;

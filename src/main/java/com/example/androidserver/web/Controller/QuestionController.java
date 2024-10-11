@@ -1,4 +1,4 @@
-package com.example.androidserver.Controller;
+package com.example.androidserver.web.Controller;
 
 import com.example.androidserver.Entity.Question;
 import org.springframework.jdbc.core.JdbcTemplate;

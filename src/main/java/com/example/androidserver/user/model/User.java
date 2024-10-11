@@ -1,4 +1,4 @@
-package com.example.androidserver.Entity;
+package com.example.androidserver.user.model;
 
 import lombok.Getter;
 import lombok.Setter;
