@@ -48,10 +48,10 @@ public class JWTUtils {
 
   // 토큰 생성 메서드
   // 1000L * 60 * 60 * 24 * 7 = 7일 마지막 숫자가 일수
-  public String createJwt(User user, String sub, Long expire) {
+  public String createJwt(String email, String role, String sub, Long expire) {
     return Jwts.builder()
-            .claim("email", user.getEmail())
-            .claim("role", user.getRole())
+            .claim("email", email)
+            .claim("role", role)
             .subject(sub)
             // 발급자? 같은 거임
             .issuer("project")
