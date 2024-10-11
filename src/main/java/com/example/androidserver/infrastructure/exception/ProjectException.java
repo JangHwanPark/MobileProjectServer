@@ -9,9 +9,9 @@ public class ProjectException extends RuntimeException{
   private final String code;
   private final String message;
 
-  public ProjectException(HttpStatus httpStatus, String code, String message) {
+  public ProjectException(HttpStatus httpStatus, ProjectExceptionCode c) {
     this.httpStatus = httpStatus;
-    this.code = code;
-    this.message = message;
+    this.code = c.getCode();
+    this.message = c.getMessage();
   }
 }
