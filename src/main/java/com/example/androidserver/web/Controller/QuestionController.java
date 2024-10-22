@@ -18,37 +18,24 @@ import java.util.List;
 // @autowired 와 생성자를 대체하는 어노테이션
 @RequiredArgsConstructor
 public class QuestionController {
-    private final JdbcTemplate jdbcTemplate;
-    private final QuestionService questionService;
-
-
-    @PostMapping("/save")
     public String saveQuestion(@RequestBody Question question) {
         int result = questionService.saveQuestion(question);
         return result == 1 ? "successfully!" : "Failed";
     }
 
-    // 프로시저 호출 api
-    @GetMapping("/question")
-    public List<Question> getAllQuestion() {
-        return callGetAllQuestionProcedure();
+    // 질문 수정
+
+    // 질문 삭제
+
+    // 카테고리가 질문하기인 데이터 출력
+    @GetMapping("/get/category/question")
+    public List<Question> getCategoryQuestion() {
+        return questionService.getCategoryQuestions("질문하기");
     }
 
-    // 프로시저를 호출하는 메소드
-    private List<Question> callGetAllQuestionProcedure() {
-        return jdbcTemplate.execute((Connection conn) -> {
-            CallableStatement callableStatement = conn.prepareCall("{call getAllQuestion()}");
-            ResultSet rs = callableStatement.executeQuery();
-
-            List<Question> questions = new ArrayList<>();
-            while (rs.next()) {
-                Question question = new Question();
-                question.setQid(rs.getInt("qid"));
-                question.setContent(rs.getString("content"));
-                question.setCategory(rs.getString("category"));
-                question.setCreateAt(rs.getDate("createAt"));
-            }
-            return questions;
-        });
+    // 카테고리가 자유게시판인 데이터 출력
+    @GetMapping("/get/category/free-board")
+    public List<Question> getCategoryFreeBoard() {
+        return questionService.getCategoryQuestions("자유 게시판");
     }
 }

@@ -1,5 +1,6 @@
 package com.example.androidserver.Question.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.Date;
@@ -9,7 +10,12 @@ import java.util.Date;
 public class Question {
     private int qid;
     private int uid;
+    private String title;
     private String content;
     private String category;
-    private Date createAt;
+
+    // 날짜 포맷 지정
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+    private Date createdAt;
+    private Date updatedAt;
 }
