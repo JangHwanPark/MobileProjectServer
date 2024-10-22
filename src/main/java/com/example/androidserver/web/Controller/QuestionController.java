@@ -1,9 +1,11 @@
 package com.example.androidserver.web.Controller;
 
-import com.example.androidserver.Entity.Question;
+import com.example.androidserver.Question.model.Question;
+import com.example.androidserver.Question.service.QuestionService;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.CallableStatement;
@@ -15,10 +17,17 @@ import java.util.List;
 @RestController
 public class QuestionController {
     private final JdbcTemplate jdbcTemplate;
+    private QuestionService questionService;
 
     // 생성자
     public QuestionController(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @PostMapping("/question/save")
+    public String saveQuestion(@RequestBody Question question) {
+        int result = questionService.saveQuestion(question);
+        return result == 1 ? "successfully!" : "Failed";
     }
 
     // 프로시저 호출 api
