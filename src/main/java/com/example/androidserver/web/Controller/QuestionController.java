@@ -2,6 +2,7 @@ package com.example.androidserver.web.Controller;
 
 import com.example.androidserver.Question.model.Question;
 import com.example.androidserver.Question.service.QuestionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,16 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+// @autowired 와 생성자를 대체하는 어노테이션
+@RequiredArgsConstructor
 public class QuestionController {
     private final JdbcTemplate jdbcTemplate;
-    private QuestionService questionService;
+    private final QuestionService questionService;
 
-    // 생성자
-    public QuestionController(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
-    @PostMapping("/question/save")
+    @PostMapping("/save")
     public String saveQuestion(@RequestBody Question question) {
         int result = questionService.saveQuestion(question);
         return result == 1 ? "successfully!" : "Failed";

@@ -1,15 +1,15 @@
 package com.example.androidserver.Question.repo;
 
 import com.example.androidserver.Question.model.Question;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@RequiredArgsConstructor
 public class QuestionRepo {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     // 질문을 데이터베이스에 저장하는 메서드
     public int saveQuestion(Question question) {
