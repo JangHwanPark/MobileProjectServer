@@ -28,6 +28,11 @@ public class QuestionController {
         this.questionService = questionService;
     }
 
+    @GetMapping("/question/all")
+    public List<Question> getAllQuestions() {
+        return questionService.getAllQuestions();
+    }
+
     @PostMapping("/question/save")
     public String saveQuestion(@RequestBody Question question) {
         int result = questionService.saveQuestion(question);

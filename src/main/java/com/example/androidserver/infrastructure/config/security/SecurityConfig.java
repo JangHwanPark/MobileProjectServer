@@ -47,10 +47,13 @@ public class SecurityConfig {
     // 권한 및 인증 설정
     http.authorizeHttpRequests(req ->
             req
-                    // 인증 없이 접근 가능한 경로 설정
-                    .requestMatchers("/api/join", "/question/save").permitAll()
-                    // 권한이 필요 없는 api 주소
-                    .requestMatchers("/api/join").permitAll()
+                    // 인증 없이 접근 가능한 경로 설정 (권한이 필요 없는 api 주소)
+                    .requestMatchers(
+                            "/api/join",
+                            "/question/save",
+                            "/question/all"
+                    ).permitAll()
+
                     // 권한이 ROLE_USER 인 api 주소
                     .requestMatchers("/api/user/info")
                     .hasRole("USER")
