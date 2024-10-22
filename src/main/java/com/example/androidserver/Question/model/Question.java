@@ -12,11 +12,10 @@ public class Question {
     private int uid;
     private String title;
     private String content;
-    // private String author;
     private String category;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")  // 날짜 포맷 지정
+
+    // 날짜 포맷 지정
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private Date createdAt;
     private Date updatedAt;
-    //private Date createdAt;
-    //private Date updatedAt;
 }

@@ -42,4 +42,11 @@ public class QuestionController {
     // 질문 수정
 
     // 질문 삭제
+
+    // 카테고리가 질문하기인 데이터 출력
+    /*@GetMapping
+    public List<Question> getCategoryQuestion() {
+
+    }*/
+    // 카테고리가 자유게시판인 데이터 출력
 }
