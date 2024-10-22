@@ -28,38 +28,16 @@ public class QuestionController {
         this.questionService = questionService;
     }
 
+    // 모든 질문 쿼리
     @GetMapping("/question/all")
     public List<Question> getAllQuestions() {
         return questionService.getAllQuestions();
     }
 
+    // 질문 저장
     @PostMapping("/question/save")
     public String saveQuestion(@RequestBody Question question) {
         int result = questionService.saveQuestion(question);
         return result == 1 ? "successfully!" : "Failed";
-    }
-
-    // 프로시저 호출 api
-    @GetMapping("/question")
-    public List<Question> getAllQuestion() {
-        return callGetAllQuestionProcedure();
-    }
-
-    // 프로시저를 호출하는 메소드
-    private List<Question> callGetAllQuestionProcedure() {
-        return jdbcTemplate.execute((Connection conn) -> {
-            CallableStatement callableStatement = conn.prepareCall("{call getAllQuestion()}");
-            ResultSet rs = callableStatement.executeQuery();
-
-            List<Question> questions = new ArrayList<>();
-            while (rs.next()) {
-                Question question = new Question();
-                question.setQid(rs.getInt("qid"));
-                question.setContent(rs.getString("content"));
-                question.setCategory(rs.getString("category"));
-                question.setCreateAt(rs.getDate("createAt"));
-            }
-            return questions;
-        });
     }
 }

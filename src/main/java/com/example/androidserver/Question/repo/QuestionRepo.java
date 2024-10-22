@@ -21,7 +21,7 @@ public class QuestionRepo {
 
     // 질문을 데이터베이스에 저장하는 메서드
     public int saveQuestion(Question question) {
-        String sql = "INSERT INTO question (qid, uid, content, category, createAt) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO question (qid, uid, content, category, title, author, createAt, updateAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         // JdbcTemplate의 update 메서드를 사용하여 SQL 실행
         return jdbcTemplate.update(
@@ -30,7 +30,10 @@ public class QuestionRepo {
                 question.getUid(),
                 question.getContent(),
                 question.getCategory(),
-                question.getCreateAt()
+                question.getTitle(),
+                question.getAuthor(),
+                question.getCreatedAt(),
+                question.getUpdatedAt()
         );
     }
 
@@ -53,7 +56,9 @@ public class QuestionRepo {
             question.setUid(rs.getInt("uid"));
             question.setContent(rs.getString("content"));
             question.setCategory(rs.getString("category"));
-            question.setCreateAt(rs.getTimestamp("createAt"));
+            question.setAuthor(rs.getString("author"));
+            question.setUpdatedAt(rs.getTimestamp("updatedAt"));
+            question.setCreatedAt(rs.getTimestamp("createAt"));
             return question;
         }
     }

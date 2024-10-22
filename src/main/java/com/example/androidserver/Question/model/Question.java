@@ -9,7 +9,10 @@ import java.util.Date;
 public class Question {
     private int qid;
     private int uid;
+    private String title;
     private String content;
+    private String author;
     private String category;
-    private Date createAt;
+    private Date createdAt;
+    private Date updatedAt;
 }
