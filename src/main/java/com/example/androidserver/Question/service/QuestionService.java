@@ -7,13 +7,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class QuestionService {
     private final QuestionRepo questionRepo;
-
-    public QuestionService(QuestionRepo questionRepo) {
-        this.questionRepo = questionRepo;
-    }
-
+  
     public int saveQuestion(Question question) {
         return questionRepo.saveQuestion(question); // 질문 저장 로직 호출
     }

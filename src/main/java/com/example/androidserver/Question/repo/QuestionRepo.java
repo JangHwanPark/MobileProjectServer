@@ -10,14 +10,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class QuestionRepo {
     // JdbcTemplate 주입
     private final JdbcTemplate jdbcTemplate;
-
-    // 생성자 주입
-    public QuestionRepo(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     // 질문을 데이터베이스에 저장하는 메서드
     public int saveQuestion(Question question) {
