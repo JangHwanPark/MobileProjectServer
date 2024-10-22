@@ -17,11 +17,15 @@ import java.util.List;
 @RestController
 public class QuestionController {
     private final JdbcTemplate jdbcTemplate;
-    private QuestionService questionService;
+    private final QuestionService questionService;
 
     // 생성자
-    public QuestionController(JdbcTemplate jdbcTemplate) {
+    public QuestionController(
+            JdbcTemplate jdbcTemplate,
+            QuestionService questionService
+    ) {
         this.jdbcTemplate = jdbcTemplate;
+        this.questionService = questionService;
     }
 
     @PostMapping("/question/save")

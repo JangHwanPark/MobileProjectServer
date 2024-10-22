@@ -37,19 +37,27 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    // CSRF 비활성화
     http.csrf(AbstractHttpConfigurer::disable);
+
+    // 기본 로그인 폼과 HTTP Basic 인증 비활성화
     http.formLogin(AbstractHttpConfigurer::disable);
     http.httpBasic(AbstractHttpConfigurer::disable);
+
+    // 권한 및 인증 설정
     http.authorizeHttpRequests(req ->
             req
+                    // 인증 없이 접근 가능한 경로 설정
+                    .requestMatchers("/api/join", "/question/save").permitAll()
                     // 권한이 필요 없는 api 주소
-                    .requestMatchers("/api/join")
-                    .permitAll()
+                    .requestMatchers("/api/join").permitAll()
                     // 권한이 ROLE_USER 인 api 주소
                     .requestMatchers("/api/user/info")
                     .hasRole("USER")
                     .anyRequest()
                     .authenticated());
+
+    // CORS 설정
     http.cors(cors ->
             cors.configurationSource(
                     new CorsConfigurationSource() {
@@ -58,14 +66,12 @@ public class SecurityConfig {
                               HttpServletRequest request
                       ) {
                         CorsConfiguration config = new CorsConfiguration();
-                        config.setAllowedOrigins(List.of("*"));
-                        config.setAllowedMethods(
-                                List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        ); // 허용할 HTTP 메서드
+                        config.setAllowedOrigins(List.of("*")); // 모든 도메인 허용
+                        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 허용할 HTTP 메서드
                         config.setAllowCredentials(true);
-                        config.setAllowedHeaders(List.of("*"));
-                        config.setMaxAge(1000L * 60 * 60 * 24 * 1000);
-                        config.setExposedHeaders(List.of("x-access-token"));
+                        config.setAllowedHeaders(List.of("*")); // 모든 헤더 허용
+                        config.setMaxAge(3600L); // CORS preflight 요청 캐싱 시간 (초)
+                        config.setExposedHeaders(List.of("x-access-token")); // 노출할 헤더 설정
                         return config;
                       }
                     }
