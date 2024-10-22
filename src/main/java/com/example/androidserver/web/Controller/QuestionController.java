@@ -18,6 +18,8 @@ import java.util.List;
 // @autowired 와 생성자를 대체하는 어노테이션
 @RequiredArgsConstructor
 public class QuestionController {
+    private final QuestionService questionService;
+
     public String saveQuestion(@RequestBody Question question) {
         int result = questionService.saveQuestion(question);
         return result == 1 ? "successfully!" : "Failed";

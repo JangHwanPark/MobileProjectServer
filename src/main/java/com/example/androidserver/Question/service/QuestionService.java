@@ -2,6 +2,7 @@ package com.example.androidserver.Question.service;
 
 import com.example.androidserver.Question.model.Question;
 import com.example.androidserver.Question.repo.QuestionRepo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,6 +1,7 @@
 package com.example.androidserver.Question.repo;
 
 import com.example.androidserver.Question.model.Question;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
