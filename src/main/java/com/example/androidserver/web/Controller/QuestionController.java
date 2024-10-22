@@ -16,7 +16,6 @@ import java.util.List;
 
 @RestController
 public class QuestionController {
-    private final JdbcTemplate jdbcTemplate;
     private final QuestionService questionService;
 
     // 생성자
@@ -24,7 +23,6 @@ public class QuestionController {
             JdbcTemplate jdbcTemplate,
             QuestionService questionService
     ) {
-        this.jdbcTemplate = jdbcTemplate;
         this.questionService = questionService;
     }
 
@@ -40,4 +38,8 @@ public class QuestionController {
         int result = questionService.saveQuestion(question);
         return result == 1 ? "successfully!" : "Failed";
     }
+
+    // 질문 수정
+
+    // 질문 삭제
 }
