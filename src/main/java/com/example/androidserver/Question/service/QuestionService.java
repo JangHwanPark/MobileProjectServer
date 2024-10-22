@@ -18,7 +18,7 @@ public class QuestionService {
         return questionRepo.saveQuestion(question); // 질문 저장 로직 호출
     }
 
-    public List<Question> getAllQuestions() {
-        return questionRepo.selectQuestion();
+    public List<Question> getCategoryQuestions(String category) {
+        return questionRepo.selectQuestionByCategory(category);
     }
 }

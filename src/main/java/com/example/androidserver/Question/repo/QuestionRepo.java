@@ -31,20 +31,15 @@ public class QuestionRepo {
                 question.getContent(),
                 question.getCategory(),
                 question.getTitle(),
-                //question.getAuthor(),
                 question.getCreatedAt(),
                 question.getUpdatedAt()
         );
     }
 
-    // db에 저장된 모든 질문을 조회하는 메서드
-    public List<Question> selectQuestion() {
-        String sql = "SELECT * FROM question";
-
-        // query 메서드를 사용하여 결과를 List<Question>으로 변환
-        // query 는 여러개의 데이터 반환
-        // queryForObject 는 단일 데이터 반환
-        return jdbcTemplate.query(sql, new QuestionRowMapper());
+    // 카테고리별 데이터 조회
+    public List<Question> selectQuestionByCategory(String category) {
+        String sql = "SELECT * FROM question WHERE category = ?";
+        return jdbcTemplate.query(sql, new QuestionRowMapper(), category);
     }
 
     // RowMapper를 사용해 ResultSet을 Question 객체로 매핑
@@ -56,8 +51,7 @@ public class QuestionRepo {
             question.setUid(rs.getInt("uid"));
             question.setContent(rs.getString("content"));
             question.setCategory(rs.getString("category"));
-            // question.setAuthor(rs.getString("author"));
-            question.setUpdatedAt(rs.getTimestamp("updatedAt"));
+            question.setUpdatedAt(rs.getTimestamp("updateAt"));
             question.setCreatedAt(rs.getTimestamp("createAt"));
             return question;
         }

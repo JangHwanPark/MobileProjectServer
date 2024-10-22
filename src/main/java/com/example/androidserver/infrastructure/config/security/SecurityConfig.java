@@ -50,7 +50,10 @@ public class SecurityConfig {
                     // 인증 없이 접근 가능한 경로 설정 (권한이 필요 없는 api 주소)
                     .requestMatchers(
                             "/api/join",
-                            "/question/save",
+                            "/post/question/save",
+                            "/get/category/question",
+                            "/get/category/free-board",
+                            "/post/user/register",
                             "/question/all"
                     ).permitAll()
 

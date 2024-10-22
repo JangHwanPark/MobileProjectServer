@@ -26,14 +26,8 @@ public class QuestionController {
         this.questionService = questionService;
     }
 
-    // 모든 질문 쿼리
-    @GetMapping("/question/all")
-    public List<Question> getAllQuestions() {
-        return questionService.getAllQuestions();
-    }
-
     // 질문 저장
-    @PostMapping("/question/save")
+    @PostMapping("/post/question/save")
     public String saveQuestion(@RequestBody Question question) {
         int result = questionService.saveQuestion(question);
         return result == 1 ? "successfully!" : "Failed";
@@ -44,9 +38,14 @@ public class QuestionController {
     // 질문 삭제
 
     // 카테고리가 질문하기인 데이터 출력
-    /*@GetMapping
+    @GetMapping("/get/category/question")
     public List<Question> getCategoryQuestion() {
+        return questionService.getCategoryQuestions("질문하기");
+    }
 
-    }*/
     // 카테고리가 자유게시판인 데이터 출력
+    @GetMapping("/get/category/free-board")
+    public List<Question> getCategoryFreeBoard() {
+        return questionService.getCategoryQuestions("자유 게시판");
+    }
 }
