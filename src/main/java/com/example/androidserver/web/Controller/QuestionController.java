@@ -29,8 +29,16 @@ public class QuestionController {
     }
 
     // 질문 수정
+    @PostMapping("/post/question/update")
+    public int updateQuestion(@RequestBody Question question) {
+        return questionService.updateQuestion(question);
+    }
 
     // 질문 삭제
+    @PostMapping("/post/question/delete")
+    public int deleteQuestion(@RequestBody int questionId) {
+        return questionService.deleteQuestion(questionId);
+    }
 
     // 카테고리가 질문하기인 데이터 출력
     @GetMapping("/get/category/question")

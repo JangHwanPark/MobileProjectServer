@@ -51,6 +51,8 @@ public class SecurityConfig {
                     .requestMatchers(
                             "/api/join",
                             "/post/question/save",
+                            "/post/question/update",
+                            "/post/question/delete",
                             "/get/category/question",
                             "/get/category/free-board",
                             "/post/user/register",

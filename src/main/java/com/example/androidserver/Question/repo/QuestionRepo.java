@@ -39,6 +39,33 @@ public class QuestionRepo {
         return jdbcTemplate.query(sql, new QuestionRowMapper(), category);
     }
 
+    // 질문 검색
+    public List<Question> selectQuestionByCategoryAndTitle(String category, String title) {
+        String sql = "SELECT * FROM question WHERE category = ? AND title = ?";
+        return jdbcTemplate.query(sql, new QuestionRowMapper(), category, title);
+    }
+
+    // 질문 수정
+    public int updateQuestion(Question question) {
+        String sql = "UPDATE question SET content = ?, category = ?, title = ?, updateAt = ? WHERE qid = ?";
+
+        return jdbcTemplate.update(
+                sql,
+                question.getContent(),
+                question.getCategory(),
+                question.getTitle(),
+                question.getUpdatedAt(),
+                question.getQid()
+        );
+    }
+
+    // 질문 삭제
+    public int deleteQuestion(int qid) {
+        String sql = "DELETE FROM question WHERE qid = ?";
+
+        return jdbcTemplate.update(sql, qid);
+    }
+
     // RowMapper를 사용해 ResultSet을 Question 객체로 매핑
     private static class QuestionRowMapper implements RowMapper<Question> {
         @Override
