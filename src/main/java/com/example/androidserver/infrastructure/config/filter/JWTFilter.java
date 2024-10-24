@@ -24,7 +24,11 @@ public class JWTFilter extends OncePerRequestFilter {
   private final UserService service;
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+  protected void doFilterInternal(
+          HttpServletRequest request,
+          HttpServletResponse response,
+          FilterChain filterChain) throws ServletException, IOException {
+
     // 권한이 필요한 요청을 보낼때 헤더에 a-project-token을 넣어서 보내야함
     String token = request.getHeader("a-project-token");
 

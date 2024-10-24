@@ -33,7 +33,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
   private final JWTUtils jwtUtils;
 
   @Override
-  public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+  public Authentication attemptAuthentication(
+          HttpServletRequest request,
+          HttpServletResponse response) throws AuthenticationException {
     Login login;
     try {
       ObjectMapper objectMapper = new ObjectMapper();
@@ -56,7 +58,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
   }
 
   @Override
-  protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
+  protected void successfulAuthentication(
+          HttpServletRequest request,
+          HttpServletResponse response,
+          FilterChain chain,
+          Authentication authResult) throws IOException {
     String email = authResult.getName();
 
     Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
@@ -74,7 +80,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
   }
 
   @Override
-  protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws ServletException {
+  protected void unsuccessfulAuthentication(
+          HttpServletRequest request,
+          HttpServletResponse response,
+          AuthenticationException failed) throws ServletException {
     response.setStatus(HttpStatus.UNAUTHORIZED.value());
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
