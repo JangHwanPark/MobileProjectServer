@@ -15,7 +15,6 @@ public class QuestionController {
 
     // 생성자
     public QuestionController(
-            JdbcTemplate jdbcTemplate,
             QuestionService questionService
     ) {
         this.questionService = questionService;
