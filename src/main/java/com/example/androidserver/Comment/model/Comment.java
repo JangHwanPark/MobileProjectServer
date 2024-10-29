@@ -1,4 +1,4 @@
-package com.example.androidserver.Review.model;
+package com.example.androidserver.Comment.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -8,13 +8,13 @@ import lombok.Setter;
 
 import java.util.Date;
 
-@Table(name = "review")
+@Table(name = "comment")
 @Entity
 @Getter
 @Setter
-public class Review {
+public class Comment {
     @Id
-    private long rvid;
+    private int cid;
     private int uid;
     private int qid;
     private String content;
