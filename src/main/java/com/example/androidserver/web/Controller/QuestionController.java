@@ -2,7 +2,7 @@ package com.example.androidserver.web.Controller;
 
 import com.example.androidserver.Question.model.Question;
 import com.example.androidserver.Question.service.QuestionService;
-import org.springframework.jdbc.core.JdbcTemplate;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,15 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 public class QuestionController {
     private final QuestionService questionService;
-
-    // 생성자
-    public QuestionController(
-            QuestionService questionService
-    ) {
-        this.questionService = questionService;
-    }
 
     // 질문 저장
     @PostMapping("/post/question/save")
