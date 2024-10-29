@@ -48,21 +48,19 @@ public class QuestionRepo {
     // 질문 수정
     public int updateQuestion(Question question) {
         String sql = "UPDATE question SET content = ?, category = ?, title = ?, updateAt = ? WHERE qid = ?";
-
         return jdbcTemplate.update(
                 sql,
-                question.getContent(),
-                question.getCategory(),
-                question.getTitle(),
-                question.getUpdatedAt(),
-                question.getQid()
+                question.getContent(),   // INSERT/UPDATE 시 사용될 content 값
+                question.getCategory(),  // INSERT/UPDATE 시 사용될 category 값
+                question.getTitle(),     // INSERT/UPDATE 시 사용될 title 값
+                question.getUpdatedAt(), // INSERT/UPDATE 시 사용될 updateAt 값
+                question.getQid()        // WHERE 조건에 사용될 qid 값
         );
     }
 
     // 질문 삭제
     public int deleteQuestion(int qid) {
         String sql = "DELETE FROM question WHERE qid = ?";
-
         return jdbcTemplate.update(sql, qid);
     }
 

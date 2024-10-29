@@ -18,18 +18,31 @@ public class CommentRepo {
     // 댓글 저장
     public int createComment(Comment comment) {
         String sql = "INSERT INTO comment (cid, uid, qid, content, createAt, updateAt) VALUES (?, ?, ?, ?, ?, ?)";
-        return jdbcTemplate.update(sql, comment);
+        return jdbcTemplate.update(
+                sql,
+                comment.getCid(),
+                comment.getUid(),
+                comment.getQid(),
+                comment.getContent(),
+                comment.getCreateAt(),
+                comment.getUpdateAt()
+        );
     }
 
     // 댓글 수정
     public int updateComment(Comment comment) {
-        String sql = "UPDATE comment SET qid = ?, content = ?, updateAt = ? WHERE id = ?";
-        return jdbcTemplate.update(sql, comment);
+        String sql = "UPDATE comment SET content = ?, updateAt = ? WHERE cid = ?";
+        return jdbcTemplate.update(
+                sql,
+                comment.getContent(),
+                comment.getUpdateAt(),
+                comment.getCid()
+        );
     }
 
     // 댓글 삭제
     public int deleteComment(int cid) {
-        String sql = "DELETE FROM comment WHERE id = ?";
+        String sql = "DELETE FROM comment WHERE cid = ?";
         return jdbcTemplate.update(sql, cid);
     }
 
