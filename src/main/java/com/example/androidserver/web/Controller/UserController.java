@@ -27,8 +27,7 @@ public class UserController {
     public User registerUser(@RequestBody User user) {
         // 비밀번호 암호화
         String encodedPassword = encoder.encode(user.getPassword());
-
-        String sql = "INSERT INTO user (udid, email, password, interest, role) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO user (udid, email, password, interest, role) VALUES (?, ?, ?, ?, 'customer')";
 
         // 사용자 정보 삽입
         jdbcTemplate.update(sql, user.getUdid(), user.getEmail(), encodedPassword, user.getInterest(), user.getRole());
