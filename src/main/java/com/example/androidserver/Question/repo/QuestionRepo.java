@@ -71,6 +71,7 @@ public class QuestionRepo {
             Question question = new Question();
             question.setQid(rs.getInt("qid"));
             question.setUid(rs.getInt("uid"));
+            question.setTitle(rs.getString("title"));
             question.setContent(rs.getString("content"));
             question.setCategory(rs.getString("category"));
             question.setUpdatedAt(rs.getTimestamp("updateAt"));
