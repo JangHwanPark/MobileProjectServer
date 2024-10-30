@@ -3,6 +3,7 @@ package com.example.androidserver.infrastructure.utils;
 import com.example.androidserver.user.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -58,6 +59,7 @@ public class JWTUtils {
             // 발급자? 같은 거임
             .issuer("project")
             .expiration(new Date(System.currentTimeMillis() + expire))
+            .signWith(secretKey, SignatureAlgorithm.HS256)
             .compact();
   }
 }
