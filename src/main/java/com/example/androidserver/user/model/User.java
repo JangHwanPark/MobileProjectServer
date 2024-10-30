@@ -10,22 +10,21 @@ import org.springframework.data.annotation.Id;
 @Table(name = "user") // 매핑할 테이블 이름 지정
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@RequiredArgsConstructor
 public class User {
     @jakarta.persistence.Id
     @Id
     private Long uid;
     // udid 값은 기기 고유 값인데 아마 string 일 거임
-    private String udid;
+    private String name;
     private String email;
     private String password;
     private String role;
+    private String birth;
     // 관심?
     private String interest;
 
-    public User(String email, String role) {
-    }
 }

@@ -12,11 +12,12 @@ create table user
 (
     uid      int auto_increment primary key,
     rid      int,
-    udid    varchar(255),
+    name    varchar(10),
     email    varchar(50),
     password   varchar(255),
     interest varchar(100),
     role     varchar(10),
+    birth   varchar(20),
     foreign key (rid) references role (rid)
 );
 
