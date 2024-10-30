@@ -1,17 +1,16 @@
 package com.example.androidserver.web.Controller;
+
 import com.example.androidserver.user.model.User;
 import com.example.androidserver.user.service.UserService;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.androidserver.web.dto.common.CommonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -48,25 +47,8 @@ public class UserController {
 
 
     @GetMapping("/get/user/info")
-    public User getUserInfo() {
-        // SecurityContext에서 현재 인증된 사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("User is not authenticated");
-        }
-
-        // 인증 정보에서 사용자 이메일 추출
-        String email = authentication.getName();
-
-        // 이메일 로그 출력
-        logger.debug("Authenticated user email: {}", email);
-
-        // 이메일로 사용자 정보 조회
-        User user = userService.getUserByEmail(email);
-
-        // 사용자 정보 로그 출력
-        logger.debug("Retrieved user details: {}", user);
-        return user;
+    public ResponseEntity<?> getUserInfo(@RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(CommonResponse.success(userService.getUser(token)));
     }
 
 
