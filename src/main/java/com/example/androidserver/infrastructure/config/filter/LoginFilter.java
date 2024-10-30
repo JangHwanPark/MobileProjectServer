@@ -53,7 +53,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     String password = login.password();
 
     UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(email, password, null);
-
     return authenticationManager.authenticate(token);
   }
 
@@ -70,11 +69,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     GrantedAuthority auth = iterator.next();
     String role = auth.getAuthority();
 
+    // 로그인 성공시 토큰
     String token = jwtUtils.createJwt(email, role, "user", 1000L * 60 * 60 * 24);
 
     CommonResponse commonResponse = CommonResponse.success(token);
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
+
     ObjectMapper objectMapper = new ObjectMapper();
     response.getWriter().write(objectMapper.writeValueAsString(commonResponse));
   }

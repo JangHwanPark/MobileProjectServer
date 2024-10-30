@@ -33,6 +33,12 @@ public class UserRepo {
         return jdbcTemplate.query(sql, new UserRowMapper());
     }
 
+    // 이메일로 사용자 UID 조회
+    public Integer findUidByEmail(String email) {
+        String sql = "SELECT uid FROM user WHERE email = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{email}, Integer.class);
+    }
+
     // 사용자 정보를 매핑하는 RowMapper
     private static class UserRowMapper implements RowMapper<User> {
         @Override

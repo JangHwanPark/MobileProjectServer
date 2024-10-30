@@ -2,24 +2,44 @@ package com.example.androidserver.Question.service;
 
 import com.example.androidserver.Question.model.Question;
 import com.example.androidserver.Question.repo.QuestionRepo;
+import com.example.androidserver.infrastructure.utils.JWTUtils;
+import com.example.androidserver.user.repo.UserRepo;
+import com.example.androidserver.user.service.UserService;
+import com.example.androidserver.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class QuestionService {
-
     private final QuestionRepo questionRepo;
+    private final UserRepo userRepo;
+    private final UserServiceImpl userService;
+    private final JWTUtils utils;
 
     /**
      * 새로운 질문을 저장하는 메서드
      * @param question 저장할 질문 객체
      * @return 저장된 질문의 결과 값
      */
-    public int saveQuestion(Question question) {
-        return questionRepo.saveQuestion(question); // 질문 저장 로직 호출
+    public int saveQuestion(Question question, String token) {
+        // 토큰에서 이메일 추출
+        String email = utils.getEmail(token);
+        log.info("Extracted email from token: " + email);
+
+        // 이메일로 UID 조회
+        Integer uid = userRepo.findUidByEmail(email);
+        log.info("Retrieved UID from email: " + uid);
+
+        // UID를 Question 객체에 설정
+        question.setUid(uid);
+
+        // 질문 저장 로직 호출
+        return questionRepo.saveQuestion(question);
     }
 
     /**

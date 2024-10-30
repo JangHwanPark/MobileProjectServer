@@ -3,10 +3,12 @@ package com.example.androidserver.web.Controller;
 import com.example.androidserver.Question.model.Question;
 import com.example.androidserver.Question.service.QuestionService;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Log4j2
 @RestController
 @RequestMapping("/api/v1/question")
 @AllArgsConstructor
@@ -15,8 +17,10 @@ public class QuestionController {
 
     // 질문 저장
     @PostMapping("/post/save")
-    public String saveQuestion(@RequestBody Question question) {
-        int result = questionService.saveQuestion(question);
+    public String saveQuestion(
+            @RequestHeader("Authorization") String token,
+            @RequestBody Question question) {
+        int result = questionService.saveQuestion(question, token);
         return result == 1 ? "successfully!" : "Failed";
     }
 

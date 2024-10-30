@@ -14,7 +14,7 @@ public class AnswerController {
     private AnswerService answerService;
 
     // 답변 출력
-    @GetMapping("/get/select/id}")
+    @GetMapping("/get/select/id")
     public List<Answer> getAnswer(@RequestBody int qid){
         return answerService.selectAnswerByQid(qid);
     }

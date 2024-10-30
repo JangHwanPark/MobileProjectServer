@@ -13,7 +13,7 @@ import java.util.Date;
 
 @Component
 public class JWTUtils {
-  private SecretKey secretKey;
+  private final SecretKey secretKey;
 
   public JWTUtils(@Value("${spring.jwt.secret}") String secret) {
     this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
@@ -28,9 +28,7 @@ public class JWTUtils {
   }
 
   public String getEmail(String token) {
-    String email = getClaims(token).get("email", String.class);
-    System.out.println("Extracted email from token: " + email);
-    return email;
+      return getClaims(token).get("email", String.class);
   }
 
   public String getRole(String token) {
@@ -51,8 +49,13 @@ public class JWTUtils {
 
   // 토큰 생성 메서드
   // 1000L * 60 * 60 * 24 * 7 = 7일 마지막 숫자가 일수
-  public String createJwt(String email, String role, String sub, Long expire) {
+  public String createJwt(
+          String email,
+          String role,
+          String sub,
+          Long expire) {
     return Jwts.builder()
+            //.claim("uid", uid)
             .claim("email", email)
             .claim("role", role)
             .subject(sub)
@@ -62,4 +65,6 @@ public class JWTUtils {
             .signWith(secretKey, SignatureAlgorithm.HS256)
             .compact();
   }
+
+
 }

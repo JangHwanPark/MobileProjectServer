@@ -62,9 +62,7 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     String email = jwtUtils.getEmail(token);
-    logger.debug("Extracted email from JWT in JWTFilter: " + email);
     User user = service.getUserByEmail(email);
-    logger.debug("Retrieved User from database: " + user);
 
     CUserDetails userDetails = new CUserDetails(user);
     Authentication authToken = new UsernamePasswordAuthenticationToken(

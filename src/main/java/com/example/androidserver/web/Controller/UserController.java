@@ -17,7 +17,6 @@ public class UserController {
 
     private final UserService userService;
     private final UserServiceImpl serviceImpl;
-    private final JdbcTemplate jdbcTemplate;
 
     public UserController(UserService userService, PasswordEncoder encoder, JdbcTemplate jdbcTemplate) {
         this.userService = userService;
