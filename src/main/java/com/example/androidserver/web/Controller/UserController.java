@@ -51,7 +51,7 @@ public class UserController {
 
 
     // 데이터베이스에서 사용자 데이터를 조회하는 API
-    @GetMapping("/api/get/users")
+    @GetMapping("/get/users")
     public List<User> getAllUsers() {
         String sql = "SELECT * FROM user";
 

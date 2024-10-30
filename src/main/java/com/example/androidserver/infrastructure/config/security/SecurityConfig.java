@@ -48,24 +48,10 @@ public class SecurityConfig {
     http.authorizeHttpRequests(req ->
             req
                     // 인증 없이 접근 가능한 경로 설정 (권한이 필요 없는 api 주소)
-                    .requestMatchers(
-                            "/api/join",
-                            "/post/comment/create",
-                            "/post/comment/update",
-                            "/post/comment/delete",
-                            "/post/question/save",
-                            "/post/question/update",
-                            "/post/question/delete",
-                            "/get/category/question",
-                            "/get/category/free-board",
-                            "/post/user/register",
-                            "/question/all",
-                            "/get/user/info",
-                            "/api/get/users"
-                    ).permitAll()
+                    .requestMatchers("/**").permitAll()
 
                     // 권한이 ROLE_USER 인 api 주소
-                    .requestMatchers("/api/user/info")
+                    .requestMatchers("/user/get/info")
                     .hasRole("USER")
                     .anyRequest()
                     .authenticated());
@@ -90,12 +76,14 @@ public class SecurityConfig {
                     }
             )
     );
+
     http.sessionManagement(session ->
             session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     );
 
     // 필터 추가
     LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil);
+
     // 로그인 주소 설정
     loginFilter.setFilterProcessesUrl("/api/login");
     http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
