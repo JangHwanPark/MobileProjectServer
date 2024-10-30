@@ -23,15 +23,12 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User getUserByEmail(String email) {
-    return repository.findByEmail(email)
-            .orElseThrow(() -> new ProjectException(HttpStatus.NOT_FOUND, ProjectExceptionCode.NOT_FOUND_USER));
+    return repository.findByEmail(email).orElseThrow(() -> new ProjectException(HttpStatus.NOT_FOUND, ProjectExceptionCode.NOT_FOUND_USER));
   }
 
   @Override
   public User getUser(String token) {
-    log.info("Get user by token: {}", token);
     String email = util.getEmail(token);
-    log.info("Get user by email: {}", email);
     return getUserByEmail(email);
   }
 
