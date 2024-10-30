@@ -59,7 +59,9 @@ public class SecurityConfig {
                             "/get/category/question",
                             "/get/category/free-board",
                             "/post/user/register",
-                            "/question/all"
+                            "/question/all",
+                            "/get/user/info",
+                            "/api/get/users"
                     ).permitAll()
 
                     // 권한이 ROLE_USER 인 api 주소

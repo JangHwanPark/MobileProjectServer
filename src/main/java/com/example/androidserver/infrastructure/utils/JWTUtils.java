@@ -27,7 +27,9 @@ public class JWTUtils {
   }
 
   public String getEmail(String token) {
-    return getClaims(token).get("email", String.class);
+    String email = getClaims(token).get("email", String.class);
+    System.out.println("Extracted email from token: " + email);
+    return email;
   }
 
   public String getRole(String token) {
