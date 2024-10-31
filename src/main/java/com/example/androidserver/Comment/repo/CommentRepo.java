@@ -32,12 +32,7 @@ public class CommentRepo {
     // 댓글 수정
     public int updateComment(Comment comment) {
         String sql = "UPDATE comment SET content = ?, updateAt = ? WHERE cid = ?";
-        return jdbcTemplate.update(
-                sql,
-                comment.getContent(),
-                comment.getUpdateAt(),
-                comment.getCid()
-        );
+        return jdbcTemplate.update(sql, comment.getContent(), comment.getUpdateAt(), comment.getCid());
     }
 
     // 댓글 삭제
@@ -47,15 +42,16 @@ public class CommentRepo {
     }
 
     // 질문별 댓글 불러오기
-    public List<Comment> selectCommentByQuestionId(int questionId) {
-        String sql = "select * from comment where question_id=?";
-        return jdbcTemplate.query(sql, new CommentRowMapper(), questionId);
+    public List<Comment> selectCommentByQuestionId(int qid) {
+        String sql = "select * from comment where qid = ?";
+        return jdbcTemplate.query(sql, new CommentRowMapper(), qid);
     }
 
     private static class CommentRowMapper implements RowMapper<Comment> {
         @Override
         public Comment mapRow(ResultSet rs, int rowNum) throws SQLException {
             Comment comment = new Comment();
+            comment.setCid(rs.getInt("cid"));
             comment.setUid(rs.getInt("uid"));
             comment.setQid(rs.getInt("qid"));
             comment.setContent(rs.getString("content"));

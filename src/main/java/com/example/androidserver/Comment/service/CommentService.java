@@ -7,12 +7,18 @@ import com.example.androidserver.user.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepo commentRepo;
     private final JWTUtils utils;
     private final UserRepo userRepo;
+
+    public List<Comment> selectCommentByQuestionId(int qid) {
+        return commentRepo.selectCommentByQuestionId(qid);
+    }
 
     public int createComment(Comment comment, String token) {
         String email = utils.getEmail(token);

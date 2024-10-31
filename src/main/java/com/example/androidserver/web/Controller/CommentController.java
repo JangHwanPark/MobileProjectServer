@@ -6,12 +6,20 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Log4j2
 @RestController
 @RequestMapping("/api/v1/comment")
 @AllArgsConstructor
 public class CommentController {
     private CommentService commentService;
+
+    // 댓글 조회
+    @GetMapping("/get/{qid}")
+    public List<Comment> getComment(@PathVariable("qid") int qid) {
+        return commentService.selectCommentByQuestionId(qid);
+    }
 
     // 댓글 등록
     @PostMapping("/post/create")
