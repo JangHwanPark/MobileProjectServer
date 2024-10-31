@@ -44,9 +44,7 @@ public class QuestionRepo {
                 "join user as u on q.uid = u.uid " +
                         "where q.category = ? " +
                         "group by q.qid";
-        // String sql = "select * from question inner join user on question.uid = user.uid";
-        List<Question> res = jdbcTemplate.query(sql, new QuestionRowMapper(), category);
-        return res;
+        return jdbcTemplate.query(sql, new QuestionRowMapper(), category);
     }
 
     // 질문 검색
@@ -89,6 +87,7 @@ public class QuestionRepo {
 
             User user = new User();
             user.setName(rs.getString("name"));
+            user.setCompany(rs.getString("company"));
             question.setAuthor(user);
             return question;
         }

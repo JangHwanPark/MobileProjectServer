@@ -18,7 +18,6 @@ public class User {
     @jakarta.persistence.Id
     @Id
     private Long uid;
-    // udid 값은 기기 고유 값인데 아마 string 일 거임
     private String name;
     private String email;
     private String password;
@@ -26,5 +25,5 @@ public class User {
     private String birth;
     // 관심?
     private String interest;
-
+    private String company;
 }
