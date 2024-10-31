@@ -39,7 +39,7 @@ public class QuestionController {
     // 카테고리가 질문하기인 데이터 출력
     @GetMapping("/get/category/question")
     public List<Question> getCategoryQuestion() {
-        return questionService.getCategoryQuestions("질문하기");
+        return questionService.getCategoryQuestions("질문답변");
     }
 
     // 카테고리가 자유게시판인 데이터 출력

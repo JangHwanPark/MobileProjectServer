@@ -1,47 +1,33 @@
-drop database elk;
-create database elk;
-use elk;
-
-create table role
-(
-    rid   int auto_increment primary key,
-    rname varchar(10)
-);
+drop
+database elk;
+create
+database elk;
+use
+elk;
 
 create table user
 (
     uid      int auto_increment primary key,
-    rid      int,
-    name    varchar(10),
+    name     varchar(10),
     email    varchar(50) unique,
-    password   varchar(255),
+    password varchar(255),
     interest varchar(100),
+    company  varchar(100),
     role     varchar(10),
-    birth   varchar(20),
-    foreign key (rid) references role (rid)
-);
-
-create table admin
-(
-    aid    int auto_increment primary key,
-    uid    int unique,
-    access date,
-    foreign key (uid) references user (uid)
+    birth    varchar(20)
 );
 
 create table question
 (
     qid      int auto_increment primary key,
     uid      int,
-    -- tagid    int,
     interest varchar(100),
     title    varchar(255),
     content  varchar(255),
     category varchar(50),
     createAt date,
     updateAt date,
-    foreign key (uid) references user (uid),
-    -- foreign key (tagid) references tag()
+    foreign key (uid) references user (uid)
 );
 
 create table comment
@@ -73,37 +59,174 @@ create table answer
     foreign key (uid) references user (uid)
 );
 
--- 사용자 권한
-insert into role (rid, rname)
-values (1, 'customer');
-insert into role (rid, rname)
-values (2, 'expert');
-
 -- 사용자
-insert into user(uid, rid, name, email, password, interest, role, birth)
-values (null, 1, 'account1', '1', '1', '1', 1, , 'admin',"admin");
-insert into user(uid, rid, name, email, password, interest, role, birth)
-values (null, 1, 'account2', '2', '1', '1', 1, , 'admin',"admin");
-insert into user(uid, rid, name, email, password, interest, role, birth)
-values (null, 1, 'account3', '3', '1', '1', 1, , 'admin',"admin");
-insert into user(uid, rid, name, email, password, interest, role, birth)
-values (null, 1, 'account4', '4', '1', '1', 1, , 'admin',"admin");
-insert into user(uid, rid, name, email, password, interest, role, birth)
-values (null, 1, 'account5', '5', '1', '1', 1, , 'admin',"admin");
-insert into user(uid, rid, name, email, password, interest, role, birth)
-values (null, 1, 'account6', '6', '1', '1', 1, , 'admin',"admin");
-insert into user(uid, rid, name, email, password, interest, role, birth)
-values (null, 1, 'account7', '7', '1', '1', 1, , 'admin',"admin");
-insert into user(uid, rid, name, email, password, interest, role, birth)
-values (null, 1, 'account8', '8', '1', '1', 1, , 'admin',"admin");
-insert into user(uid, rid, name, email, password, interest, role, birth)
-values (null, 1, 'account9', '9', '1', '1', 1, , 'admin',"admin");
-insert into user(uid, rid, name, email, password, interest, role, birth)
-values (null, 1, 'account10', '10', '1', '1', 1, , 'admin',"admin");
+INSERT INTO user (uid, name, email, password, interest, company, role, birth)
+VALUES (null, 'account1', 'user1@example.com', 'password1', '프로그래밍', 'CompanyA', 'admin', '1990-01-01'),
+       (null, 'account2', 'user2@example.com', 'password2', '인공지능', 'CompanyB', 'customer', '1992-02-02'),
+       (null, 'account3', 'user3@example.com', 'password3', '빅데이터', 'CompanyC', 'admin', '1994-03-03'),
+       (null, 'account4', 'user4@example.com', 'password4', '사물인터넷', 'CompanyD', 'customer', '1996-04-04'),
+       (null, 'account5', 'user5@example.com', 'password5', '모바일 개발', 'CompanyE', 'admin', '1998-05-05'),
+       (null, 'account6', 'user6@example.com', 'password6', '클라우드 컴퓨팅', 'CompanyF', 'customer', '2000-06-06'),
+       (null, 'account7', 'user7@example.com', 'password7', '데이터 분석', 'CompanyG', 'admin', '2002-07-07'),
+       (null, 'account8', 'user8@example.com', 'password8', '디지털 마케팅', 'CompanyH', 'customer', '2004-08-08'),
+       (null, 'account9', 'user9@example.com', 'password9', '머신러닝', 'CompanyI', 'admin', '2006-09-09'),
+       (null, 'account10', 'user10@example.com', 'password10', '블록체인', 'CompanyJ', 'customer', '2008-10-10'),
+       (null, 'account11', 'user11@example.com', 'password11', '네트워크 보안', 'CompanyK', 'customer', '1988-01-01'),
+       (null, 'account12', 'user12@example.com', 'password12', '웹 개발', 'CompanyL', 'admin', '1989-02-02'),
+       (null, 'account13', 'user13@example.com', 'password13', '데이터베이스', 'CompanyM', 'customer', '1991-03-03'),
+       (null, 'account14', 'user14@example.com', 'password14', '로봇공학', 'CompanyN', 'admin', '1993-04-04'),
+       (null, 'account15', 'user15@example.com', 'password15', '하드웨어 설계', 'CompanyO', 'customer', '1995-05-05'),
+       (null, 'account16', 'user16@example.com', 'password16', '소프트웨어 엔지니어링', 'CompanyP', 'admin', '1997-06-06'),
+       (null, 'account17', 'user17@example.com', 'password17', '컴퓨터 비전', 'CompanyQ', 'customer', '1999-07-07'),
+       (null, 'account18', 'user18@example.com', 'password18', '모바일 앱 디자인', 'CompanyR', 'admin', '2001-08-08'),
+       (null, 'account19', 'user19@example.com', 'password19', '게임 개발', 'CompanyS', 'customer', '2003-09-09'),
+       (null, 'account20', 'user20@example.com', 'password20', '가상현실', 'CompanyT', 'admin', '2005-10-10'),
+       (null, 'account21', 'user21@example.com', 'password21', '증강현실', 'CompanyU', 'customer', '1987-11-11'),
+       (null, 'account22', 'user22@example.com', 'password22', '사이버 보안', 'CompanyV', 'admin', '1986-12-12'),
+       (null, 'account23', 'user23@example.com', 'password23', '기계 학습', 'CompanyW', 'customer', '1985-01-13'),
+       (null, 'account24', 'user24@example.com', 'password24', '기계 설계', 'CompanyX', 'admin', '1984-02-14'),
+       (null, 'account25', 'user25@example.com', 'password25', '프로젝트 관리', 'CompanyY', 'customer', '1983-03-15'),
+       (null, 'account26', 'user26@example.com', 'password26', '유저 경험 디자인', 'CompanyZ', 'admin', '1982-04-16'),
+       (null, 'account27', 'user27@example.com', 'password27', '데이터 시각화', 'CompanyAA', 'customer', '1981-05-17'),
+       (null, 'account28', 'user28@example.com', 'password28', '사운드 엔지니어링', 'CompanyBB', 'admin', '1980-06-18'),
+       (null, 'account29', 'user29@example.com', 'password29', '영상 편집', 'CompanyCC', 'customer', '1979-07-19'),
+       (null, 'account30', 'user30@example.com', 'password30', '클라우드 보안', 'CompanyDD', 'admin', '1978-08-20'),
+       (null, 'account31', 'user31@example.com', 'password31', '데이터 분석', 'CompanyEE', 'customer', '1987-01-21'),
+       (null, 'account32', 'user32@example.com', 'password32', '경영 분석', 'CompanyFF', 'admin', '1986-02-22'),
+       (null, 'account33', 'user33@example.com', 'password33', '시스템 관리', 'CompanyGG', 'customer', '1985-03-23'),
+       (null, 'account34', 'user34@example.com', 'password34', '백엔드 개발', 'CompanyHH', 'admin', '1984-04-24'),
+       (null, 'account35', 'user35@example.com', 'password35', '프론트엔드 개발', 'CompanyII', 'customer', '1983-05-25'),
+       (null, 'account36', 'user36@example.com', 'password36', '기술 지원', 'CompanyJJ', 'admin', '1982-06-26'),
+       (null, 'account37', 'user37@example.com', 'password37', 'AI 연구', 'CompanyKK', 'customer', '1981-07-27'),
+       (null, 'account38', 'user38@example.com', 'password38', '그래픽 디자인', 'CompanyLL', 'admin', '1980-08-28'),
+       (null, 'account39', 'user39@example.com', 'password39', '네트워크 엔지니어링', 'CompanyMM', 'customer', '1979-09-29'),
+       (null, 'account40', 'user40@example.com', 'password40', 'DB 관리', 'CompanyNN', 'admin', '1978-10-30'),
+       (null, 'account41', 'user41@example.com', 'password41', '소프트웨어 테스팅', 'CompanyOO', 'customer', '1977-11-01'),
+       (null, 'account42', 'user42@example.com', 'password42', '품질 관리', 'CompanyPP', 'admin', '1976-12-02'),
+       (null, 'account43', 'user43@example.com', 'password43', 'IT 컨설팅', 'CompanyQQ', 'customer', '1975-01-03'),
+       (null, 'account44', 'user44@example.com', 'password44', 'R&D', 'CompanyRR', 'admin', '1974-02-04'),
+       (null, 'account45', 'user45@example.com', 'password45', '클라우드 컴퓨팅', 'CompanySS', 'customer', '1973-03-05'),
+       (null, 'account46', 'user46@example.com', 'password46', '블록체인', 'CompanyTT', 'admin', '1972-04-06'),
+       (null, 'account47', 'user47@example.com', 'password47', '게임 엔진 개발', 'CompanyUU', 'customer', '1971-05-07'),
+       (null, 'account48', 'user48@example.com', 'password48', '인공지능 챗봇', 'CompanyVV', 'admin', '1970-06-08'),
+       (null, 'account49', 'user49@example.com', 'password49', '소프트웨어 아키텍처', 'CompanyWW', 'customer', '1969-07-09'),
+       (null, 'account50', 'user50@example.com', 'password50', '보안 엔지니어링', 'CompanyXX', 'admin', '1968-08-10'),
+       (null, 'account51', 'user51@example.com', 'password51', '자동차 전자 시스템', 'CompanyYY', 'customer', '1967-09-11'),
+       (null, 'account52', 'user52@example.com', 'password52', '에너지 시스템', 'CompanyZZ', 'admin', '1966-10-12'),
+       (null, 'account53', 'user53@example.com', 'password53', '물류 최적화', 'CompanyAAA', 'customer', '1965-11-13'),
+       (null, 'account54', 'user54@example.com', 'password54', '금융 시스템 개발', 'CompanyBBB', 'admin', '1964-12-14'),
+       (null, 'account55', 'user55@example.com', 'password55', '모바일 결제', 'CompanyCCC', 'customer', '1963-01-15'),
+       (null, 'account56', 'user56@example.com', 'password56', '전자상거래', 'CompanyDDD', 'admin', '1962-02-16'),
+       (null, 'account57', 'user57@example.com', 'password57', '의료 IT', 'CompanyEEE', 'customer', '1961-03-17'),
+       (null, 'account58', 'user58@example.com', 'password58', '헬스케어 기술', 'CompanyFFF', 'admin', '1960-04-18'),
+       (null, 'account59', 'user59@example.com', 'password59', '법률 테크놀로지', 'CompanyGGG', 'customer', '1959-05-19'),
+       (null, 'account60', 'user60@example.com', 'password60', '스마트 홈 기술', 'CompanyHHH', 'admin', '1958-06-20');
 
--- 관리자
-insert into admin
-values (1, 1, '2024-01-01');
+-- 질문 추가
+INSERT INTO question (qid, uid, interest, title, content, category, createAt, updateAt)
+VALUES (null, 1, '프로그래밍', '자바 기초 질문', '자바 변수 선언 방법이 궁금합니다.', '질문답변', '2024-01-01', '2024-01-01'),
+       (null, 2, '인공지능', '딥러닝과 머신러닝 차이점', '두 개념의 차이를 알고 싶습니다.', '질문답변', '2024-01-02', '2024-01-02'),
+       (null, 3, '데이터베이스', 'SQL과 NoSQL의 차이', '어떤 상황에서 각 DB를 사용하나요?', '질문답변', '2024-01-03', '2024-01-03'),
+       (null, 4, '프론트엔드', '리액트와 뷰의 차이', '리액트와 뷰 중 어떤 것이 더 효율적인가요?', '자유 게시판', '2024-01-04', '2024-01-04'),
+       (null, 5, '네트워크', 'OSI 7계층 설명', 'OSI 모델의 각 계층에 대해 설명해주세요.', '질문답변', '2024-01-05', '2024-01-05'),
+       (null, 6, '보안', 'XSS와 CSRF 차이', '두 보안 취약점의 차이점을 설명해주세요.', '질문답변', '2024-01-06', '2024-01-06'),
+       (null, 7, '알고리즘', '버블 정렬의 시간 복잡도', '버블 정렬의 시간 복잡도를 알고 싶습니다.', '질문답변', '2024-01-07', '2024-01-07'),
+       (null, 8, '모바일 개발', '안드로이드와 iOS 개발 차이', '안드로이드와 iOS 개발의 차이점이 궁금합니다.', '자유 게시판', '2024-01-08', '2024-01-08'),
+       (null, 9, '클라우드 컴퓨팅', 'AWS와 Azure 비교', 'AWS와 Azure의 차이점을 알고 싶습니다.', '질문답변', '2024-01-09', '2024-01-09'),
+       (null, 10, '데이터 과학', '빅데이터와 데이터 과학', '두 개념의 차이와 적용 예를 알고 싶습니다.', '자유 게시판', '2024-01-10', '2024-01-10'),
+       (null, 11, '머신러닝', '회귀분석과 분류의 차이', '회귀와 분류의 차이점을 설명해주세요.', '질문답변', '2024-01-11', '2024-01-11'),
+       (null, 12, '백엔드', 'RESTful API란?', 'RESTful API의 개념을 알고 싶습니다.', '자유 게시판', '2024-01-12', '2024-01-12'),
+       (null, 13, '운영체제', '쓰레드와 프로세스 차이', '쓰레드와 프로세스의 차이점을 설명해주세요.', '질문답변', '2024-01-13', '2024-01-13'),
+       (null, 14, '프로그래밍', '자바스크립트 클로저 개념', '자바스크립트 클로저의 원리가 궁금합니다.', '자유 게시판', '2024-01-14', '2024-01-14'),
+       (null, 15, '컴퓨터 비전', 'OpenCV 사용법', 'OpenCV로 이미지를 분석하는 방법을 알고 싶습니다.', '질문답변', '2024-01-15', '2024-01-15'),
+       (null, 16, '인공지능', 'GAN의 구조', 'GAN의 기본 구조와 원리를 설명해주세요.', '질문답변', '2024-01-16', '2024-01-16'),
+       (null, 17, '데이터 분석', '파이썬으로 데이터 시각화', '파이썬으로 데이터 시각화를 하는 방법이 궁금합니다.', '자유 게시판', '2024-01-17', '2024-01-17'),
+       (null, 18, '컴퓨터 그래픽스', '렌더링 엔진의 역할', '렌더링 엔진이 어떤 역할을 하는지 궁금합니다.', '질문답변', '2024-01-18', '2024-01-18'),
+       (null, 19, '네트워크', 'TCP와 UDP 차이', 'TCP와 UDP의 차이점을 설명해주세요.', '자유 게시판', '2024-01-19', '2024-01-19'),
+       (null, 20, '보안', '암호화와 해싱의 차이', '암호화와 해싱의 개념 차이를 알고 싶습니다.', '질문답변', '2024-01-20', '2024-01-20'),
+       (null, 21, '프론트엔드', 'CSS Flexbox 사용법', 'Flexbox로 레이아웃을 잡는 방법을 알고 싶습니다.', '질문답변', '2024-01-21', '2024-01-21'),
+       (null, 22, '알고리즘', '이진 탐색의 시간 복잡도', '이진 탐색의 시간 복잡도를 설명해주세요.', '자유 게시판', '2024-01-22', '2024-01-22'),
+       (null, 23, '모바일 개발', 'React Native와 Flutter 비교', 'React Native와 Flutter의 차이점을 알고 싶습니다.', '질문답변', '2024-01-23',
+        '2024-01-23'),
+       (null, 24, '클라우드 컴퓨팅', '서버리스 컴퓨팅', '서버리스 컴퓨팅의 개념을 알고 싶습니다.', '자유 게시판', '2024-01-24', '2024-01-24'),
+       (null, 25, '머신러닝', 'KNN 알고리즘의 원리', 'KNN 알고리즘의 원리를 설명해주세요.', '질문답변', '2024-01-25', '2024-01-25'),
+       (null, 26, '백엔드', 'API와 SDK의 차이', 'API와 SDK의 차이를 설명해주세요.', '자유 게시판', '2024-01-26', '2024-01-26'),
+       (null, 27, '운영체제', '데드락이란?', '데드락의 원인과 해결 방법이 궁금합니다.', '질문답변', '2024-01-27', '2024-01-27'),
+       (null, 28, '프로그래밍', '파이썬과 자바 비교', '파이썬과 자바의 장단점 비교가 궁금합니다.', '자유 게시판', '2024-01-28', '2024-01-28'),
+       (null, 29, '컴퓨터 비전', '이미지 분류 모델', '이미지 분류 모델을 만드는 방법을 알고 싶습니다.', '질문답변', '2024-01-29', '2024-01-29'),
+       (null, 30, '데이터 분석', '빅데이터와 통계 차이', '빅데이터와 통계의 차이를 설명해주세요.', '질문답변', '2024-01-30', '2024-01-30'),
+       (null, 31, '프로그래밍', 'Java의 상속 개념', '상속을 어떻게 사용하는지 알고 싶습니다.', '질문답변', '2024-02-01', '2024-02-01'),
+       (null, 32, '데이터베이스', '데이터베이스 인덱스의 역할', '인덱스가 왜 필요한지 설명해주세요.', '질문답변', '2024-02-02', '2024-02-02'),
+       (null, 33, '인공지능', '강화학습 기초', '강화학습의 개념과 사례가 궁금합니다.', '질문답변', '2024-02-03', '2024-02-03'),
+       (null, 34, '프론트엔드', 'CSS Grid와 Flexbox 차이', '두 레이아웃 방식의 차이를 설명해주세요.', '자유 게시판', '2024-02-04', '2024-02-04'),
+       (null, 35, '네트워크', 'VPN이란 무엇인가?', 'VPN의 원리와 사용법을 알고 싶습니다.', '질문답변', '2024-02-05', '2024-02-05'),
+       (null, 36, '보안', 'SQL Injection 방어 방법', 'SQL 인젝션을 방어하는 방법이 궁금합니다.', '질문답변', '2024-02-06', '2024-02-06'),
+       (null, 37, '알고리즘', '퀵 정렬의 동작 원리', '퀵 정렬이 어떻게 작동하는지 설명해주세요.', '자유 게시판', '2024-02-07', '2024-02-07'),
+       (null, 38, '모바일 개발', 'iOS와 안드로이드 앱 차이', '두 플랫폼 앱 개발의 차이점을 알고 싶습니다.', '질문답변', '2024-02-08', '2024-02-08'),
+       (null, 39, '클라우드 컴퓨팅', '클라우드 보안 위험', '클라우드 사용 시 보안 리스크가 무엇인가요?', '질문답변', '2024-02-09', '2024-02-09'),
+       (null, 40, '데이터 과학', '탐색적 데이터 분석 (EDA)', 'EDA의 절차와 유용성에 대해 설명해주세요.', '자유 게시판', '2024-02-10', '2024-02-10'),
+       (null, 41, '머신러닝', '의사결정나무의 작동 원리', '의사결정나무 알고리즘이 어떻게 작동하는지 설명해주세요.', '질문답변', '2024-02-11', '2024-02-11'),
+       (null, 42, '백엔드', '마이크로서비스 아키텍처', '마이크로서비스의 장단점이 궁금합니다.', '자유 게시판', '2024-02-12', '2024-02-12'),
+       (null, 43, '운영체제', '캐시 메모리 역할', '캐시 메모리가 어떤 역할을 하는지 알고 싶습니다.', '질문답변', '2024-02-13', '2024-02-13'),
+       (null, 44, '프로그래밍', 'C++와 파이썬 성능 차이', 'C++와 파이썬의 성능 차이에 대해 알고 싶습니다.', '자유 게시판', '2024-02-14', '2024-02-14'),
+       (null, 45, '컴퓨터 비전', '객체 탐지 기술', '컴퓨터 비전에서 객체 탐지를 어떻게 구현하는지 설명해주세요.', '질문답변', '2024-02-15', '2024-02-15'),
+       (null, 46, '인공지능', 'CNN의 구조와 원리', 'CNN의 기본 원리를 알고 싶습니다.', '질문답변', '2024-02-16', '2024-02-16'),
+       (null, 47, '데이터 분석', 'R과 파이썬 비교', '데이터 분석에서 R과 파이썬의 장단점이 궁금합니다.', '자유 게시판', '2024-02-17', '2024-02-17'),
+       (null, 48, '컴퓨터 그래픽스', '쉐이더 프로그래밍', '쉐이더 프로그래밍이 무엇인지 설명해주세요.', '질문답변', '2024-02-18', '2024-02-18'),
+       (null, 49, '네트워크', 'IP 주소와 포트', 'IP 주소와 포트가 어떻게 동작하는지 궁금합니다.', '자유 게시판', '2024-02-19', '2024-02-19'),
+       (null, 50, '보안', 'VPN 보안성', 'VPN이 어떻게 보안을 강화하는지 알고 싶습니다.', '질문답변', '2024-02-20', '2024-02-20'),
+       (null, 51, '프론트엔드', '웹 접근성의 중요성', '웹 접근성이 왜 중요한지 알고 싶습니다.', '질문답변', '2024-02-21', '2024-02-21'),
+       (null, 52, '알고리즘', '최소 신장 트리 원리', '최소 신장 트리가 어떻게 작동하는지 궁금합니다.', '자유 게시판', '2024-02-22', '2024-02-22'),
+       (null, 53, '모바일 개발', '앱 내 결제 시스템 구현', '안드로이드에서 인앱 결제를 구현하는 방법이 궁금합니다.', '질문답변', '2024-02-23', '2024-02-23'),
+       (null, 54, '클라우드 컴퓨팅', '클라우드에서의 DevOps', '클라우드 환경에서 DevOps를 어떻게 사용하는지 설명해주세요.', '자유 게시판', '2024-02-24',
+        '2024-02-24'),
+       (null, 55, '머신러닝', 'SVM 알고리즘 설명', 'SVM 알고리즘의 작동 원리를 설명해주세요.', '질문답변', '2024-02-25', '2024-02-25'),
+       (null, 56, '백엔드', '세션과 JWT 차이', '세션과 JWT 인증 방식의 차이를 알고 싶습니다.', '자유 게시판', '2024-02-26', '2024-02-26'),
+       (null, 57, '운영체제', '멀티태스킹과 멀티프로세싱', '두 개념의 차이점과 사용 사례가 궁금합니다.', '질문답변', '2024-02-27', '2024-02-27'),
+       (null, 58, '프로그래밍', '정규 표현식 기본', '정규 표현식을 어떻게 사용하는지 궁금합니다.', '자유 게시판', '2024-02-28', '2024-02-28'),
+       (null, 59, '컴퓨터 비전', '이미지 세그멘테이션', '이미지 세그멘테이션이 어떻게 이루어지는지 설명해주세요.', '질문답변', '2024-02-29', '2024-02-29'),
+       (null, 60, '데이터 분석', 'EDA와 PCA 차이', '탐색적 데이터 분석과 주성분 분석의 차이를 설명해주세요.', '질문답변', '2024-03-01', '2024-03-01'),
+       (null, 1, '프로그래밍', 'Java의 인터페이스 사용법', '인터페이스를 구현하는 방법이 궁금합니다.', '질문답변', '2024-03-02', '2024-03-02'),
+       (null, 2, '데이터베이스', 'SQL 쿼리 최적화', 'SQL 쿼리를 최적화하는 방법에 대해 알고 싶습니다.', '자유 게시판', '2024-03-03', '2024-03-03'),
+       (null, 3, '머신러닝', 'KNN 알고리즘 설명', 'KNN 알고리즘의 작동 원리가 궁금합니다.', '질문답변', '2024-03-04', '2024-03-04'),
+       (null, 4, '프론트엔드', 'React와 Vue의 차이점', 'React와 Vue를 비교해 주세요.', '자유 게시판', '2024-03-05', '2024-03-05'),
+       (null, 5, '네트워크', 'DNS의 작동 원리', 'DNS가 어떻게 작동하는지 설명해주세요.', '질문답변', '2024-03-06', '2024-03-06'),
+       (null, 6, '보안', 'XSS 방어 방법', 'XSS 공격을 방어하는 방법이 궁금합니다.', '질문답변', '2024-03-07', '2024-03-07'),
+       (null, 7, '알고리즘', '그래프 탐색의 기초', 'DFS와 BFS의 차이를 알고 싶습니다.', '자유 게시판', '2024-03-08', '2024-03-08'),
+       (null, 8, '모바일 개발', '안드로이드의 MVVM 패턴', 'MVVM 패턴을 사용하는 방법에 대해 알고 싶습니다.', '질문답변', '2024-03-09', '2024-03-09'),
+       (null, 9, '클라우드 컴퓨팅', '서버리스 컴퓨팅이란?', '서버리스 컴퓨팅의 개념과 장점이 궁금합니다.', '질문답변', '2024-03-10', '2024-03-10'),
+       (null, 10, '데이터 과학', '파이썬의 Pandas 라이브러리', 'Pandas의 기본 사용법을 알고 싶습니다.', '자유 게시판', '2024-03-11', '2024-03-11'),
+       (null, 11, '머신러닝', '지도학습과 비지도학습', '머신러닝에서 지도학습과 비지도학습의 차이를 설명해주세요.', '질문답변', '2024-03-12', '2024-03-12'),
+       (null, 12, '백엔드', 'REST와 SOAP의 차이점', 'REST와 SOAP API의 차이를 알고 싶습니다.', '자유 게시판', '2024-03-13', '2024-03-13'),
+       (null, 13, '운영체제', '프로세스와 스레드 차이', '프로세스와 스레드의 차이를 알고 싶습니다.', '질문답변', '2024-03-14', '2024-03-14'),
+       (null, 14, '프로그래밍', '객체지향 프로그래밍의 4가지 원칙', '객체지향의 원칙이 궁금합니다.', '자유 게시판', '2024-03-15', '2024-03-15'),
+       (null, 15, '컴퓨터 비전', 'YOLO 알고리즘이란?', 'YOLO 알고리즘의 원리와 활용 사례가 궁금합니다.', '질문답변', '2024-03-16', '2024-03-16'),
+       (null, 16, '인공지능', '딥러닝의 기초 개념', '딥러닝의 기본 개념을 알고 싶습니다.', '질문답변', '2024-03-17', '2024-03-17'),
+       (null, 17, '데이터 분석', 'EDA의 중요성', 'EDA가 왜 중요한지 알고 싶습니다.', '자유 게시판', '2024-03-18', '2024-03-18'),
+       (null, 18, '컴퓨터 그래픽스', 'OpenGL의 기본', 'OpenGL의 기본 사용법을 알고 싶습니다.', '질문답변', '2024-03-19', '2024-03-19'),
+       (null, 19, '네트워크', 'HTTP와 HTTPS의 차이', 'HTTP와 HTTPS의 차이점을 알고 싶습니다.', '자유 게시판', '2024-03-20', '2024-03-20'),
+       (null, 20, '보안', 'SSL 인증서란 무엇인가?', 'SSL 인증서의 역할이 궁금합니다.', '질문답변', '2024-03-21', '2024-03-21'),
+       (null, 21, '프론트엔드', 'CSS 애니메이션 활용법', 'CSS 애니메이션을 어떻게 사용하는지 궁금합니다.', '질문답변', '2024-03-22', '2024-03-22'),
+       (null, 22, '알고리즘', '해싱의 원리', '해싱 알고리즘이 어떻게 작동하는지 궁금합니다.', '자유 게시판', '2024-03-23', '2024-03-23'),
+       (null, 23, '모바일 개발', 'Swift의 기초', 'Swift 프로그래밍 언어의 기본을 알고 싶습니다.', '질문답변', '2024-03-24', '2024-03-24'),
+       (null, 24, '클라우드 컴퓨팅', '컨테이너 기술의 이해', 'Docker와 Kubernetes의 차이가 궁금합니다.', '자유 게시판', '2024-03-25', '2024-03-25'),
+       (null, 25, '머신러닝', '로지스틱 회귀의 원리', '로지스틱 회귀의 개념을 알고 싶습니다.', '질문답변', '2024-03-26', '2024-03-26'),
+       (null, 26, '백엔드', '비동기 처리와 동기 처리', '동기와 비동기 처리의 차이를 알고 싶습니다.', '자유 게시판', '2024-03-27', '2024-03-27'),
+       (null, 27, '운영체제', '메모리 관리 기법', '운영체제의 메모리 관리 기법이 궁금합니다.', '질문답변', '2024-03-28', '2024-03-28'),
+       (null, 28, '프로그래밍', 'Git의 기본 사용법', 'Git을 사용하는 방법이 궁금합니다.', '자유 게시판', '2024-03-29', '2024-03-29'),
+       (null, 29, '컴퓨터 비전', '이미지 필터링 기법', '이미지 필터링의 원리를 알고 싶습니다.', '질문답변', '2024-03-30', '2024-03-30'),
+       (null, 30, '데이터 분석', '데이터 시각화 도구', '데이터 시각화에 사용되는 도구가 궁금합니다.', '질문답변', '2024-03-31', '2024-03-31'),
+       (null, 31, '프로그래밍', 'Java와 Kotlin 비교', 'Java와 Kotlin의 차이점을 알고 싶습니다.', '질문답변', '2024-04-01', '2024-04-01'),
+       (null, 32, '알고리즘', '버블 정렬과 선택 정렬', '두 정렬 알고리즘의 차이점을 설명해주세요.', '자유 게시판', '2024-04-02', '2024-04-02'),
+       (null, 33, '네트워크', 'IPSec과 SSL 차이', 'IPSec과 SSL의 차이점이 궁금합니다.', '질문답변', '2024-04-03', '2024-04-03'),
+       (null, 34, '머신러닝', '머신러닝의 과적합 해결법', '과적합을 방지하는 방법이 궁금합니다.', '질문답변', '2024-04-04', '2024-04-04'),
+       (null, 35, '보안', '암호화 알고리즘의 종류', '다양한 암호화 알고리즘이 궁금합니다.', '자유 게시판', '2024-04-05', '2024-04-05'),
+       (null, 36, '프론트엔드', 'SPA와 MPA의 차이', '단일 페이지 애플리케이션과 다중 페이지 애플리케이션의 차이를 알고 싶습니다.', '질문답변', '2024-04-06',
+        '2024-04-06'),
+       (null, 37, '백엔드', 'JWT 토큰의 작동 원리', 'JWT 토큰이 어떻게 작동하는지 알고 싶습니다.', '자유 게시판', '2024-04-07', '2024-04-07'),
+       (null, 38, '컴퓨터 그래픽스', '2D와 3D 렌더링의 차이', '2D와 3D 렌더링의 차이를 알고 싶습니다.', '질문답변', '2024-04-08', '2024-04-08'),
+       (null, 39, '프로그래밍', '파이썬에서 멀티스레드 구현', '파이썬에서 멀티스레드를 구현하는 방법을 알고 싶습니다.', '질문답변', '2024-04-09', '2024-04-09'),
+       (null, 40, '운영체제', '스케줄링 알고리즘의 종류', '운영체제에서 사용하는 스케줄링 알고리즘에 대해 알고 싶습니다.', '자유 게시판', '2024-04-10', '2024-04-10');
 
 -- 태그 추가
 insert into tag (tid, tname)
@@ -117,61 +240,110 @@ values (4, 'Database');
 insert into tag (tid, tname)
 values (5, 'Web Development');
 
--- 질문 추가
-insert into question (uid, title, content, category, createAt)
-values (1, '질문1', 'What is closure in JavaScript?', 'Programming', '2024-10-01');
-insert into question (uid, title, content, category, createAt)
-values (2,  '질문2', 'How to handle async code in Python?', 'Programming', '2024-10-02');
-insert into question (uid, title, content, category, createAt)
-values (3, '질문3', 'What are the new features in Java 17?', 'Programming', '2024-10-03');
-insert into question (uid, title, content, category, createAt)
-values (4, '질문4', 'What is normalization in databases?', 'Database', '2024-10-04');
-insert into question (uid, title, content, category, createAt)
-values (5, '질문5', 'How to use React with TypeScript?', 'Web Development', '2024-10-05');
-
 -- 10개의 태그 (tag) 데이터 추가
 INSERT INTO tag (tid, tname)
-VALUES
-    (6, 'React'),
-    (7, 'Angular'),
-    (8, 'Vue.js'),
-    (9, 'SQL'),
-    (10, 'Node.js'),
-    (11, 'Express.js'),
-    (12, 'Spring Boot'),
-    (13, 'Django'),
-    (14, 'Flask'),
-    (15, 'Ruby on Rails');
+VALUES (6, 'React'),
+       (7, 'Angular'),
+       (8, 'Vue.js'),
+       (9, 'SQL'),
+       (10, 'Node.js'),
+       (11, 'Express.js'),
+       (12, 'Spring Boot'),
+       (13, 'Django'),
+       (14, 'Flask'),
+       (15, 'Ruby on Rails');
 
 -- 리뷰 추가
-insert into comment (uid, content, createAt)
-values (1, 'Very helpful answer on JavaScript!', '2024-10-06');
-insert into comment (uid, content, createAt)
-values (2, 'Great advice on async programming!', '2024-10-07');
-insert into comment (uid, content, createAt)
-values (3, 'Clear explanation about new Java features.', '2024-10-08');
-insert into comment (uid, content, createAt)
-values (4, 'Good understanding of database normalization.', '2024-10-09');
-insert into comment (uid, content, createAt)
-values (5, 'Useful tips for using React with TypeScript.', '2024-10-10');
-insert into comment (uid, content, createAt)
-values (5, 'TypeScript.', '2024-10-11');
-insert into comment (uid, content, createAt)
-values (1, 'JavaScript!', '2024-10-16');
-insert into comment (uid, content, createAt)
-values (1, 'Python!', '2024-10-16');
-insert into comment (uid, content, createAt)
-values (1, 'Java And Python!', '2024-10-16');
+INSERT INTO comment (cid, uid, qid, content, createAt, updateAt)
+VALUES (null, 1, 1, '좋은 정보 감사합니다.', '2024-04-11', '2024-04-11'),
+       (null, 2, 1, '더 많은 설명을 부탁드립니다.', '2024-04-11', '2024-04-11'),
+       (null, 3, 2, '이 주제에 대해 자세히 알고 싶어요.', '2024-04-12', '2024-04-12'),
+       (null, 4, 2, '이해하기 쉽게 설명해 주셔서 감사합니다.', '2024-04-12', '2024-04-12'),
+       (null, 5, 3, '좋은 글이네요!', '2024-04-13', '2024-04-13'),
+       (null, 1, 3, '저도 같은 의견입니다.', '2024-04-13', '2024-04-13'),
+       (null, 6, 4, '이 글은 참 유익하네요.', '2024-04-14', '2024-04-14'),
+       (null, 7, 4, '저도 이 주제에 관심이 많습니다.', '2024-04-14', '2024-04-14'),
+       (null, 8, 5, '더 많은 예제를 추가해 주시면 감사하겠습니다.', '2024-04-15', '2024-04-15'),
+       (null, 9, 5, '좋은 글 감사합니다.', '2024-04-15', '2024-04-15'),
+       (null, 10, 6, '궁금한 점이 해결됐어요.', '2024-04-16', '2024-04-16'),
+       (null, 11, 6, '도움이 많이 되었습니다.', '2024-04-16', '2024-04-16'),
+       (null, 12, 7, '더 알아보고 싶어요.', '2024-04-17', '2024-04-17'),
+       (null, 13, 7, '훌륭한 설명입니다.', '2024-04-17', '2024-04-17'),
+       (null, 14, 8, '다른 예제도 추가해 주세요.', '2024-04-18', '2024-04-18'),
+       (null, 15, 8, '아주 유익한 글입니다.', '2024-04-18', '2024-04-18'),
+       (null, 16, 9, '도움이 많이 되었어요.', '2024-04-19', '2024-04-19'),
+       (null, 17, 9, '이해가 잘 돼요.', '2024-04-19', '2024-04-19'),
+       (null, 18, 10, '좋은 예시입니다.', '2024-04-20', '2024-04-20'),
+       (null, 19, 10, '도움이 되네요.', '2024-04-20', '2024-04-20'),
+       (null, 1, 11, '너무 유익한 글이네요!', '2024-04-21', '2024-04-21'),
+       (null, 2, 11, '이해가 쉽네요.', '2024-04-21', '2024-04-21'),
+       (null, 3, 12, '정말 좋은 정보입니다.', '2024-04-22', '2024-04-22'),
+       (null, 4, 12, '이해가 쉬웠어요.', '2024-04-22', '2024-04-22'),
+       (null, 5, 13, '궁금했던 부분이 해결됐습니다.', '2024-04-23', '2024-04-23'),
+       (null, 6, 13, '정보가 많아서 좋네요.', '2024-04-23', '2024-04-23'),
+       (null, 7, 14, '이 글 덕분에 많은 것을 배웠습니다.', '2024-04-24', '2024-04-24'),
+       (null, 8, 14, '좋은 자료 감사합니다.', '2024-04-24', '2024-04-24'),
+       (null, 9, 15, '관련 자료가 많아 좋습니다.', '2024-04-25', '2024-04-25'),
+       (null, 10, 15, '유용한 정보입니다.', '2024-04-25', '2024-04-25'),
+       (null, 11, 16, '많은 도움이 됐어요.', '2024-04-26', '2024-04-26'),
+       (null, 12, 16, '잘 이해됐어요.', '2024-04-26', '2024-04-26'),
+       (null, 13, 17, '이해가 잘 됐습니다.', '2024-04-27', '2024-04-27'),
+       (null, 14, 17, '잘 배웠습니다.', '2024-04-27', '2024-04-27'),
+       (null, 15, 18, '유익한 정보네요.', '2024-04-28', '2024-04-28'),
+       (null, 16, 18, '감사합니다.', '2024-04-28', '2024-04-28'),
+       (null, 17, 19, '글 잘 읽었습니다.', '2024-04-29', '2024-04-29'),
+       (null, 18, 19, '이해가 쉽게 잘 설명되어 있어요.', '2024-04-29', '2024-04-29'),
+       (null, 19, 20, '유익한 설명 감사합니다.', '2024-04-30', '2024-04-30'),
+       (null, 20, 20, '글 잘 읽었어요.', '2024-04-30', '2024-04-30'),
+       (null, 1, 21, '많은 도움이 되었습니다.', '2024-05-01', '2024-05-01'),
+       (null, 2, 21, '글의 내용이 매우 유익하네요.', '2024-05-01', '2024-05-01'),
+       (null, 3, 22, '질문에 대한 답변 감사합니다.', '2024-05-02', '2024-05-02'),
+       (null, 4, 22, '친절한 설명 감사합니다.', '2024-05-02', '2024-05-02'),
+       (null, 5, 23, '이해가 잘 되었어요.', '2024-05-03', '2024-05-03'),
+       (null, 6, 23, '유익한 글 감사합니다.', '2024-05-03', '2024-05-03'),
+       (null, 7, 24, '더 많은 예제가 있으면 좋겠어요.', '2024-05-04', '2024-05-04'),
+       (null, 8, 24, '좋은 글 감사합니다.', '2024-05-04', '2024-05-04'),
+       (null, 9, 25, '정말 많은 도움이 됐습니다.', '2024-05-05', '2024-05-05'),
+       (null, 10, 25, '감사합니다.', '2024-05-05', '2024-05-05'),
+       (null, 11, 26, '정말 유익한 정보네요.', '2024-05-06', '2024-05-06'),
+       (null, 12, 26, '잘 읽었습니다.', '2024-05-06', '2024-05-06'),
+       (null, 13, 27, '내용이 정말 좋아요.', '2024-05-07', '2024-05-07'),
+       (null, 14, 27, '이해가 잘 되는 설명입니다.', '2024-05-07', '2024-05-07'),
+       (null, 15, 28, '관련 자료 감사합니다.', '2024-05-08', '2024-05-08'),
+       (null, 16, 28, '자세한 설명 감사해요.', '2024-05-08', '2024-05-08'),
+       (null, 17, 29, '너무 유익한 글이네요.', '2024-05-09', '2024-05-09'),
+       (null, 18, 29, '도움이 많이 됐습니다.', '2024-05-09', '2024-05-09'),
+       (null, 19, 30, '다음 글도 기대할게요!', '2024-05-10', '2024-05-10'),
+       (null, 20, 30, '궁금했던 부분이 해결됐어요.', '2024-05-10', '2024-05-10'),
+       (null, 1, 31, '더 많은 예제가 있으면 좋겠어요.', '2024-05-11', '2024-05-11'),
+       (null, 2, 31, '내용이 참 좋습니다.', '2024-05-11', '2024-05-11'),
+       (null, 3, 32, '완벽한 설명이네요.', '2024-05-12', '2024-05-12'),
+       (null, 4, 32, '많은 도움이 됐습니다.', '2024-05-12', '2024-05-12'),
+       (null, 5, 33, '이해가 잘 되네요.', '2024-05-13', '2024-05-13'),
+       (null, 6, 33, '정말 좋은 글입니다.', '2024-05-13', '2024-05-13'),
+       (null, 7, 34, '유익한 정보 감사합니다.', '2024-05-14', '2024-05-14'),
+       (null, 8, 34, '많은 도움이 됐어요.', '2024-05-14', '2024-05-14'),
+       (null, 9, 35, '읽으면서 많이 배웠습니다.', '2024-05-15', '2024-05-15'),
+       (null, 10, 35, '잘 설명해 주셔서 감사합니다.', '2024-05-15', '2024-05-15'),
+       (null, 11, 36, '완벽한 정보네요.', '2024-05-16', '2024-05-16'),
+       (null, 12, 36, '좋은 자료 고맙습니다.', '2024-05-16', '2024-05-16'),
+       (null, 13, 37, '아주 유익한 글이에요.', '2024-05-17', '2024-05-17'),
+       (null, 14, 37, '감사합니다.', '2024-05-17', '2024-05-17'),
+       (null, 15, 38, '더 많은 정보 부탁드려요.', '2024-05-18', '2024-05-18');
+
 
 -- Procedure
 -- 동적 테이블 조회
 drop procedure if exists selectAllData;
-delimiter //
-create procedure selectAllData(in tableName varchar(50))
+delimiter
+//
+create procedure selectAllData(in tableName varchar (50))
 begin
-    set @query = concat('select * from ', tableName);
+    set
+@query = concat('select * from ', tableName);
 prepare stmt from @query;
 execute stmt;
 deallocate prepare stmt;
-end //
+end
+//
 delimiter ;

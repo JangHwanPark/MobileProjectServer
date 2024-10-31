@@ -39,11 +39,7 @@ public class QuestionRepo {
 
     // 카테고리별 데이터 조회
     public List<Question> selectQuestionByCategory(String category) {
-        String sql =
-                "select * from question as q " +
-                "join user as u on q.uid = u.uid " +
-                        "where q.category = ? " +
-                        "group by q.qid";
+        String sql = "select * from question as q join user as u on q.uid = u.uid where q.category = ? group by q.qid";
         return jdbcTemplate.query(sql, new QuestionRowMapper(), category);
     }
 
