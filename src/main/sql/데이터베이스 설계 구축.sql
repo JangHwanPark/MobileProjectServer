@@ -13,7 +13,7 @@ create table user
     uid      int auto_increment primary key,
     rid      int,
     name    varchar(10),
-    email    varchar(50),
+    email    varchar(50) unique,
     password   varchar(255),
     interest varchar(100),
     role     varchar(10),
@@ -33,12 +33,15 @@ create table question
 (
     qid      int auto_increment primary key,
     uid      int,
+    -- tagid    int,
+    interest varchar(100),
     title    varchar(255),
     content  varchar(255),
     category varchar(50),
     createAt date,
     updateAt date,
-    foreign key (uid) references user (uid)
+    foreign key (uid) references user (uid),
+    -- foreign key (tagid) references tag()
 );
 
 create table comment
@@ -77,16 +80,26 @@ insert into role (rid, rname)
 values (2, 'expert');
 
 -- 사용자
-insert into user(email, password, interest, rid, role)
-values ('1', '1', '1', 1, "admin");
-insert into user(email, password, interest, rid, role)
-values ('2', '1', '2', 1, "admin");
-insert into user(email, password, interest, rid, role)
-values ('3', '1', '1', 1, "admin");
-insert into user(email, password, interest, rid, role)
-values ('4', '1', '1', 2, "customer");
-insert into user(email, password, interest, rid, role)
-values ('5', '1', '1', 2, "customer");
+insert into user(uid, rid, name, email, password, interest, role, birth)
+values (null, 1, 'account1', '1', '1', '1', 1, , 'admin',"admin");
+insert into user(uid, rid, name, email, password, interest, role, birth)
+values (null, 1, 'account2', '2', '1', '1', 1, , 'admin',"admin");
+insert into user(uid, rid, name, email, password, interest, role, birth)
+values (null, 1, 'account3', '3', '1', '1', 1, , 'admin',"admin");
+insert into user(uid, rid, name, email, password, interest, role, birth)
+values (null, 1, 'account4', '4', '1', '1', 1, , 'admin',"admin");
+insert into user(uid, rid, name, email, password, interest, role, birth)
+values (null, 1, 'account5', '5', '1', '1', 1, , 'admin',"admin");
+insert into user(uid, rid, name, email, password, interest, role, birth)
+values (null, 1, 'account6', '6', '1', '1', 1, , 'admin',"admin");
+insert into user(uid, rid, name, email, password, interest, role, birth)
+values (null, 1, 'account7', '7', '1', '1', 1, , 'admin',"admin");
+insert into user(uid, rid, name, email, password, interest, role, birth)
+values (null, 1, 'account8', '8', '1', '1', 1, , 'admin',"admin");
+insert into user(uid, rid, name, email, password, interest, role, birth)
+values (null, 1, 'account9', '9', '1', '1', 1, , 'admin',"admin");
+insert into user(uid, rid, name, email, password, interest, role, birth)
+values (null, 1, 'account10', '10', '1', '1', 1, , 'admin',"admin");
 
 -- 관리자
 insert into admin

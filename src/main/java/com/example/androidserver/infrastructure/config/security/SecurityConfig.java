@@ -51,7 +51,7 @@ public class SecurityConfig {
                     .requestMatchers("/**").permitAll()
 
                     // 권한이 ROLE_USER 인 api 주소
-                    .requestMatchers("/user/get/info")
+                    .requestMatchers("/**")
                     .hasRole("USER")
                     .anyRequest()
                     .authenticated());

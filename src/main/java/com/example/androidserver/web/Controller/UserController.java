@@ -27,7 +27,7 @@ public class UserController {
     }
 
     // 데이터베이스에서 사용자 데이터를 조회하는 API
-    @GetMapping("/get/select-all")
+    @GetMapping("/get/all/users")
     public List<User> getAllUsers() {
         return serviceImpl.selectAllUser();
     }
