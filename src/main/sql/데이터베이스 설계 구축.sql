@@ -149,3 +149,16 @@ insert into comment (uid, content, createAt)
 values (1, 'Python!', '2024-10-16');
 insert into comment (uid, content, createAt)
 values (1, 'Java And Python!', '2024-10-16');
+
+-- Procedure
+-- 동적 테이블 조회
+drop procedure if exists selectAllData;
+delimiter //
+create procedure selectAllData(in tableName varchar(50))
+begin
+    set @query = concat('select * from ', tableName);
+prepare stmt from @query;
+execute stmt;
+deallocate prepare stmt;
+end //
+delimiter ;

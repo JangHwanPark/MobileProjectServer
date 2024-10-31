@@ -3,11 +3,10 @@ package com.example.androidserver.web.Controller;
 import com.example.androidserver.Comment.model.Comment;
 import com.example.androidserver.Comment.service.CommentService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.web.bind.annotation.*;
 
+@Log4j2
 @RestController
 @RequestMapping("/api/v1/comment")
 @AllArgsConstructor
@@ -16,8 +15,11 @@ public class CommentController {
 
     // 댓글 등록
     @PostMapping("/post/create")
-    public String createComment(@RequestBody Comment comment) {
-        int result = commentService.createComment(comment);
+    public String createComment(
+            @RequestHeader("Authorization") String token,
+            @RequestBody Comment comment) {
+        log.info("post/create" + comment + " , " + token);
+        int result = commentService.createComment(comment, token);
         return result == 1 ? "답변이 등록되었습니다." : "답변이 등록되지 않았습니다.";
     }
 

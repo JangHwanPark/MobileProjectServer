@@ -27,16 +27,9 @@ public class QuestionService {
      * @return 저장된 질문의 결과 값
      */
     public int saveQuestion(Question question, String token) {
-        // 토큰에서 이메일 추출
-        String email = utils.getEmail(token);
-        log.info("Extracted email from token: " + email);
-
-        // 이메일로 UID 조회
-        Integer uid = userRepo.findUidByEmail(email);
-        log.info("Retrieved UID from email: " + uid);
-
-        // UID를 Question 객체에 설정
-        question.setUid(uid);
+        String email = utils.getEmail(token);           // 토큰에서 이메일 추출
+        Integer uid = userRepo.findUidByEmail(email);   // 이메일로 UID 조회
+        question.setUid(uid);                           // UID를 Question 객체에 설정
 
         // 질문 저장 로직 호출
         return questionRepo.saveQuestion(question);
