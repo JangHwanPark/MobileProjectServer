@@ -1,5 +1,6 @@
 package com.example.androidserver.Question.model;
 
+import com.example.androidserver.user.model.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,4 +19,6 @@ public class Question {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private Date createdAt;
     private Date updatedAt;
+
+    private User author;
 }

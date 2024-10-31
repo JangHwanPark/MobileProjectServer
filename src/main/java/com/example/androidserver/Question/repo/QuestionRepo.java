@@ -1,8 +1,10 @@
 package com.example.androidserver.Question.repo;
 
 import com.example.androidserver.Question.model.Question;
+import com.example.androidserver.user.model.User;
 import com.example.androidserver.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -11,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+@Log4j2
 @Repository
 @RequiredArgsConstructor
 public class QuestionRepo {
@@ -36,8 +39,14 @@ public class QuestionRepo {
 
     // 카테고리별 데이터 조회
     public List<Question> selectQuestionByCategory(String category) {
-        String sql = "SELECT * FROM question WHERE category = ?";
-        return jdbcTemplate.query(sql, new QuestionRowMapper(), category);
+        String sql =
+                "select * from question as q " +
+                "join user as u on q.uid = u.uid " +
+                        "where q.category = ? " +
+                        "group by q.qid";
+        // String sql = "select * from question inner join user on question.uid = user.uid";
+        List<Question> res = jdbcTemplate.query(sql, new QuestionRowMapper(), category);
+        return res;
     }
 
     // 질문 검색
@@ -77,6 +86,10 @@ public class QuestionRepo {
             question.setCategory(rs.getString("category"));
             question.setUpdatedAt(rs.getTimestamp("updateAt"));
             question.setCreatedAt(rs.getTimestamp("createAt"));
+
+            User user = new User();
+            user.setName(rs.getString("name"));
+            question.setAuthor(user);
             return question;
         }
     }
