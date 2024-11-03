@@ -47,4 +47,10 @@ public class QuestionController {
     public List<Question> getCategoryFreeBoard() {
         return questionService.getCategoryQuestions("자유 게시판");
     }
+
+    // 좋아요 버튼 클릭
+    @PostMapping("/post/{qid}/great")
+    public int greatQuestion(@PathVariable int qid) {
+        return 1;
+    }
 }

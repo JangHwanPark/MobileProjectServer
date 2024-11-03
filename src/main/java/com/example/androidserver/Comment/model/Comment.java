@@ -1,8 +1,7 @@
 package com.example.androidserver.Comment.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.example.androidserver.user.model.User;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,4 +19,8 @@ public class Comment {
     private String content;
     private Date createAt;
     private Date updateAt;
+
+    @ManyToOne(fetch = FetchType.LAZY) // 다대일 관계 설정
+    @JoinColumn(name = "uid", insertable = false, updatable = false) // 외래 키 매핑
+    private User user;
 }
