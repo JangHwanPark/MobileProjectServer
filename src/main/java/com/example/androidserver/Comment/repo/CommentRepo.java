@@ -38,16 +38,22 @@ public class CommentRepo {
         return jdbcTemplate.update(sql, comment.getContent(), comment.getUpdateAt(), comment.getCid());
     }
 
+    // 질문별 댓글 불러오기
+    public List<Comment> selectCommentByQuestionId(int qid) {
+        String sql = "select * from comment join user on comment.uid = user.uid where comment.qid = ? group by comment.cid";
+        return jdbcTemplate.query(sql, new CommentRowMapper(), qid);
+    }
+
     // 댓글 삭제
     public int deleteComment(int cid) {
         String sql = "DELETE FROM comment WHERE cid = ?";
         return jdbcTemplate.update(sql, cid);
     }
 
-    // 질문별 댓글 불러오기
-    public List<Comment> selectCommentByQuestionId(int qid) {
-        String sql = "select * from comment join user on comment.uid = user.uid where comment.qid = ? group by comment.cid";
-        return jdbcTemplate.query(sql, new CommentRowMapper(), qid);
+    // 게시글 내 모든 댓글 삭제
+    public int deleteAllComment(int qid) {
+        String sql = "DELETE FROM comment WHERE qid = ?";
+        return jdbcTemplate.update(sql, qid);
     }
 
     private static class CommentRowMapper implements RowMapper<Comment> {

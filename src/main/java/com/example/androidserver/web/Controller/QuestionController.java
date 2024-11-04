@@ -1,5 +1,6 @@
 package com.example.androidserver.web.Controller;
 
+import com.example.androidserver.Comment.service.CommentService;
 import com.example.androidserver.Question.model.Question;
 import com.example.androidserver.Question.service.QuestionService;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class QuestionController {
     private final QuestionService questionService;
+    private final CommentService commentService;
 
     // 질문 저장
     @PostMapping("/post/save")
@@ -25,15 +27,16 @@ public class QuestionController {
     }
 
     // 질문 수정
-    @PostMapping("/post/update")
+    @PostMapping("/post/{qid}/update")
     public int updateQuestion(@RequestBody Question question) {
         return questionService.updateQuestion(question);
     }
 
     // 질문 삭제
-    @PostMapping("/post/delete")
-    public int deleteQuestion(@RequestBody int questionId) {
-        return questionService.deleteQuestion(questionId);
+    @PostMapping("/post/{qid}/delete")
+    public int deleteQuestion(@PathVariable int qid) {
+        commentService.deleteAllComment(qid);
+        return questionService.deleteQuestion(qid);
     }
 
     // 카테고리가 질문하기인 데이터 출력

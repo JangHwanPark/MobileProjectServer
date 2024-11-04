@@ -31,7 +31,11 @@ public class CommentService {
         return commentRepo.updateComment(comment);
     }
 
-    public int deleteComment(int commentId) {
-        return commentRepo.deleteComment(commentId);
+    public int deleteComment(int cid) {
+        return commentRepo.deleteComment(cid);
+    }
+
+    public int deleteAllComment(int qid) {
+        return commentRepo.deleteAllComment(qid);
     }
 }

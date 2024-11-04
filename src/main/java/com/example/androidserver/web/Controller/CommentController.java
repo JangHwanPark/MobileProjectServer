@@ -39,9 +39,16 @@ public class CommentController {
     }
 
     // 댓글 삭제
-    @PostMapping("/post/delete")
-    public String deleteComment(@RequestBody int cid) {
+    @PostMapping("/post/{cid}/delete")
+    public String deleteComment(@PathVariable int cid) {
         int result = commentService.deleteComment(cid);
+        return result == 1 ? "답변이 삭제되었습니다." : "답변 삭제에 실패하였습니다.";
+    }
+
+    // 게시글 내 존재하는 모든 댓글 삭제
+    @PostMapping("/post/question-all/delite/{qid}")
+    public String deleteAllComment(@PathVariable int qid) {
+        int result = commentService.deleteAllComment(qid);
         return result == 1 ? "답변이 삭제되었습니다." : "답변 삭제에 실패하였습니다.";
     }
 }
