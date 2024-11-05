@@ -26,6 +26,7 @@ public abstract class AbstractQuestionRowMapper implements RowMapper<Question> {
         question.setCategory(rs.getString("category"));
         question.setUpdatedAt(rs.getTimestamp("updateAt"));
         question.setCreatedAt(rs.getTimestamp("createAt"));
+        question.setGreat(rs.getInt("great"));
         return question;
     }
 
