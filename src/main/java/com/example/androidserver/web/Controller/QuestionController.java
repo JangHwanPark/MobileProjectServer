@@ -51,6 +51,12 @@ public class QuestionController {
         return questionService.getCategoryQuestions("자유 게시판");
     }
 
+    // 특정 사용자가 작성한 데이터 출력
+    @GetMapping("/get/my-data/{uid}")
+    public List<Question> getMyQuestion(@PathVariable int uid) {
+        return questionService.getMyQuestion(uid);
+    }
+
     // 좋아요 버튼 클릭
     @PostMapping("/post/{qid}/great")
     public int greatQuestion(@PathVariable int qid) {

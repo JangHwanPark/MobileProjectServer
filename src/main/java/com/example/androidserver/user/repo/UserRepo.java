@@ -1,5 +1,6 @@
 package com.example.androidserver.user.repo;
 
+import com.example.androidserver.user.mapper.UserRowMapper;
 import com.example.androidserver.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -37,21 +38,5 @@ public class UserRepo {
     public Integer findUidByEmail(String email) {
         String sql = "SELECT uid FROM user WHERE email = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{email}, Integer.class);
-    }
-
-    // 사용자 정보를 매핑하는 RowMapper
-    private static class UserRowMapper implements RowMapper<User> {
-        @Override
-        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-            User user = new User();
-            user.setUid(rs.getLong("uid"));
-            user.setName(rs.getString("name"));
-            user.setEmail(rs.getString("email"));
-            user.setInterest(rs.getString("interest"));
-            user.setRole(rs.getString("role"));
-            user.setPassword(rs.getString("password"));
-            user.setBirth(rs.getString("birth"));
-            return user;
-        }
     }
 }

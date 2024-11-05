@@ -44,6 +44,10 @@ public class QuestionService {
         return questionRepo.selectQuestionByCategory(category); // 카테고리별 질문 조회
     }
 
+    public List<Question> getMyQuestion(int uid) {
+        return questionRepo.getMyQuestion(uid);
+    }
+
     /**
      * 카테고리와 제목을 기반으로 질문을 검색하는 메서드
      * @param category 질문의 카테고리

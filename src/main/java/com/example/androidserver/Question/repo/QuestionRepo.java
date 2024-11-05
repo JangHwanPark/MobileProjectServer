@@ -1,16 +1,12 @@
 package com.example.androidserver.Question.repo;
 
+import com.example.androidserver.Question.mapper.QuestionRowMapper;
+import com.example.androidserver.Question.mapper.QuestionWithUserRowMapper;
 import com.example.androidserver.Question.model.Question;
-import com.example.androidserver.user.model.User;
-import com.example.androidserver.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 @Log4j2
@@ -40,7 +36,13 @@ public class QuestionRepo {
     // 카테고리별 데이터 조회
     public List<Question> selectQuestionByCategory(String category) {
         String sql = "select * from question as q join user as u on q.uid = u.uid where q.category = ? group by q.qid";
-        return jdbcTemplate.query(sql, new QuestionRowMapper(), category);
+        return jdbcTemplate.query(sql, new QuestionWithUserRowMapper(), category);
+    }
+
+    // 특정 사용자별 데이터 조회
+    public List<Question> getMyQuestion(int uid) {
+        String sql = "select * from question where uid = ?";
+        return jdbcTemplate.query(sql, new QuestionRowMapper(), uid);
     }
 
     // 질문 검색
@@ -66,26 +68,5 @@ public class QuestionRepo {
     public int deleteQuestion(int qid) {
         String sql = "DELETE FROM question WHERE qid = ?";
         return jdbcTemplate.update(sql, qid);
-    }
-
-    // RowMapper를 사용해 ResultSet을 Question 객체로 매핑
-    private static class QuestionRowMapper implements RowMapper<Question> {
-        @Override
-        public Question mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Question question = new Question();
-            question.setQid(rs.getInt("qid"));
-            question.setUid(rs.getInt("uid"));
-            question.setTitle(rs.getString("title"));
-            question.setContent(rs.getString("content"));
-            question.setCategory(rs.getString("category"));
-            question.setUpdatedAt(rs.getTimestamp("updateAt"));
-            question.setCreatedAt(rs.getTimestamp("createAt"));
-
-            User user = new User();
-            user.setName(rs.getString("name"));
-            user.setCompany(rs.getString("company"));
-            question.setAuthor(user);
-            return question;
-        }
     }
 }
