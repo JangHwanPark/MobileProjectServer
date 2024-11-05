@@ -75,4 +75,10 @@ public class QuestionService {
     public int deleteQuestion(int qid) {
         return questionRepo.deleteQuestion(qid); // 질문 삭제 로직 호출
     }
+
+    // 좋아요
+    public int greatQuestion(int qid) {
+        questionRepo.incrementGreat(qid);
+        return questionRepo.getGreatCount(qid);
+    }
 }

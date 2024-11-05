@@ -60,6 +60,6 @@ public class QuestionController {
     // 좋아요 버튼 클릭
     @PostMapping("/post/{qid}/great")
     public int greatQuestion(@PathVariable int qid) {
-        return 1;
+        return questionService.greatQuestion(qid);
     }
 }

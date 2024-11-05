@@ -69,4 +69,16 @@ public class QuestionRepo {
         String sql = "DELETE FROM question WHERE qid = ?";
         return jdbcTemplate.update(sql, qid);
     }
+
+    // 좋아요 수 증가
+    public void incrementGreat(int qid) {
+        String sql = "UPDATE question SET great = great + 1 WHERE qid = ?";
+        jdbcTemplate.update(sql, qid);
+    }
+
+    // 좋아요 수 조회
+    public int getGreatCount(int qid) {
+        String sql = "SELECT great FROM question WHERE qid = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, qid);
+    }
 }
