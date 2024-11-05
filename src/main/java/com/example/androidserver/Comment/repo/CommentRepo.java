@@ -1,18 +1,11 @@
 package com.example.androidserver.Comment.repo;
-
+import com.example.androidserver.Comment.mapper.CommentRowMapper;
 import com.example.androidserver.Comment.model.Comment;
-import com.example.androidserver.user.model.User;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
-@Log4j2
 @Repository
 @RequiredArgsConstructor
 public class CommentRepo {
@@ -55,38 +48,4 @@ public class CommentRepo {
         String sql = "DELETE FROM comment WHERE qid = ?";
         return jdbcTemplate.update(sql, qid);
     }
-
-    private static class CommentRowMapper implements RowMapper<Comment> {
-        private final UserMapper userMapper = new UserMapper(); // UserMapper 인스턴스 생성
-
-        @Override
-        public Comment mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Comment comment = new Comment();
-            comment.setCid(rs.getInt("cid"));
-            comment.setUid(rs.getInt("uid"));
-            comment.setQid(rs.getInt("qid"));
-            comment.setContent(rs.getString("content"));
-            comment.setCreateAt(rs.getTimestamp("createAt"));
-            comment.setUpdateAt(rs.getTimestamp("updateAt"));
-
-            // User 정보 매핑
-            User user = userMapper.mapRow(rs, rowNum); // UserMapper 사용
-            comment.setUser(user); // Comment에 User 설정
-            return comment;
-        }
-    }
-
-    public static class UserMapper implements RowMapper<User> {
-        @Override
-        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-            User user = new User();
-            user.setUid(rs.getLong("uid"));
-            user.setName(rs.getString("name"));
-            user.setCompany(rs.getString("company"));
-            user.setEmail(rs.getString("email"));
-            // 다른 필요한 필드가 있다면 추가
-            return user;
-        }
-    }
-
 }
