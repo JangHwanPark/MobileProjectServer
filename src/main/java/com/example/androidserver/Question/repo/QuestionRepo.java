@@ -18,7 +18,7 @@ public class QuestionRepo {
 
     // 질문을 데이터베이스에 저장하는 메서드
     public int saveQuestion(Question question) {
-        String sql = "INSERT INTO question (qid, uid, content, category, title, createAt, updateAt) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO question (qid, uid, content, category, title, createAt, updateAt, great) VALUES (?, ?, ?, ?, ?, ?, ?, 0)";
 
         // JdbcTemplate의 update 메서드를 사용하여 SQL 실행
         return jdbcTemplate.update(
