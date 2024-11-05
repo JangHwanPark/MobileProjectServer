@@ -41,8 +41,8 @@ public class QuestionRepo {
 
     // 특정 사용자별 데이터 조회
     public List<Question> getMyQuestion(int uid) {
-        String sql = "select * from question where uid = ?";
-        return jdbcTemplate.query(sql, new QuestionRowMapper(), uid);
+        String sql = "select * from question join user on question.uid = user.uid where questuin.uid = ?";
+        return jdbcTemplate.query(sql, new QuestionWithUserRowMapper(), uid);
     }
 
     // 질문 검색

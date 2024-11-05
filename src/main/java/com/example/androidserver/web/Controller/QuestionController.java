@@ -52,7 +52,7 @@ public class QuestionController {
     }
 
     // 특정 사용자가 작성한 데이터 출력
-    @GetMapping("/get/my-data/{uid}")
+    @GetMapping("/get/my-post/{uid}")
     public List<Question> getMyQuestion(@PathVariable int uid) {
         return questionService.getMyQuestion(uid);
     }
