@@ -348,3 +348,59 @@ deallocate prepare stmt;
 end
 //
 delimiter ;
+
+-- 사용자 추가 프로시저
+drop procedure if exists createUser;
+DELIMITER //
+CREATE PROCEDURE createUser(
+    IN p_uid INT,
+    IN p_name VARCHAR(100),
+    IN p_email VARCHAR(100),
+    IN p_password VARCHAR(255),
+    IN p_interest VARCHAR(100),
+    IN p_role VARCHAR(50),
+    IN p_birth DATE
+)
+BEGIN
+    INSERT INTO user (uid, name, email, password, interest, role, birth)
+    VALUES (p_uid, p_name, p_email, p_password, p_interest, p_role, p_birth);
+END //
+DELIMITER ;
+
+-- 질문 등록 프로시저
+drop procedure if exists createQuestion;
+DELIMITER //
+CREATE PROCEDURE createQuestion(
+    IN p_qid INT,
+    IN p_uid INT,
+    IN p_content TEXT,
+    IN p_category VARCHAR(50),
+    IN p_title VARCHAR(255),
+    IN p_createAt TIMESTAMP,
+    IN p_updateAt TIMESTAMP
+)
+BEGIN
+    INSERT INTO question (qid, uid, content, category, title, createAt, updateAt, great)
+    VALUES (p_qid, p_uid, p_content, p_category, p_title, p_createAt, p_updateAt, 0);
+END //
+DELIMITER ;
+
+-- 코멘트 추가 프로시저
+drop procedure if exists createComment;
+delimiter //
+create procedure createComment(
+    IN p_cid INT,
+    IN p_uid INT,
+    IN p_qid INT,
+    IN p_content TEXT,
+    IN p_createAt TIMESTAMP,
+    IN p_updateAt TIMESTAMP,
+    OUT result_code INT
+)
+begin
+    insert into comment (cid, uid, qid, content, createAt, updateAt)
+    values (p_cid, p_uid, p_qid, p_content, p_createAt, p_updateAt);
+
+    set result_code = ROW_COUNT();
+end //
+delimiter ;
