@@ -2,26 +2,23 @@ package com.example.androidserver.user.repo;
 
 import com.example.androidserver.user.mapper.UserRowMapper;
 import com.example.androidserver.user.model.User;
+import com.example.androidserver.utils.AbstractRepo;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
-public class UserRepo {
+public class UserRepo extends AbstractRepo {
     // JdbcTemplate 주입
     private final JdbcTemplate jdbcTemplate;
     private final PasswordEncoder encoder;
@@ -31,7 +28,7 @@ public class UserRepo {
     private SimpleJdbcCall findUidByEmailCall;
 
     @PostConstruct
-    private void init() {
+    protected void initJdbcCalls() {
         registerUserCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("create_user");
         selectAllUsersCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_all_data").returningResultSet("result", new UserRowMapper());
         findUidByEmailCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_uid_by_email");
@@ -53,14 +50,15 @@ public class UserRepo {
             return 0;
         }
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("p_name", user.getName());
-        params.put("p_email", user.getEmail());
-        params.put("p_password", encodedPassword);
-        params.put("p_interest", user.getInterest());
-        params.put("p_role", "customer");
-        params.put("p_birth", sqlBirthDate);
-        params.put("p_company", user.getCompany());
+        Map<String, Object> params = createParamsMap(
+                "p_name", user.getName(),
+                "p_email", user.getEmail(),
+                "p_password", encoder.encode(user.getPassword()),
+                "p_interest", user.getInterest(),
+                "p_role", "customer",
+                "p_birth", sqlBirthDate,
+                "p_company", user.getCompany()
+        );
 
         try {
             registerUserCall.execute(params);
@@ -85,8 +83,7 @@ public class UserRepo {
 
     // 이메일로 사용자 UID 조회
     public Integer findUidByEmailRepo(String email) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("p_email", email);
+        Map<String, Object> params = createParamsMap("p_email", email);
 
         try {
             Map<String, Object> result = findUidByEmailCall.execute(params);

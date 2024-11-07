@@ -404,6 +404,7 @@ end
 //
 delimiter ;
 
+
 -- 사용자 추가 프로시저
 drop procedure if exists create_user;
 delimiter //
@@ -434,6 +435,7 @@ begin
     where email = p_email;
 end //
 delimiter ;
+
 
 -- 질문 등록 프로시저
 drop procedure if exists createQuestion;
@@ -522,6 +524,7 @@ begin
 end //
 delimiter ;
 
+
 -- 좋아요 수 증가
 drop procedure if exists increment_great;
 delimiter //
@@ -548,6 +551,7 @@ begin
 end //
 delimiter ;
 
+
 -- 코멘트 추가
 drop procedure if exists create_comment;
 delimiter //
@@ -563,8 +567,36 @@ create procedure create_comment(
 begin
     insert into comment (cid, uid, qid, content, createAt, updateAt)
     values (p_cid, p_uid, p_qid, p_content, p_createAt, p_updateAt);
-
     set result_code = ROW_COUNT();
+end //
+delimiter ;
+
+-- 코멘트 수정
+drop procedure if exists update_comment;
+delimiter //
+create procedure update_comment(
+    in p_cid int,
+    in p_content varchar(255),
+    in p_updateAt date
+)
+begin
+    update comment
+    set content = p_content, updateAt = p_updateAt
+    where cid = p_cid;
+end //
+delimiter ;
+
+-- 질문별 댓글 불러오기
+drop procedure if exists select_comment_by_question_id;
+delimiter //
+create procedure select_comment_by_question_id(
+    in p_qid int
+)
+begin
+    select *
+    from comment_with_user
+    where qid = p_qid
+    group by cid;
 end //
 delimiter ;
 
@@ -572,13 +604,18 @@ delimiter ;
 drop procedure if exists delete_comment_condition_integer;
 delimiter //
 create procedure delete_comment_condition_integer(
-    in p_int_condition_id int,
-    in p_int_condition int
+    in p_column_name varchar(50),
+    in p_value int
 )
 begin
-    set @query = concat('delete from comment where', p_int_condition_id, '=', p_int_condition);
+    -- 미리 정의된 안전한 컬럼 이름 목록
+    if p_column_name not in ('cid', 'qid') then
+        signal sqlstate '45000' set message_text = 'Invalid column name';
+    end if;
+
+    set @query = concat('delete from comment where', p_column_name, '= ?');
     prepare stmt from @query;
-    execute stmt;
+    execute stmt using p_value;
     deallocate prepare stmt;
 end //
 delimiter ;

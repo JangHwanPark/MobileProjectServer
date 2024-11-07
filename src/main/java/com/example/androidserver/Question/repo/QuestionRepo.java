@@ -1,8 +1,7 @@
 package com.example.androidserver.Question.repo;
-
-import com.example.androidserver.Question.mapper.QuestionRowMapper;
 import com.example.androidserver.Question.mapper.QuestionWithUserRowMapper;
 import com.example.androidserver.Question.model.Question;
+import com.example.androidserver.utils.AbstractRepo;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -13,14 +12,13 @@ import org.springframework.stereotype.Repository;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Log4j2
 @Repository
 @RequiredArgsConstructor
-public class QuestionRepo {
+public class QuestionRepo extends AbstractRepo {
     // JdbcTemplate 주입
     private final JdbcTemplate jdbcTemplate;
     private SimpleJdbcCall createQuestionCall;
@@ -33,7 +31,8 @@ public class QuestionRepo {
     private SimpleJdbcCall selectGreatCountCall;
 
     @PostConstruct
-    private void init() {
+    @Override
+    protected void initJdbcCalls() {
         createQuestionCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("create_question");
         selectQuestionByCategoryCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_question_by_category").returningResultSet("result", new QuestionWithUserRowMapper());;
         selectMyQuestionCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_my_question").returningResultSet("result", new QuestionWithUserRowMapper());;
@@ -159,19 +158,5 @@ public class QuestionRepo {
             log.error("Error occurred while executing stored procedure", e);
             return 0;
         }
-    }
-
-    // 가변 인자 keyValuePairs는 여러 개의 키-값 쌍을 인자로 받을 수 있음
-    // for 루프는 i를 0부터 시작해 2씩 증가시키며 각 반복에서 두 개의 요소(key와 value)를 처리
-    // key는 keyValuePairs[i]로 가져오고, value는 keyValuePairs[i + 1]로 가져와 Map에 추가
-    // 반복이 끝나면 모든 키-값 쌍이 Map에 저장
-    private Map<String, Object> createParamsMap(Object... keyValuePairs) {
-        Map<String, Object> params = new HashMap<>();
-        for (int i = 0; i < keyValuePairs.length; i += 2) {
-            String key = (String) keyValuePairs[i];
-            Object value = keyValuePairs[i + 1];
-            params.put(key, value);
-        }
-        return params;
     }
 }

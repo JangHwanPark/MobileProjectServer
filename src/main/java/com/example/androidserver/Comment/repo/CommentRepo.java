@@ -3,6 +3,7 @@ import com.example.androidserver.Comment.mapper.CommentRowMapper;
 import com.example.androidserver.Comment.model.Comment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -10,6 +11,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentRepo {
     private final JdbcTemplate jdbcTemplate;
+    private SimpleJdbcInsert createCommentCall;
+    private SimpleJdbcInsert updateCommentCall;
+    private SimpleJdbcInsert deleteCommentCall;
+    private SimpleJdbcInsert selectCommentByQuestionIdCall;
 
     // 댓글 저장
     public int createComment(Comment comment) {
