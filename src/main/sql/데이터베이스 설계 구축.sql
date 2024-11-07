@@ -357,20 +357,28 @@ select
     u.email AS user_email,
     u.company as user_company
 from question as q
-    join user as u on q.uid = u.uid;
+         join user as u on q.uid = u.uid;
 
 drop view if exists comment_with_user;
 create view comment_with_user as
-select *
+select
+    c.cid,
+    c.uid,
+    c.qid,
+    c.content,
+    c.createAt,
+    c.updateAt,
+    u.name,
+    u.company
 from comment as c
-join user as u on c.uid = u.uid;
+         join user as u on c.uid = u.uid;
 
 -- Trigger
 -- 질문 삭제시 질문과 연결된 모든 댓글을 삭제하는 트리거
 drop trigger if exists delete_question_comments;
 create trigger delete_question_comments
-after delete on question
-for each row
+    after delete on question
+    for each row
 begin
     delete from comment where qid = OLD.qid;
 end;
@@ -383,15 +391,15 @@ delimiter
 create procedure select_all_data(in tableName varchar (50))
 begin
     set @query = concat('select * from ', tableName);
-    prepare stmt from @query;
-    execute stmt;
-    deallocate prepare stmt;
+prepare stmt from @query;
+execute stmt;
+deallocate prepare stmt;
 end
 //
 delimiter ;
 
 -- 사용자 추가 프로시저
-drop procedure if exists createUser;
+drop procedure if exists create_user;
 delimiter //
 create procedure create_user(
     in p_uid int,
@@ -400,12 +408,12 @@ create procedure create_user(
     in p_password varchar(255),
     in p_interest varchar(100),
     in p_role varchar(50),
-    in p_birth date
-    in p_company varchar(100),
+    in p_birth date,
+    in p_company varchar(100)
 )
 begin
-    insert into user (uid, name, email, password, interest, role, birth)
-    values (p_uid, p_name, p_email, p_password, p_interest, p_role, p_birth);
+insert into user (uid, name, email, password, interest, role, birth, p_company)
+values (p_uid, p_name, p_email, p_password, p_interest, p_role, p_birth, p_company);
 end //
 delimiter ;
 
@@ -416,9 +424,9 @@ create procedure select_uid_by_email(
     in p_email varchar(50)
 )
 begin
-    select uid
-    from user
-    where email = p_email;
+select uid
+from user
+where email = p_email;
 end //
 delimiter ;
 
@@ -435,8 +443,8 @@ CREATE PROCEDURE create_question(
     IN p_updateAt TIMESTAMP
 )
 BEGIN
-    INSERT INTO question (qid, uid, content, category, title, createAt, updateAt, great)
-    VALUES (p_qid, p_uid, p_content, p_category, p_title, p_createAt, p_updateAt, 0);
+INSERT INTO question (qid, uid, content, category, title, createAt, updateAt, great)
+VALUES (p_qid, p_uid, p_content, p_category, p_title, p_createAt, p_updateAt, 0);
 END //
 DELIMITER ;
 
@@ -451,9 +459,9 @@ create procedure update_question(
     IN p_updateAt TIMESTAMP
 )
 begin
-    UPDATE question
-    SET content = p_content, category = p_category, title = p_title, updateAt = p_updateAt
-    WHERE qid = p_qid;
+UPDATE question
+SET content = p_content, category = p_category, title = p_title, updateAt = p_updateAt
+WHERE qid = p_qid;
 end //
 delimiter ;
 
@@ -464,8 +472,8 @@ create procedure delete_question(
     in p_qid int
 )
 begin
-    delete from question
-    where qid = p_qid;
+delete from question
+where qid = p_qid;
 end //
 delimiter ;
 
@@ -476,10 +484,10 @@ create procedure select_question_by_category(
     in p_category varchar(10)
 )
 begin
-    select *
-    from question_with_user
-    where category = p_category
-    group by qid;
+select *
+from question_with_user
+where category = p_category
+group by qid;
 end //
 delimiter ;
 
@@ -490,9 +498,9 @@ create procedure select_my_question(
     in p_uid int
 )
 begin
-    select *
-    from question_with_user
-    where uid = p_uid;
+select *
+from question_with_user
+where uid = p_uid;
 end //
 delimiter ;
 
@@ -500,12 +508,12 @@ delimiter ;
 drop procedure if exists select_question_by_keyword;
 delimiter //
 create procedure select_question_by_keyword(
-    in p_keyword varchar(255),
+    in p_keyword varchar(255)
 )
 begin
-    select *
-    from question
-    where title like concat('%', p_keyword, '%');
+select *
+from question
+where title like concat('%', p_keyword, '%');
 end //
 delimiter ;
 
@@ -516,9 +524,9 @@ create procedure increment_great(
     in p_qid int
 )
 begin
-    update question
-    set great = great + 1
-    where qid = p_qid;
+update question
+set great = great + 1
+where qid = p_qid;
 end //
 delimiter ;
 
@@ -529,9 +537,9 @@ create procedure select_great_count(
     in p_qid int
 )
 begin
-    select great
-    from question
-    where qid = p_qid;
+select great
+from question
+where qid = p_qid;
 end //
 delimiter ;
 
@@ -548,10 +556,10 @@ create procedure create_comment(
     OUT result_code INT
 )
 begin
-    insert into comment (cid, uid, qid, content, createAt, updateAt)
-    values (p_cid, p_uid, p_qid, p_content, p_createAt, p_updateAt);
+insert into comment (cid, uid, qid, content, createAt, updateAt)
+values (p_cid, p_uid, p_qid, p_content, p_createAt, p_updateAt);
 
-    set result_code = ROW_COUNT();
+set result_code = ROW_COUNT();
 end //
 delimiter ;
 
@@ -564,8 +572,8 @@ create procedure delete_comment_condition_integer(
 )
 begin
     set @query = concat('delete from comment where', p_int_condition_id, '=', p_int_condition);
-    prepare stmt from @query;
-    execute stmt;
-    deallocate prepare stmt;
-end
+prepare stmt from @query;
+execute stmt;
+deallocate prepare stmt;
+end //
 delimiter ;

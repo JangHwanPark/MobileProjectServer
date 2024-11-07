@@ -33,7 +33,7 @@ public class CommentRepo {
 
     // 질문별 댓글 불러오기
     public List<Comment> selectCommentByQuestionId(int qid) {
-        String sql = "select * from comment join user on comment.uid = user.uid where comment.qid = ? group by comment.cid";
+        String sql = "select * from comment_with_user where comment.qid = ? group by comment.cid";
         return jdbcTemplate.query(sql, new CommentRowMapper(), qid);
     }
 
