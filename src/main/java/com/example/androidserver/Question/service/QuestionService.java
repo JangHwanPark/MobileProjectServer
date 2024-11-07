@@ -4,7 +4,6 @@ import com.example.androidserver.Question.model.Question;
 import com.example.androidserver.Question.repo.QuestionRepo;
 import com.example.androidserver.infrastructure.utils.JWTUtils;
 import com.example.androidserver.user.repo.UserRepo;
-import com.example.androidserver.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,6 @@ import java.util.List;
 public class QuestionService {
     private final QuestionRepo questionRepo;
     private final UserRepo userRepo;
-    private final UserServiceImpl userService;
     private final JWTUtils utils;
 
     /**
@@ -26,7 +24,7 @@ public class QuestionService {
      * @param question 저장할 질문 객체
      * @return 저장된 질문의 결과 값
      */
-    public boolean createServiceQuestion(Question question, String token) {
+    public boolean createServiceQuestionService(Question question, String token) {
         try {
             String email = utils.getEmail(token);           // 토큰에서 이메일 추출
             Integer uid = userRepo.findUidByEmail(email);   // 이메일로 UID 조회
@@ -35,7 +33,7 @@ public class QuestionService {
                 return false;  // UID를 찾지 못한 경우 실패 처리
             }
             question.setUid(uid);                                 // UID를 Question 객체에 설정
-            return questionRepo.createRepoQuestion(question);     // 질문 저장 로직 호출
+            return questionRepo.createRepoQuestionRepo(question);     // 질문 저장 로직 호출
         } catch (Exception e) {
             log.error("Error occurred in saveQuestion: {}", e.getMessage(), e);
             return false;  // 예외 발생 시 false 반환
@@ -47,11 +45,11 @@ public class QuestionService {
      * @param category 조회할 카테고리
      * @return 카테고리에 해당하는 질문 목록
      */
-    public List<Question> getCategoryQuestions(String category) {
-        return questionRepo.selectQuestionByCategory(category); // 카테고리별 질문 조회
+    public List<Question> getCategoryQuestionsService(String category) {
+        return questionRepo.selectQuestionByCategoryRepo(category); // 카테고리별 질문 조회
     }
 
-    public List<Question> getMyQuestion(int uid) {
+    public List<Question> getMyQuestionService(int uid) {
         return questionRepo.selectMyQuestionRepo(uid);
     }
 
@@ -69,8 +67,8 @@ public class QuestionService {
      * @param question 수정할 질문 객체
      * @return 수정 결과 값 (성공 시 1, 실패 시 0)
      */
-    public int updateQuestion(Question question) {
-        return questionRepo.updateQuestion(question); // 질문 수정 로직 호출
+    public int updateQuestionService(Question question) {
+        return questionRepo.updateQuestionRepo(question); // 질문 수정 로직 호출
     }
 
     /**
@@ -78,13 +76,13 @@ public class QuestionService {
      * @param qid 삭제할 질문의 ID
      * @return 삭제 결과 값 (성공 시 1, 실패 시 0)
      */
-    public int deleteQuestion(int qid) {
-        return questionRepo.deleteQuestion(qid); // 질문 삭제 로직 호출
+    public int deleteQuestionService(int qid) {
+        return questionRepo.deleteQuestionRepo(qid); // 질문 삭제 로직 호출
     }
 
     // 좋아요
-    public int greatQuestion(int qid) {
-        questionRepo.incrementGreat(qid);
-        return questionRepo.getGreatCount(qid);
+    public int greatQuestionService(int qid) {
+        questionRepo.incrementGreatRepo(qid);
+        return questionRepo.getGreatCountRepo(qid);
     }
 }

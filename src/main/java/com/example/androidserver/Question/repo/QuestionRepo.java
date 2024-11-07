@@ -26,7 +26,7 @@ public class QuestionRepo {
     private SimpleJdbcCall createQuestionCall;
     private SimpleJdbcCall selectQuestionByCategoryCall;
     private SimpleJdbcCall selectMyQuestionCall;
-    private SimpleJdbcCall selectQuestionByCategoryOrTitleCall;
+    private SimpleJdbcCall selectQuestionByKeywordCall;
     private SimpleJdbcCall updateQuestionCall;
     private SimpleJdbcCall deleteQuestionCall;
     private SimpleJdbcCall incrementGreatCall;
@@ -35,6 +35,9 @@ public class QuestionRepo {
     @PostConstruct
     private void init() {
         createQuestionCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("create_question");
+        selectQuestionByCategoryCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_question_by_category").returningResultSet("result", new QuestionWithUserRowMapper());;
+        selectMyQuestionCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_my_question").returningResultSet("result", new QuestionWithUserRowMapper());;
+        selectQuestionByKeywordCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_question_by_keyword").returningResultSet("result", new QuestionWithUserRowMapper());;
         updateQuestionCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("update_question");
         deleteQuestionCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("delete_question");
         incrementGreatCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("increment_great");
@@ -42,19 +45,20 @@ public class QuestionRepo {
     }
 
     // 질문을 데이터베이스에 저장하는 메서드
-    public boolean createRepoQuestion(Question question) {
+    public boolean createRepoQuestionRepo(Question question) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formattedCreatedAt = dateFormat.format(question.getCreatedAt());
         String formattedUpdatedAt = dateFormat.format(question.getUpdatedAt());
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("p_qid", question.getQid());
-        params.put("p_uid", question.getUid());
-        params.put("p_content", question.getContent());
-        params.put("p_category", question.getCategory());
-        params.put("p_title", question.getTitle());
-        params.put("p_createAt", Timestamp.valueOf(formattedCreatedAt));
-        params.put("p_updateAt", Timestamp.valueOf(formattedUpdatedAt));
+        Map<String, Object> params = createParamsMap(
+                "p_qid", question.getQid(),
+                "p_uid", question.getUid(),
+                "p_content", question.getContent(),
+                "p_category", question.getCategory(),
+                "p_title", question.getTitle(),
+                "p_createAt", Timestamp.valueOf(formattedCreatedAt),
+                "p_updateAt", Timestamp.valueOf(formattedUpdatedAt)
+        );
 
         try {
             createQuestionCall.execute(params);
@@ -66,16 +70,17 @@ public class QuestionRepo {
     }
 
     // 질문 수정
-    public int updateQuestion(Question question) {
+    public int updateQuestionRepo(Question question) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formattedUpdatedAt = dateFormat.format(question.getUpdatedAt());
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("p_qid", question.getQid());
-        params.put("p_content", question.getContent());
-        params.put("p_category", question.getCategory());
-        params.put("p_title", question.getTitle());
-        params.put("p_updateAt", Timestamp.valueOf(formattedUpdatedAt));
+        Map<String, Object> params = createParamsMap(
+                "p_qid", question.getQid(),
+                "p_content", question.getContent(),
+                "p_category", question.getCategory(),
+                "p_title", question.getTitle(),
+                "p_updateAt", Timestamp.valueOf(formattedUpdatedAt)
+        );
 
         try {
             updateQuestionCall.execute(params);
@@ -87,9 +92,8 @@ public class QuestionRepo {
     }
 
     // 질문 삭제
-    public int deleteQuestion(int qid) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("p_qid", qid);
+    public int deleteQuestionRepo(int qid) {
+        Map<String, Object> params = createParamsMap("p_qid", qid);
 
         try {
             deleteQuestionCall.execute(params);
@@ -101,13 +105,8 @@ public class QuestionRepo {
     }
 
     // 카테고리별 데이터 조회
-    public List<Question> selectQuestionByCategory(String category) {
-        SimpleJdbcCall selectQuestionByCategoryCall = new SimpleJdbcCall(jdbcTemplate)
-                .withProcedureName("select_question_by_category")
-                .returningResultSet("result", new QuestionWithUserRowMapper());
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("p_category", category);
+    public List<Question> selectQuestionByCategoryRepo(String category) {
+        Map<String, Object> params = createParamsMap("p_category", category);
 
         try {
             Map<String, Object> result = selectQuestionByCategoryCall.execute(params);
@@ -120,12 +119,7 @@ public class QuestionRepo {
 
     // 특정 사용자별 데이터 조회
     public List<Question> selectMyQuestionRepo(int uid) {
-        SimpleJdbcCall selectMyQuestionCall = new SimpleJdbcCall(jdbcTemplate)
-                .withProcedureName("select_my_question")
-                .returningResultSet("result", new QuestionWithUserRowMapper());
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("p_uid", uid);
+        Map<String, Object> params = createParamsMap("p_uid", uid);
 
         try {
             Map<String, Object> result = selectMyQuestionCall.execute(params);
@@ -138,15 +132,10 @@ public class QuestionRepo {
 
     // 질문 검색
     public List<Question> selectQuestionByKeywordRepo(String keyword) {
-        SimpleJdbcCall selectQuestionByCategoryAndTitleCall = new SimpleJdbcCall(jdbcTemplate)
-                .withProcedureName("select_question_by_keyword")
-                .returningResultSet("result", new QuestionRowMapper());
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("p_keyword", keyword);
+        Map<String, Object> params = createParamsMap("p_keyword", keyword);
 
         try {
-            Map<String, Object> result = selectQuestionByCategoryAndTitleCall.execute(params);
+            Map<String, Object> result = selectQuestionByKeywordCall.execute(params);
             return (List<Question>) result.get("result");
         } catch (Exception e) {
             log.error("Error occurred while executing stored procedure 'select_question_by_keyword'", e);
@@ -155,17 +144,14 @@ public class QuestionRepo {
     }
 
     // 좋아요 수 증가
-    public void incrementGreat(int qid) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("p_qid", qid);
+    public void incrementGreatRepo(int qid) {
+        Map<String, Object> params = createParamsMap("p_qid", qid);
         incrementGreatCall.execute(params);
     }
 
     // 좋아요 수 조회
-    public int getGreatCount(int qid) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("p_qid", qid);
-
+    public int getGreatCountRepo(int qid) {
+        Map<String, Object> params = createParamsMap("p_qid", qid);
         try {
             selectGreatCountCall.execute(params);
             return 1;
@@ -173,5 +159,19 @@ public class QuestionRepo {
             log.error("Error occurred while executing stored procedure", e);
             return 0;
         }
+    }
+
+    // 가변 인자 keyValuePairs는 여러 개의 키-값 쌍을 인자로 받을 수 있음
+    // for 루프는 i를 0부터 시작해 2씩 증가시키며 각 반복에서 두 개의 요소(key와 value)를 처리
+    // key는 keyValuePairs[i]로 가져오고, value는 keyValuePairs[i + 1]로 가져와 Map에 추가
+    // 반복이 끝나면 모든 키-값 쌍이 Map에 저장
+    private Map<String, Object> createParamsMap(Object... keyValuePairs) {
+        Map<String, Object> params = new HashMap<>();
+        for (int i = 0; i < keyValuePairs.length; i += 2) {
+            String key = (String) keyValuePairs[i];
+            Object value = keyValuePairs[i + 1];
+            params.put(key, value);
+        }
+        return params;
     }
 }
