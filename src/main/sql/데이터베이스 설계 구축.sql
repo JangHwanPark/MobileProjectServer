@@ -359,6 +359,12 @@ select
 from question as q
     join user as u on q.uid = u.uid;
 
+drop view if exists comment_with_user;
+create view comment_with_user as
+select *
+from comment as c
+join user as u on c.uid = u.uid;
+
 -- Trigger
 -- 질문 삭제시 질문과 연결된 모든 댓글을 삭제하는 트리거
 drop trigger if exists delete_question_comments;
@@ -371,37 +377,50 @@ end;
 
 -- Procedure
 -- 동적 테이블 조회
-drop procedure if exists selectAllData;
+drop procedure if exists select_all_data;
 delimiter
 //
-create procedure selectAllData(in tableName varchar (50))
+create procedure select_all_data(in tableName varchar (50))
 begin
-    set
-@query = concat('select * from ', tableName);
-prepare stmt from @query;
-execute stmt;
-deallocate prepare stmt;
+    set @query = concat('select * from ', tableName);
+    prepare stmt from @query;
+    execute stmt;
+    deallocate prepare stmt;
 end
 //
 delimiter ;
 
 -- 사용자 추가 프로시저
 drop procedure if exists createUser;
-DELIMITER //
-CREATE PROCEDURE create_user(
-    IN p_uid INT,
-    IN p_name VARCHAR(100),
-    IN p_email VARCHAR(100),
-    IN p_password VARCHAR(255),
-    IN p_interest VARCHAR(100),
-    IN p_role VARCHAR(50),
-    IN p_birth DATE
+delimiter //
+create procedure create_user(
+    in p_uid int,
+    in p_name varchar(100),
+    in p_email varchar(100),
+    in p_password varchar(255),
+    in p_interest varchar(100),
+    in p_role varchar(50),
+    in p_birth date
+    in p_company varchar(100),
 )
-BEGIN
-    INSERT INTO user (uid, name, email, password, interest, role, birth)
-    VALUES (p_uid, p_name, p_email, p_password, p_interest, p_role, p_birth);
-END //
-DELIMITER ;
+begin
+    insert into user (uid, name, email, password, interest, role, birth)
+    values (p_uid, p_name, p_email, p_password, p_interest, p_role, p_birth);
+end //
+delimiter ;
+
+-- 이메일을 사용한 사용자 uid 조회
+drop procedure if exists select_uid_by_email;
+delimiter //
+create procedure select_uid_by_email(
+    in p_email varchar(50)
+)
+begin
+    select uid
+    from user
+    where email = p_email;
+end //
+delimiter ;
 
 -- 질문 등록 프로시저
 drop procedure if exists createQuestion;
@@ -534,4 +553,19 @@ begin
 
     set result_code = ROW_COUNT();
 end //
+delimiter ;
+
+-- 코멘트 삭제 (동적 쿼리)
+drop procedure if exists delete_comment_condition_integer;
+delimiter //
+create procedure delete_comment_condition_integer(
+    in p_int_condition_id int,
+    in p_int_condition int
+)
+begin
+    set @query = concat('delete from comment where', p_int_condition_id, '=', p_int_condition);
+    prepare stmt from @query;
+    execute stmt;
+    deallocate prepare stmt;
+end
 delimiter ;
