@@ -4,7 +4,6 @@ import com.example.androidserver.Question.model.Question;
 import com.example.androidserver.Question.repo.QuestionRepo;
 import com.example.androidserver.infrastructure.utils.JWTUtils;
 import com.example.androidserver.user.repo.UserRepo;
-import com.example.androidserver.user.service.UserService;
 import com.example.androidserver.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -23,16 +22,24 @@ public class QuestionService {
 
     /**
      * 새로운 질문을 저장하는 메서드
+     *
      * @param question 저장할 질문 객체
      * @return 저장된 질문의 결과 값
      */
-    public int saveQuestion(Question question, String token) {
-        String email = utils.getEmail(token);           // 토큰에서 이메일 추출
-        Integer uid = userRepo.findUidByEmail(email);   // 이메일로 UID 조회
-        question.setUid(uid);                           // UID를 Question 객체에 설정
-
-        // 질문 저장 로직 호출
-        return questionRepo.saveQuestion(question);
+    public boolean createServiceQuestion(Question question, String token) {
+        try {
+            String email = utils.getEmail(token);           // 토큰에서 이메일 추출
+            Integer uid = userRepo.findUidByEmail(email);   // 이메일로 UID 조회
+            if (uid == null) {
+                log.error("UID not found for email: {}", email);
+                return false;  // UID를 찾지 못한 경우 실패 처리
+            }
+            question.setUid(uid);                                 // UID를 Question 객체에 설정
+            return questionRepo.createRepoQuestion(question);     // 질문 저장 로직 호출
+        } catch (Exception e) {
+            log.error("Error occurred in saveQuestion: {}", e.getMessage(), e);
+            return false;  // 예외 발생 시 false 반환
+        }
     }
 
     /**

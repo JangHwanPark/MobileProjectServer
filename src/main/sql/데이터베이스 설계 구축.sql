@@ -332,6 +332,32 @@ VALUES (null, 1, 1, '좋은 정보 감사합니다.', '2024-04-11', '2024-04-11'
        (null, 14, 37, '감사합니다.', '2024-05-17', '2024-05-17'),
        (null, 15, 38, '더 많은 정보 부탁드려요.', '2024-05-18', '2024-05-18');
 
+-- View
+drop view if exists question_with_user;
+create view question_with_user as
+select
+    q.qid,
+    q.uid,
+    q.content,
+    q.category,
+    q.title,
+    q.createAt,
+    q.updateAt,
+    q.great,
+    u.name AS user_name,
+    u.email AS user_email
+from question as q
+    join user as u on q.uid = u.uid;
+
+-- Trigger
+-- 질문 삭제시 질문과 연결된 모든 댓글을 삭제하는 트리거
+drop trigger if exists delete_question_comments;
+create trigger delete_question_comments
+alter delete on question
+for each row
+begin
+    delete from comment where qid = OLD.qid;
+end;
 
 -- Procedure
 -- 동적 테이블 조회
@@ -352,7 +378,7 @@ delimiter ;
 -- 사용자 추가 프로시저
 drop procedure if exists createUser;
 DELIMITER //
-CREATE PROCEDURE createUser(
+CREATE PROCEDURE create_user(
     IN p_uid INT,
     IN p_name VARCHAR(100),
     IN p_email VARCHAR(100),
@@ -370,7 +396,7 @@ DELIMITER ;
 -- 질문 등록 프로시저
 drop procedure if exists createQuestion;
 DELIMITER //
-CREATE PROCEDURE createQuestion(
+CREATE PROCEDURE create_question(
     IN p_qid INT,
     IN p_uid INT,
     IN p_content TEXT,
@@ -385,10 +411,65 @@ BEGIN
 END //
 DELIMITER ;
 
--- 코멘트 추가 프로시저
-drop procedure if exists createComment;
+-- 질문 수정 프로시저
+drop procedure if exists update_question;
 delimiter //
-create procedure createComment(
+create procedure update_question(
+    IN p_qid INT,
+    IN p_content TEXT,
+    IN p_category VARCHAR(50),
+    IN p_title VARCHAR(255),
+    IN p_updateAt TIMESTAMP
+)
+begin
+    UPDATE question
+    SET content = p_content, category = p_category, title = p_title, updateAt = p_updateAt
+    WHERE qid = p_qid;
+end //
+delimiter ;
+
+-- 질문 삭제 프로시저
+drop procedure if exists delete_question;
+delimiter //
+create procedure delete_question(
+    in p_qid int
+)
+begin
+    delete from question
+    where qid = p_qid;
+end //
+delimiter ;
+
+-- 좋아요 수 증가
+drop procedure if exists increment_great;
+delimiter //
+create procedure increment_great(
+    in p_qid int
+)
+begin
+    update question
+    set great = great + 1
+    where qid = p_qid;
+end //
+delimiter ;
+
+-- 좋아요 수 조회
+drop procedure if exists select_great_count;
+delimiter //
+create procedure select_great_count(
+    in p_qid int
+)
+begin
+    select great
+    from question
+    where qid = p_qid;
+end //
+delimiter ;
+
+-- 코멘트 추가
+drop procedure if exists create_comment;
+delimiter //
+create procedure create_comment(
     IN p_cid INT,
     IN p_uid INT,
     IN p_qid INT,

@@ -31,7 +31,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
     // 권한이 필요한 요청을 보낼때 헤더에 a-project-token을 넣어서 보내야함
     String token = request.getHeader("a-project-token");
-    logger.info(String.format("Received token: %s", token)); // 대체 방식
+    // logger.info(String.format("Received token: %s", token)); // 대체 방식
 
     if(token == null) {
       filterChain.doFilter(request, response);

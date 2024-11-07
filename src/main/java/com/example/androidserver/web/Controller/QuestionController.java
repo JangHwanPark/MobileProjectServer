@@ -5,6 +5,8 @@ import com.example.androidserver.Question.model.Question;
 import com.example.androidserver.Question.service.QuestionService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,11 +21,15 @@ public class QuestionController {
 
     // 질문 저장
     @PostMapping("/post/save")
-    public String saveQuestion(
+    public ResponseEntity<String> createControllerQuestion(
             @RequestHeader("Authorization") String token,
             @RequestBody Question question) {
-        int result = questionService.saveQuestion(question, token);
-        return result == 1 ? "successfully!" : "Failed";
+        boolean result = questionService.createServiceQuestion(question, token);
+        if (result) {
+            return ResponseEntity.ok("Question saved successfully!");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save question");
+        }
     }
 
     // 질문 수정
@@ -34,9 +40,17 @@ public class QuestionController {
 
     // 질문 삭제
     @PostMapping("/post/{qid}/delete")
-    public int deleteQuestion(@PathVariable int qid) {
-        commentService.deleteAllComment(qid);
-        return questionService.deleteQuestion(qid);
+    public ResponseEntity<String> deleteQuestion(@PathVariable int qid) {
+        // 모든 관련 댓글 삭제
+        int commentResult = commentService.deleteAllComment(qid);
+
+        // 질문 삭제 로직
+        int questionResult = questionService.deleteQuestion(qid);
+        if (commentResult == 1 && questionResult == 1) {
+            return ResponseEntity.ok("Question deleted successfully!");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete question");
+        }
     }
 
     // 카테고리가 질문하기인 데이터 출력
