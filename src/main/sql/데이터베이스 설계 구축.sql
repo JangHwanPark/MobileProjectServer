@@ -332,6 +332,15 @@ VALUES (null, 1, 1, '좋은 정보 감사합니다.', '2024-04-11', '2024-04-11'
        (null, 14, 37, '감사합니다.', '2024-05-17', '2024-05-17'),
        (null, 15, 38, '더 많은 정보 부탁드려요.', '2024-05-18', '2024-05-18');
 
+-- 카테고리별 조회에 대한 인덱스
+create index idx_question_category on question (category);
+
+-- 사용자별 조회에 대한 인덱스
+create index idx_question_uid on question (uid);
+
+-- 제목 검색에 대한 인덱스
+create index idx_question_title on question (title);
+
 -- View
 drop view if exists question_with_user;
 create view question_with_user as
@@ -353,7 +362,7 @@ from question as q
 -- 질문 삭제시 질문과 연결된 모든 댓글을 삭제하는 트리거
 drop trigger if exists delete_question_comments;
 create trigger delete_question_comments
-alter delete on question
+after delete on question
 for each row
 begin
     delete from comment where qid = OLD.qid;
@@ -437,6 +446,47 @@ create procedure delete_question(
 begin
     delete from question
     where qid = p_qid;
+end //
+delimiter ;
+
+-- 카테고리별 데이터 조회
+drop procedure if exists select_question_by_category;
+delimiter //
+create procedure select_question_by_category(
+    in p_category varchar(10)
+)
+begin
+    select *
+    from question_with_user
+    where category = p_category
+    group by qid;
+end //
+delimiter ;
+
+-- 특정 사용자별 데이터 조회
+drop procedure if exists select_my_question;
+delimiter //
+create procedure select_my_question(
+    in p_uid int
+)
+begin
+    select *
+    from question_with_user
+    where uid = p_uid;
+end //
+delimiter ;
+
+-- 카테고리와 제목 검색
+drop procedure if exists select_question_by_category_and_title;
+delimiter //
+create procedure select_question_by_category_and_title(
+    in p_category varchar(10),
+    in p_title varchar(255)
+)
+begin
+    select *
+    from question
+    where category = p_category or title = p_title;
 end //
 delimiter ;
 
