@@ -30,6 +30,7 @@ public class UserRepo extends AbstractRepo {
     private SimpleJdbcCall findUidByEmailCall;
 
     @PostConstruct
+    @Override
     protected void initJdbcCalls() {
         registerUserCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("create_user");
         selectAllUsersCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_all_data").returningResultSet("result", new UserRowMapper());
@@ -38,8 +39,6 @@ public class UserRepo extends AbstractRepo {
 
     // 회원가입
     public int registerUserRepo(User user) {
-        String encodedPassword = encoder.encode(user.getPassword());
-
         // 생년월일 String을 Date로 변환
         Date sqlBirthDate;
         try {

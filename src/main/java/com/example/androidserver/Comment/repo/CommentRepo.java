@@ -24,10 +24,10 @@ public class CommentRepo extends AbstractRepo {
     @PostConstruct
     @Override
     protected void initJdbcCalls() {
-        createCommentCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("create_comment");
-        updateCommentCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("update_comment");
-        deleteCommentCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("delete_comment_condition_integer").returningResultSet("result", new CommentRowMapper());
-        selectCommentByQuestionIdCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_comment_by_question_id");
+        createCommentCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("create_comment");
+        // updateCommentCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("update_comment");
+        // deleteCommentCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("delete_comment_condition_integer").returningResultSet("result", new CommentRowMapper());
+        // selectCommentByQuestionIdCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_comment_by_question_id");
     }
 
     // 댓글 저장
@@ -46,6 +46,7 @@ public class CommentRepo extends AbstractRepo {
                 "p_createAt", comment.getCreateAt(),
                 "p_updateAt", comment.getUpdateAt()
         );
+        log.info("params => " + params);
 
         try {
             createCommentCall.execute(params);
@@ -64,7 +65,7 @@ public class CommentRepo extends AbstractRepo {
 
     // 질문별 댓글 불러오기
     public List<Comment> selectCommentByQuestionId(int qid) {
-        String sql = "select * from comment_with_user where comment.qid = ? group by comment.cid";
+        String sql = "select * from comment_with_user where qid = ? group by cid";
         return jdbcTemplate.query(sql, new CommentRowMapper(), qid);
     }
 
