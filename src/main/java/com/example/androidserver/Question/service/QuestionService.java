@@ -27,7 +27,7 @@ public class QuestionService {
     public boolean createServiceQuestionService(Question question, String token) {
         try {
             String email = utils.getEmail(token);           // 토큰에서 이메일 추출
-            Integer uid = userRepo.findUidByEmail(email);   // 이메일로 UID 조회
+            Integer uid = userRepo.findUidByEmailRepo(email);   // 이메일로 UID 조회
             if (uid == null) {
                 log.error("UID not found for email: {}", email);
                 return false;  // UID를 찾지 못한 경우 실패 처리

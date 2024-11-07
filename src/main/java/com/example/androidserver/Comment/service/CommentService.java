@@ -22,7 +22,7 @@ public class CommentService {
 
     public int createComment(Comment comment, String token) {
         String email = utils.getEmail(token);
-        Integer uid = userRepo.findUidByEmail(email);
+        Integer uid = userRepo.findUidByEmailRepo(email);
         comment.setUid(uid);
         return commentRepo.createComment(comment);
     }

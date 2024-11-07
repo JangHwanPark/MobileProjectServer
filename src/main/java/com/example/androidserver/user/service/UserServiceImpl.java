@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
   private final JWTUtils util;
 
   @Override
-  public User getUserByEmail(String email) {
+  public User getUserByEmailService(String email) {
     return repository.
             findByEmail(email).orElseThrow(() ->
                     new ProjectException(
@@ -35,16 +35,16 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User getUser(String token) {
+  public User getUserService(String token) {
     String email = util.getEmail(token);
-    return getUserByEmail(email);
+    return getUserByEmailService(email);
   }
 
-  public int registerUser(User user) {
-    return userRepo.registerUser(user);
+  public int registerUserService(User user) {
+    return userRepo.registerUserRepo(user);
   }
 
-  public List<User> selectAllUser() {
-    return userRepo.selectAllUsers();
+  public List<User> selectAllUserService() {
+    return userRepo.selectAllUsersRepo();
   }
 }
