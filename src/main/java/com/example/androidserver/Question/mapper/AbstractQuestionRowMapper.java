@@ -20,7 +20,7 @@ public abstract class AbstractQuestionRowMapper implements RowMapper<Question> {
     private Question mapCommonFields(ResultSet rs) throws SQLException {
         Question question = new Question();
         question.setQid(rs.getInt("qid"));
-        question.setUid(rs.getInt("uid"));
+        question.setUid(rs.getLong("uid"));
         question.setTitle(rs.getString("title"));
         question.setContent(rs.getString("content"));
         question.setCategory(rs.getString("category"));

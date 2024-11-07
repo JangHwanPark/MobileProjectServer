@@ -4,6 +4,7 @@ import com.example.androidserver.user.model.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Date;
 
@@ -11,10 +12,11 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
+@ToString
 public class Comment {
     @Id
     private int cid;
-    private int uid;
+    private Long uid;
     private int qid;
     private String content;
     private Date createAt;

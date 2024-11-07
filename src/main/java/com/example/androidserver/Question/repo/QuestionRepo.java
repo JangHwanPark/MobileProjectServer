@@ -34,9 +34,9 @@ public class QuestionRepo extends AbstractRepo {
     @Override
     protected void initJdbcCalls() {
         createQuestionCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("create_question");
-        selectQuestionByCategoryCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_question_by_category").returningResultSet("result", new QuestionWithUserRowMapper());;
-        selectMyQuestionCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_my_question").returningResultSet("result", new QuestionWithUserRowMapper());;
-        selectQuestionByKeywordCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_question_by_keyword").returningResultSet("result", new QuestionWithUserRowMapper());;
+        selectQuestionByCategoryCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_question_by_category").returningResultSet("result", new QuestionWithUserRowMapper());
+        selectMyQuestionCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_my_question").returningResultSet("result", new QuestionWithUserRowMapper());
+        selectQuestionByKeywordCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_question_by_keyword").returningResultSet("result", new QuestionWithUserRowMapper());
         updateQuestionCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("update_question");
         deleteQuestionCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("delete_question");
         incrementGreatCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("increment_great");

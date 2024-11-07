@@ -23,8 +23,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByEmailService(String email) {
-        return repository.
-                findByEmail(email).orElseThrow(() ->
+        return repository.findByEmail(email).orElseThrow(() ->
                         new ProjectException(
                                 HttpStatus.NOT_FOUND,
                                 ProjectExceptionCode.NOT_FOUND_USER));

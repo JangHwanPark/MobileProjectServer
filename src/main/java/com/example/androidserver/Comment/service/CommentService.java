@@ -5,10 +5,12 @@ import com.example.androidserver.Comment.repo.CommentRepo;
 import com.example.androidserver.infrastructure.utils.JWTUtils;
 import com.example.androidserver.user.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -22,8 +24,11 @@ public class CommentService {
 
     public int createComment(Comment comment, String token) {
         String email = utils.getEmail(token);
-        Integer uid = userRepo.findUidByEmailRepo(email);
+        Long uid = userRepo.findUidByEmailRepo(email);
         comment.setUid(uid);
+        log.info("createComment: " + comment.toString());
+        log.info("createComment uid: " + uid);
+        log.info("createComment email: " + email);
         return commentRepo.createComment(comment);
     }
 

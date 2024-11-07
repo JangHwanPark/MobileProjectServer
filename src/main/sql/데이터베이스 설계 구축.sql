@@ -561,13 +561,11 @@ create procedure create_comment(
     IN p_qid INT,
     IN p_content TEXT,
     IN p_createAt TIMESTAMP,
-    IN p_updateAt TIMESTAMP,
-    OUT result_code INT
+    IN p_updateAt TIMESTAMP
 )
 begin
     insert into comment (cid, uid, qid, content, createAt, updateAt)
     values (p_cid, p_uid, p_qid, p_content, p_createAt, p_updateAt);
-    set result_code = ROW_COUNT();
 end //
 delimiter ;
 

@@ -5,6 +5,7 @@ import com.example.androidserver.user.model.User;
 import com.example.androidserver.utils.AbstractRepo;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+@Log4j2
 @Repository
 @RequiredArgsConstructor
 public class UserRepo extends AbstractRepo {
@@ -82,12 +84,26 @@ public class UserRepo extends AbstractRepo {
     }
 
     // 이메일로 사용자 UID 조회
-    public Integer findUidByEmailRepo(String email) {
+    // tlqkf 왜 null 이 뜨냐 프로시저는 잘돌아가는데
+    public Long findUidByEmailRepo(String email) {
         Map<String, Object> params = createParamsMap("p_email", email);
+        log.info("findUidByEmailRepo email: " + email);
+        log.info("findUidByEmailRepo: " + params);
 
         try {
             Map<String, Object> result = findUidByEmailCall.execute(params);
-            return (Integer) result.get("uid");
+            log.info("findUidByEmailRepo result keys: " + result.keySet());
+            // 결과가 #result-set-1에 있을 경우 처리
+            List<Map<String, Object>> resultSet = (List<Map<String, Object>>) result.get("#result-set-1");
+
+            if (resultSet != null && !resultSet.isEmpty()) {
+                Long uid = ((Number) resultSet.get(0).get("uid")).longValue(); // 형 변환
+                log.info("findUidByEmailRepo uid: " + uid);
+                return uid;
+            } else {
+                log.warn("No result found for email: " + email);
+                return null;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return null; // 예외 발생 시 null 반환

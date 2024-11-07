@@ -10,7 +10,7 @@ import java.util.Date;
 @Setter
 public class Question {
     private int qid;
-    private int uid;
+    private Long uid;
     private String title;
     private String content;
     private String category;
