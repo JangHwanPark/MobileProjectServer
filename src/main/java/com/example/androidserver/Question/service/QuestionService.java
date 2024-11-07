@@ -52,17 +52,16 @@ public class QuestionService {
     }
 
     public List<Question> getMyQuestion(int uid) {
-        return questionRepo.getMyQuestion(uid);
+        return questionRepo.selectMyQuestionRepo(uid);
     }
 
     /**
      * 카테고리와 제목을 기반으로 질문을 검색하는 메서드
-     * @param category 질문의 카테고리
-     * @param title 질문의 제목
+     * @param keyword 사용자가 입력한 데이터
      * @return 카테고리와 제목에 맞는 질문 목록
      */
-    public List<Question> searchQuestionsByCategoryAndTitle(String category, String title) {
-        return questionRepo.selectQuestionByCategoryAndTitle(category, title); // 카테고리와 제목을 기반으로 질문 검색
+    public List<Question> searchQuestionsByKeywordService(String keyword) {
+        return questionRepo.selectQuestionByKeywordRepo(keyword); // 카테고리와 제목을 기반으로 질문 검색
     }
 
     /**

@@ -65,6 +65,12 @@ public class QuestionController {
         return questionService.getCategoryQuestions("자유 게시판");
     }
 
+    // 카테고리 또는 질문을 사용하여 데이터 검색
+    @PostMapping("/post/{keyword}/question")
+    public List<Question> searchQuestionsByKeywordController(@PathVariable String keyword) {
+        return questionService.searchQuestionsByKeywordService(keyword);
+    }
+
     // 특정 사용자가 작성한 데이터 출력
     @GetMapping("/get/my-post/{uid}")
     public List<Question> getMyQuestion(@PathVariable int uid) {

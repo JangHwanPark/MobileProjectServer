@@ -354,7 +354,8 @@ select
     q.updateAt,
     q.great,
     u.name AS user_name,
-    u.email AS user_email
+    u.email AS user_email,
+    u.company as user_company
 from question as q
     join user as u on q.uid = u.uid;
 
@@ -477,16 +478,15 @@ end //
 delimiter ;
 
 -- 카테고리와 제목 검색
-drop procedure if exists select_question_by_category_and_title;
+drop procedure if exists select_question_by_keyword;
 delimiter //
-create procedure select_question_by_category_and_title(
-    in p_category varchar(10),
-    in p_title varchar(255)
+create procedure select_question_by_keyword(
+    in p_keyword varchar(255),
 )
 begin
     select *
     from question
-    where category = p_category or title = p_title;
+    where title like concat('%', p_keyword, '%');
 end //
 delimiter ;
 

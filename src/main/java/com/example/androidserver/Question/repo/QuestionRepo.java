@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,9 @@ public class QuestionRepo {
     // JdbcTemplate 주입
     private final JdbcTemplate jdbcTemplate;
     private SimpleJdbcCall createQuestionCall;
+    private SimpleJdbcCall selectQuestionByCategoryCall;
+    private SimpleJdbcCall selectMyQuestionCall;
+    private SimpleJdbcCall selectQuestionByCategoryOrTitleCall;
     private SimpleJdbcCall updateQuestionCall;
     private SimpleJdbcCall deleteQuestionCall;
     private SimpleJdbcCall incrementGreatCall;
@@ -98,20 +102,56 @@ public class QuestionRepo {
 
     // 카테고리별 데이터 조회
     public List<Question> selectQuestionByCategory(String category) {
-        String sql = "select * from question as q join user as u on q.uid = u.uid where q.category = ? group by q.qid";
-        return jdbcTemplate.query(sql, new QuestionWithUserRowMapper(), category);
+        SimpleJdbcCall selectQuestionByCategoryCall = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("select_question_by_category")
+                .returningResultSet("result", new QuestionWithUserRowMapper());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("p_category", category);
+
+        try {
+            Map<String, Object> result = selectQuestionByCategoryCall.execute(params);
+            return (List<Question>) result.get("result");
+        } catch (Exception e) {
+            log.error("Error occurred while executing stored procedure 'select_question_by_category'", e);
+            return new ArrayList<>(); // 예외 발생 시 빈 리스트 반환
+        }
     }
 
     // 특정 사용자별 데이터 조회
-    public List<Question> getMyQuestion(int uid) {
-        String sql = "select * from question join user on question.uid = user.uid where question.uid = ?";
-        return jdbcTemplate.query(sql, new QuestionWithUserRowMapper(), uid);
+    public List<Question> selectMyQuestionRepo(int uid) {
+        SimpleJdbcCall selectMyQuestionCall = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("select_my_question")
+                .returningResultSet("result", new QuestionWithUserRowMapper());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("p_uid", uid);
+
+        try {
+            Map<String, Object> result = selectMyQuestionCall.execute(params);
+            return (List<Question>) result.get("result");
+        } catch (Exception e) {
+            log.error("Error occurred while executing stored procedure 'select_my_question'", e);
+            return new ArrayList<>(); // 예외 발생 시 빈 리스트 반환
+        }
     }
 
     // 질문 검색
-    public List<Question> selectQuestionByCategoryAndTitle(String category, String title) {
-        String sql = "SELECT * FROM question WHERE category = ? AND title = ?";
-        return jdbcTemplate.query(sql, new QuestionRowMapper(), category, title);
+    public List<Question> selectQuestionByKeywordRepo(String keyword) {
+        SimpleJdbcCall selectQuestionByCategoryAndTitleCall = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("select_question_by_keyword")
+                .returningResultSet("result", new QuestionRowMapper());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("p_keyword", keyword);
+
+        try {
+            Map<String, Object> result = selectQuestionByCategoryAndTitleCall.execute(params);
+            return (List<Question>) result.get("result");
+        } catch (Exception e) {
+            log.error("Error occurred while executing stored procedure 'select_question_by_keyword'", e);
+            return new ArrayList<>(); // 예외 발생 시 빈 리스트 반환
+        }
     }
 
     // 좋아요 수 증가

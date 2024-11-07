@@ -11,8 +11,8 @@ public class QuestionWithUserRowMapper extends AbstractQuestionRowMapper {
     @Override
     protected void mapAdditionalFields(ResultSet rs, Question question) throws SQLException {
         User user = new User();
-        user.setName(rs.getString("name"));
-        user.setCompany(rs.getString("company"));
+        user.setName(rs.getString("user_name"));
+        user.setCompany(rs.getString("user_company"));
         question.setAuthor(user);
     }
 }
