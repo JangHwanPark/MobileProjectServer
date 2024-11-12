@@ -1,9 +1,9 @@
 drop
-    database elk;
+database elk;
 create
-    database elk;
+database elk;
 use
-    elk;
+elk;
 
 create table user
 (
@@ -49,19 +49,17 @@ create table tag
     tname varchar(30)
 );
 
-create table answer
+create table question_tag
 (
-    ansid    int auto_increment primary key,
-    qid      int,
-    uid      int,
-    content  varchar(255),
-    createAt date,
+    qid int,
+    tid int,
+    primary key(tid, qid),
     foreign key (qid) references question (qid),
-    foreign key (uid) references user (uid)
-);
+    foreign key (tid) references tag (tid)
+)
 
 -- 사용자
-INSERT INTO user (uid, name, email, password, interest, company, role, birth)
+    INSERT INTO user (uid, name, email, password, interest, company, role, birth)
 VALUES (null, 'account1', 'user1@example.com', 'password1', '프로그래밍', 'CompanyA', 'admin', '1990-01-01'),
        (null, 'account2', 'user2@example.com', 'password2', '인공지능', 'CompanyB', 'customer', '1992-02-02'),
        (null, 'account3', 'user3@example.com', 'password3', '빅데이터', 'CompanyC', 'admin', '1994-03-03'),
@@ -227,7 +225,8 @@ VALUES (null, 1, '프로그래밍', '자바 기초 질문', '자바 변수 선�
        (null, 37, '백엔드', 'JWT 토큰의 작동 원리', 'JWT 토큰이 어떻게 작동하는지 알고 싶습니다.', '자유 게시판', '2024-04-07', '2024-04-07', 0),
        (null, 38, '컴퓨터 그래픽스', '2D와 3D 렌더링의 차이', '2D와 3D 렌더링의 차이를 알고 싶습니다.', '질문답변', '2024-04-08', '2024-04-08', 0),
        (null, 39, '프로그래밍', '파이썬에서 멀티스레드 구현', '파이썬에서 멀티스레드를 구현하는 방법을 알고 싶습니다.', '질문답변', '2024-04-09', '2024-04-09', 0),
-       (null, 40, '운영체제', '스케줄링 알고리즘의 종류', '운영체제에서 사용하는 스케줄링 알고리즘에 대해 알고 싶습니다.', '자유 게시판', '2024-04-10', '2024-04-10', 0);
+       (null, 40, '운영체제', '스케줄링 알고리즘의 종류', '운영체제에서 사용하는 스케줄링 알고리즘에 대해 알고 싶습니다.', '자유 게시판', '2024-04-10', '2024-04-10',
+        0);
 
 -- 태그 추가
 insert into tag (tid, tname)
@@ -350,32 +349,30 @@ create index idx_comment_uid on comment (uid);
 -- View
 drop view if exists question_with_user;
 create view question_with_user as
-select
-    q.qid,
-    q.uid,
-    q.content,
-    q.category,
-    q.title,
-    q.createAt,
-    q.updateAt,
-    q.great,
-    u.name AS user_name,
-    u.email AS user_email,
-    u.company as user_company
+select q.qid,
+       q.uid,
+       q.content,
+       q.category,
+       q.title,
+       q.createAt,
+       q.updateAt,
+       q.great,
+       u.name    AS user_name,
+       u.email   AS user_email,
+       u.company as user_company
 from question as q
          join user as u on q.uid = u.uid;
 
 drop view if exists comment_with_user;
 create view comment_with_user as
-select
-    c.cid,
-    c.uid,
-    c.qid,
-    c.content,
-    c.createAt,
-    c.updateAt,
-    u.name,
-    u.company
+select c.cid,
+       c.uid,
+       c.qid,
+       c.content,
+       c.createAt,
+       c.updateAt,
+       u.name,
+       u.company
 from comment as c
          join user as u on c.uid = u.uid;
 
@@ -383,7 +380,8 @@ from comment as c
 -- 질문 삭제시 질문과 연결된 모든 댓글을 삭제하는 트리거
 drop trigger if exists delete_question_comments;
 create trigger delete_question_comments
-    after delete on question
+    after delete
+    on question
     for each row
 begin
     delete from comment where qid = OLD.qid;
@@ -396,10 +394,11 @@ delimiter
 //
 create procedure select_all_data(in tableName varchar (50))
 begin
-    set @query = concat('select * from ', tableName);
-    prepare stmt from @query;
-    execute stmt;
-    deallocate prepare stmt;
+    set
+@query = concat('select * from ', tableName);
+prepare stmt from @query;
+execute stmt;
+deallocate prepare stmt;
 end
 //
 delimiter ;
@@ -407,154 +406,179 @@ delimiter ;
 
 -- 사용자 추가 프로시저
 drop procedure if exists create_user;
-delimiter //
+delimiter
+//
 create procedure create_user(
-    in p_name varchar(100),
-    in p_email varchar(100),
-    in p_password varchar(255),
-    in p_interest varchar(100),
-    in p_role varchar(50),
+    in p_name varchar (100),
+    in p_email varchar (100),
+    in p_password varchar (255),
+    in p_interest varchar (100),
+    in p_role varchar (50),
     in p_birth date,
-    in p_company varchar(100)
+    in p_company varchar (100)
 )
 begin
-    insert into user (name, email, password, interest, company, role, birth)
-    values (p_name, p_email, p_password, p_interest, p_company, p_role, p_birth);
-end //
+insert into user (name, email, password, interest, company, role, birth)
+values (p_name, p_email, p_password, p_interest, p_company, p_role, p_birth);
+end
+//
 delimiter ;
 
 -- 이메일을 사용한 사용자 uid 조회
 drop procedure if exists select_uid_by_email;
-delimiter //
+delimiter
+//
 create procedure select_uid_by_email(
-    in p_email varchar(50)
+    in p_email varchar (50)
 )
 begin
-    select uid
-    from user
-    where email = p_email;
-end //
+select uid
+from user
+where email = p_email;
+end
+//
 delimiter ;
 
 
 -- 질문 등록 프로시저
 drop procedure if exists createQuestion;
-DELIMITER //
+DELIMITER
+//
 CREATE PROCEDURE create_question(
     IN p_qid INT,
     IN p_uid INT,
     IN p_content TEXT,
-    IN p_category VARCHAR(50),
-    IN p_title VARCHAR(255),
+    IN p_category VARCHAR (50),
+    IN p_title VARCHAR (255),
     IN p_createAt TIMESTAMP,
     IN p_updateAt TIMESTAMP
 )
 BEGIN
-    INSERT INTO question (qid, uid, content, category, title, createAt, updateAt, great)
-    VALUES (p_qid, p_uid, p_content, p_category, p_title, p_createAt, p_updateAt, 0);
-END //
+INSERT INTO question (qid, uid, content, category, title, createAt, updateAt, great)
+VALUES (p_qid, p_uid, p_content, p_category, p_title, p_createAt, p_updateAt, 0);
+END
+//
 DELIMITER ;
 
 -- 질문 수정 프로시저
 drop procedure if exists update_question;
-delimiter //
+delimiter
+//
 create procedure update_question(
     IN p_qid INT,
     IN p_content TEXT,
-    IN p_category VARCHAR(50),
-    IN p_title VARCHAR(255),
+    IN p_category VARCHAR (50),
+    IN p_title VARCHAR (255),
     IN p_updateAt TIMESTAMP
 )
 begin
-    UPDATE question
-    SET content = p_content, category = p_category, title = p_title, updateAt = p_updateAt
-    WHERE qid = p_qid;
-end //
+UPDATE question
+SET content  = p_content,
+    category = p_category,
+    title    = p_title,
+    updateAt = p_updateAt
+WHERE qid = p_qid;
+end
+//
 delimiter ;
 
 -- 질문 삭제 프로시저
 drop procedure if exists delete_question;
-delimiter //
+delimiter
+//
 create procedure delete_question(
     in p_qid int
 )
 begin
-    delete from question
-    where qid = p_qid;
-end //
+delete
+from question
+where qid = p_qid;
+end
+//
 delimiter ;
 
 -- 카테고리별 데이터 조회
 drop procedure if exists select_question_by_category;
-delimiter //
+delimiter
+//
 create procedure select_question_by_category(
-    in p_category varchar(10)
+    in p_category varchar (10)
 )
 begin
-    select *
-    from question_with_user
-    where category = p_category
-    group by qid;
-end //
+select *
+from question_with_user
+where category = p_category
+group by qid;
+end
+//
 delimiter ;
 
 -- 특정 사용자별 데이터 조회
 drop procedure if exists select_my_question;
-delimiter //
+delimiter
+//
 create procedure select_my_question(
     in p_uid int
 )
 begin
-    select *
-    from question_with_user
-    where uid = p_uid;
-end //
+select *
+from question_with_user
+where uid = p_uid;
+end
+//
 delimiter ;
 
 -- 카테고리와 제목 검색
 drop procedure if exists select_question_by_keyword;
-delimiter //
+delimiter
+//
 create procedure select_question_by_keyword(
-    in p_keyword varchar(255)
+    in p_keyword varchar (255)
 )
 begin
-    select *
-    from question
-    where title like concat('%', p_keyword, '%');
-end //
+select *
+from question
+where title like concat('%', p_keyword, '%');
+end
+//
 delimiter ;
 
 
 -- 좋아요 수 증가
 drop procedure if exists increment_great;
-delimiter //
+delimiter
+//
 create procedure increment_great(
     in p_qid int
 )
 begin
-    update question
-    set great = great + 1
-    where qid = p_qid;
-end //
+update question
+set great = great + 1
+where qid = p_qid;
+end
+//
 delimiter ;
 
 -- 좋아요 수 조회
 drop procedure if exists select_great_count;
-delimiter //
+delimiter
+//
 create procedure select_great_count(
     in p_qid int
 )
 begin
-    select great
-    from question
-    where qid = p_qid;
-end //
+select great
+from question
+where qid = p_qid;
+end
+//
 delimiter ;
 
 
 -- 코멘트 추가
 drop procedure if exists create_comment;
-delimiter //
+delimiter
+//
 create procedure create_comment(
     IN p_cid INT,
     IN p_uid INT,
@@ -564,67 +588,90 @@ create procedure create_comment(
     IN p_updateAt TIMESTAMP
 )
 begin
-    insert into comment (cid, uid, qid, content, createAt, updateAt)
-    values (p_cid, p_uid, p_qid, p_content, p_createAt, p_updateAt);
-end //
+insert into comment (cid, uid, qid, content, createAt, updateAt)
+values (p_cid, p_uid, p_qid, p_content, p_createAt, p_updateAt);
+end
+//
 delimiter ;
 
 -- 코멘트 수정
 drop procedure if exists update_comment;
-delimiter //
+delimiter
+//
 create procedure update_comment(
     in p_cid int,
-    in p_content varchar(255),
+    in p_content varchar (255),
     in p_updateAt date
 )
 begin
-    update comment
-    set content = p_content, updateAt = p_updateAt
-    where cid = p_cid;
-end //
+update comment
+set content  = p_content,
+    updateAt = p_updateAt
+where cid = p_cid;
+end
+//
 delimiter ;
 
 -- 질문별 댓글 불러오기
 drop procedure if exists select_comment_by_question_id;
-delimiter //
+delimiter
+//
 create procedure select_comment_by_question_id(
     in p_qid int
 )
 begin
-    select *
-    from comment_with_user
-    where qid = p_qid
-    group by cid;
-end //
+select *
+from comment_with_user
+where qid = p_qid
+group by cid;
+end
+//
 delimiter ;
 
 -- 코멘트 삭제 (동적 쿼리)
 drop procedure if exists delete_comment_condition_integer;
-delimiter //
+delimiter
+//
 create procedure delete_comment_condition_integer(
-    in p_column_name varchar(50),
+    in p_column_name varchar (50),
     in p_value int
 )
 begin
     -- 미리 정의된 안전한 컬럼 이름 목록
-    if p_column_name not in ('cid', 'qid') then
+    if
+p_column_name not in ('cid', 'qid') then
         signal sqlstate '45000' set message_text = 'Invalid column name';
-    end if;
+end if;
 
-    set @value = p_value;
-    set @query = concat('delete from comment where', p_column_name, '= ?');
-    prepare stmt from @query;
-    execute stmt using @value;
-    deallocate prepare stmt;
-end //
+    set
+@value = p_value;
+    set
+@query = concat('delete from comment where', p_column_name, '= ?');
+prepare stmt from @query;
+execute stmt using @value;
+deallocate prepare stmt;
+end
+//
 delimiter ;
 
 -- 전체 코멘트 삭제
 drop procedure if exists delete_comment;
-delimiter //
+delimiter
+//
 create procedure delete_comment(in p_qid int)
 begin
-    delete from comment where qid = p_qid;
-end //
+delete
+from comment
+where qid = p_qid;
+end
+//
 delimiter ;
 
+
+-- 통계 프로시저
+-- 사용자별 활동 통계
+-- 최근 인기있는 주제 분석
+-- 소속 회사별 활동 현황 분석
+-- 시간대별 활동 분석
+-- 사용자 응답 시간 분석
+-- 질문 해결률 분석
