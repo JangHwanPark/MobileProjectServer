@@ -471,8 +471,8 @@ from comment as c
 drop view if exists question_with_comment;
 create view question_with_comment as
 select q.qid,
-       q.uid as question_uid,
-       q.content as question_content,
+       q.uid      as question_uid,
+       q.content  as question_content,
        q.category,
        q.title,
        q.createAt as question_createAt,
@@ -764,44 +764,59 @@ begin
     from question as q
              join user as u on q.uid = u.uid
     where createAt >= start_date
-    group by uid;
+    group by q.uid;
 end //
 delimiter ;
 
--- 사용자가 작성한 질문의 개수
-drop procedure if exists get_user_question_count;
+-- 사용자가 작성한 코멘트 or 질문의 개수
+drop procedure if exists get_written_count;
 delimiter //
-create procedure get_user_question_count(in p_uid int, out question_count int)
+create procedure get_written_count(
+    in p_uName varchar(10),
+    in p_tableName varchar(20)
+)
 begin
-    select count(*)
-    into question_count
-    from question
-    where uid = p_uid;
-end //
-delimiter ;
+    set @query = concat(
+            'select u.uid, u.name, u.email, count(*) as ', p_uName, '_cnt '
+                'from ', p_tableName, ' as tname '
+                'inner join user as u on u.uid = tname.uid ',
+            'where u.name = ''', p_uName, ''' ',
+            'group by u.uid');
 
-SET @question_count = 0;
-CALL get_user_question_count(2, @question_count);
-SELECT @question_count;
-
--- 사용자가 작성한 코멘트 개수
-drop procedure if exists get_user_comment_count;
-delimiter //
-create procedure get_user_comment_count(in p_uid int)
-begin
-    select count(*)
-    from comment
-    where uid = p_uid;
+    prepare stmt from @query;
+    execute stmt;
+    deallocate prepare stmt;
 end //
 delimiter ;
 
 -- 사용자별 평균 질문 or 코멘트 개수
-drop procedure if exists getAverageCount;
+drop procedure if exists get_average_count;
+delimiter //
+create procedure get_average_count(
+    in p_tName varchar(20)
+)
+begin
+    set @query = concat(
+            'select u.uid, u.name, u.email, avg(user_counts.cnt) as average_', p_tName, '_count ',
+            'from user as u ',
+            'join (',
+            '   select uid, count(*) as cnt ',
+            '   from ', p_tName, ' as t ',
+            '   group by uid',
+            ') as user_counts on u.uid = user_counts.uid ',
+            'group by u.uid'
+                 );
+
+    prepare stmt from @query;
+    execute stmt;
+    deallocate prepare stmt;
+end //
+delimiter ;
 
 -- 질문, 코멘트를 입력받아 가장 많이 작성한 사용자 분석
-drop procedure if exists getTopUserByCnt;
+drop procedure if exists get_top_user_by_cnt;
 delimiter //
-create procedure getTopUserByCnt(
+create procedure get_top_user_by_cnt(
     in p_tableName varchar(20),
     in p_colCount varchar(20)
 )
@@ -815,12 +830,12 @@ begin
 
     -- 동적 쿼리 생성
     set @query = concat(
-            'select u.uid, u.name, u.company, count(*) as ', p_tableName, '_cnt ',
+            'select u.uid, u.name, u.company, count(*) as cnt ',
             'from ', p_tableName, ' as q ',
             'join user as u on q.uid = u.uid ',
             'group by u.uid ',
-        -- 질문 갯수 기준으로 내림차순 정렬
-            'order by ', p_tableName, '_cnt desc'
+            -- 질문 갯수 기준으로 내림차순 정렬
+            'order by cnt desc'
                  );
 
     -- 동적 쿼리 실행
@@ -832,20 +847,21 @@ delimiter ;
 
 -- 특정 회사 내 최다 질문 또는 코멘트를 작성한 사용자
 -- 회사 이름과 질문 or 코멘트 테이블을 입력받아 가장 많이 작성한 회사를 내림차순으로 출력
-drop procedure if exists getTopUserCompanyByCnt;
+drop procedure if exists get_top_user_company_by_cnt;
 delimiter //
-create procedure getTopUserCompanyByCnt(
+create procedure get_top_user_company_by_cnt(
     in p_company varchar(10),
     in p_tableName varchar(20)
 )
 begin
     set @query = concat(
-        'select u.company, count(*) as ', p_tableName, '_cnt',
-        'from ', p_tableName , ' as tname ',
-        'join user as u on tname.uid = u.uid ',
-        'group by u.company ',
-        'order by ', p_tableName, '_cnt'
-    );
+            'select u.company, count(*) as ', p_tableName, '_cnt ',
+            'from ', p_tableName, ' as t ',
+            'join user as u on t.uid = u.uid ',
+            'where u.company = ''', p_company, ''' ',
+            'group by u.company ',
+            'order by ', p_tableName, '_cnt desc'
+                 );
 end //
 delimiter ;
 
@@ -871,10 +887,12 @@ drop procedure if exists get_activity_by_company;
 delimiter //
 create procedure get_activity_by_company()
 begin
-    select u.company, count(q.qid) as question_cnt, count(c.cid) as comment_cnt
+    select u.company,
+           count(distinct q.qid) as question_cnt,
+           count(distinct c.cid) as comment_cnt
     from user as u
-             join question as q on u.uid = q.uid
-             join comment as c on u.uid = c.uid
+             left join question as q on u.uid = q.uid
+             left join comment as c on u.uid = c.uid
     group by u.company;
 end //
 delimiter ;
@@ -898,7 +916,7 @@ create procedure get_user_response_time(in p_uid int)
 begin
     select q.qid, timestampdiff(minute, q.createAt, min(c.createAt)) as response_time_minutes
     from question as q
-             join comment as c on q.qid = c.qid
+    join comment as c on q.qid = c.qid
     where q.uid = p_uid
     group by q.qid;
 end //

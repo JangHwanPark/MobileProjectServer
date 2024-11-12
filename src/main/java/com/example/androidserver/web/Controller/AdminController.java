@@ -44,8 +44,14 @@ public class AdminController {
     }
 
     // 특정 회사 내 최다 질문 또는 코멘트를 작성한 사용자
+    public int getTopUserCompanyByCnt() {
+        return 1;
+    }
 
     // 가장 많은 질문 또는 코멘트를 작성한 회사
+    public int getTopCompanyByCnt() {
+        return 1;
+    }
 
     // 사용자 응답 시간 분석
     @PostMapping("/post/{uid}/response/time")
