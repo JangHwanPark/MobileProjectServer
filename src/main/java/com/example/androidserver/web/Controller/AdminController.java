@@ -1,22 +1,28 @@
 package com.example.androidserver.web.Controller;
 
+import com.example.androidserver.Admin.service.AdminService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1/admin")
 public class AdminController {
+    private final AdminService adminService;
+
     // 최근 인기있는 주제 분석
     @GetMapping("/get/popular/topics")
-    public int getPopularTopics() {
-        return 1;
+    public List<Map<String, Object>> getPopularTopics() {
+        return adminService.getPopularTopicsService();
     }
 
     // 소속 회사별 활동 현황 분석
     @GetMapping("/get/activity/company")
-    public int getActivityCompany() {
-        return 1;
+    public List<Map<String, Object>> getActivityCompany() {
+        return adminService.getActivityCompanyService();
     }
 
     // 시간대별 활동 분석
@@ -44,12 +50,14 @@ public class AdminController {
     }
 
     // 특정 회사 내 최다 질문 또는 코멘트를 작성한 사용자
-    public int getTopUserCompanyByCnt() {
+    @PostMapping("/post/{table}/user")
+    public int getTopUserCompanyByCntService(@PathVariable String table) {
         return 1;
     }
 
     // 가장 많은 질문 또는 코멘트를 작성한 회사
-    public int getTopCompanyByCnt() {
+    @PostMapping("/post/{table}/company")
+    public int getTopCompanyByCnt(@PathVariable String table) {
         return 1;
     }
 

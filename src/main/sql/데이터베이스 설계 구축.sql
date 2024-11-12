@@ -1294,7 +1294,6 @@ begin
 end //
 delimiter ;
 
-
 -- 최근 인기있는 주제 분석
 drop procedure if exists get_popular_topics;
 delimiter //
