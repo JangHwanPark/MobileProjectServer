@@ -611,9 +611,20 @@ begin
         signal sqlstate '45000' set message_text = 'Invalid column name';
     end if;
 
+    set @value = p_value;
     set @query = concat('delete from comment where', p_column_name, '= ?');
     prepare stmt from @query;
-    execute stmt using p_value;
+    execute stmt using @value;
     deallocate prepare stmt;
 end //
 delimiter ;
+
+-- 전체 코멘트 삭제
+drop procedure if exists delete_comment;
+delimiter //
+create procedure delete_comment(in p_qid int)
+begin
+    delete from comment where qid = p_qid;
+end //
+delimiter ;
+
