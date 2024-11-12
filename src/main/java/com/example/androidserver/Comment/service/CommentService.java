@@ -36,8 +36,8 @@ public class CommentService {
         return commentRepo.updateComment(comment);
     }
 
-    public int deleteComment(int cid) {
-        return commentRepo.deleteComment(cid);
+    public int deleteComment(String colName, int value) {
+        return commentRepo.deleteComment(colName, value);
     }
 
     public int deleteAllComment(int qid) {

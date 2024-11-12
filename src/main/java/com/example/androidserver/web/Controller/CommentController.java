@@ -39,9 +39,9 @@ public class CommentController {
     }
 
     // 댓글 삭제
-    @PostMapping("/post/delete/{cid}")
-    public String deleteComment(@PathVariable int cid) {
-        int result = commentService.deleteComment(cid);
+    @PostMapping("/post/delete/{value}")
+    public String deleteComment(@RequestBody String colName, @PathVariable int value) {
+        int result = commentService.deleteComment(colName, value);
         return result == 1 ? "답변이 삭제되었습니다." : "답변 삭제에 실패하였습니다.";
     }
 

@@ -19,15 +19,17 @@ public class CommentRepo extends AbstractRepo {
     private SimpleJdbcCall createCommentCall;
     private SimpleJdbcCall updateCommentCall;
     private SimpleJdbcCall deleteCommentCall;
+    private SimpleJdbcCall deleteAllCommentCall;
     private SimpleJdbcCall selectCommentByQuestionIdCall;
 
     @PostConstruct
     @Override
     protected void initJdbcCalls() {
         createCommentCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("create_comment");
-        // updateCommentCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("update_comment");
-        // deleteCommentCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("delete_comment_condition_integer").returningResultSet("result", new CommentRowMapper());
-        // selectCommentByQuestionIdCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_comment_by_question_id");
+        updateCommentCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("update_comment");
+        deleteCommentCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("delete_comment_condition_integer").returningResultSet("result", new CommentRowMapper());
+        deleteAllCommentCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("delete_comment");
+        selectCommentByQuestionIdCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_comment_by_question_id");
     }
 
     // 댓글 저장
@@ -52,32 +54,66 @@ public class CommentRepo extends AbstractRepo {
             createCommentCall.execute(params);
             return 1;
         } catch (Exception e) {
-            log.error("Error occurred while executing stored procedure", e);
+            log.error("Error occurred while executing stored procedure => ", e);
             return 0;
         }
     }
 
     // 댓글 수정
     public int updateComment(Comment comment) {
-        String sql = "UPDATE comment SET content = ?, updateAt = ? WHERE cid = ?";
-        return jdbcTemplate.update(sql, comment.getContent(), comment.getUpdateAt(), comment.getCid());
+        Map<String, Object> params = createParamsMap(
+            "p_cid", comment.getCid(),
+                "p_content", comment.getContent(),
+                "p_updateAt", comment.getUpdateAt()
+        );
+
+        try {
+            updateCommentCall.execute(params);
+            return 1;
+        } catch (Exception e) {
+            log.error("Error occurred while executing stored procedure => ", e);
+            return 0;
+        }
     }
 
     // 질문별 댓글 불러오기
     public List<Comment> selectCommentByQuestionId(int qid) {
-        String sql = "select * from comment_with_user where qid = ? group by cid";
-        return jdbcTemplate.query(sql, new CommentRowMapper(), qid);
+        Map<String, Object> params = createParamsMap("p_qid", qid);
+        try {
+            Map<String, Object> result = selectCommentByQuestionIdCall.execute(params);
+            return (List<Comment>) result.get("result");
+        } catch (Exception e) {
+            log.error("Error occurred while executing stored procedure => ", e);
+            return null;
+        }
     }
 
     // 댓글 삭제
-    public int deleteComment(int cid) {
-        String sql = "DELETE FROM comment WHERE cid = ?";
-        return jdbcTemplate.update(sql, cid);
+    public int deleteComment(String colName, int value) {
+        Map<String, Object> params = createParamsMap(
+            "p_colum_name", colName,
+                "p_value", value
+        );
+
+        try {
+            deleteCommentCall.execute(params);
+            return 1;
+        } catch (Exception e) {
+            log.error("Error occurred while executing stored procedure => ", e);
+            return 0;
+        }
     }
 
     // 게시글 내 모든 댓글 삭제
     public int deleteAllComment(int qid) {
-        String sql = "DELETE FROM comment WHERE qid = ?";
-        return jdbcTemplate.update(sql, qid);
+        Map<String, Object> params = createParamsMap("p_qid", qid);
+
+        try {
+            deleteAllCommentCall.execute(params);
+            return 1;
+        } catch (Exception e) {
+            log.error("Error occurred while executing stored procedure => ", e);
+            return 0;
+        }
     }
 }
