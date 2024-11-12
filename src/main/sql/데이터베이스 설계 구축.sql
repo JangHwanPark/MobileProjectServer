@@ -161,6 +161,7 @@ VALUES (null, 'account1', 'user1@example.com', 'password1', '프로그래밍', '
 -- 질문 추가
 INSERT INTO question (qid, uid, interest, title, content, category, createAt, updateAt, great)
 VALUES (null, 1, '프로그래밍', '자바 기초 질문', '자바 변수 선언 방법이 궁금합니다.', '질문답변', '2024-01-01', '2024-01-01', 0),
+       (null, 2, '프로그래밍', '자바스크립트 비동기 질문', '동기와 비동기가 정확히 무엇인가요?', '질문답변', '2024-01-02', '2024-01-02', 5),
        (null, 2, '인공지능', '딥러닝과 머신러닝 차이점', '두 개념의 차이를 알고 싶습니다.', '질문답변', '2024-01-02', '2024-01-02', 0),
        (null, 3, '데이터베이스', 'SQL과 NoSQL의 차이', '어떤 상황에서 각 DB를 사용하나요?', '질문답변', '2024-01-03', '2024-01-03', 0),
        (null, 4, '프론트엔드', '리액트와 뷰의 차이', '리액트와 뷰 중 어떤 것이 더 효율적인가요?', '자유 게시판', '2024-01-04', '2024-01-04', 0),
@@ -467,7 +468,18 @@ select c.cid,
 from comment as c
          join user as u on c.uid = u.uid;
 
--- drop view if exists
+drop view if exists question_with_comment;
+create view question_with_comment as
+select q.qid,
+       q.uid as question_uid,
+       q.content as question_content,
+       q.category,
+       q.title,
+       q.createAt as question_createAt,
+       c.createAt as comment_createAt
+from question as q
+         join comment as c on q.qid = c.qid;
+
 
 -- Trigger
 -- 질문 삭제시 질문과 연결된 모든 댓글을 삭제하는 트리거
@@ -487,8 +499,7 @@ delimiter
 //
 create procedure select_all_data(in tableName varchar(50))
 begin
-    set
-        @query = concat('select * from ', tableName);
+    set @query = concat('select * from ', tableName);
     prepare stmt from @query;
     execute stmt;
     deallocate prepare stmt;
@@ -748,6 +759,12 @@ begin
                 when p_period = 'yearly' then date_sub(curdate(), interval 1 year)
                 else curdate()
                 end;
+
+    select q.uid, u.name, u.email, u.company, count(*) as question_count
+    from question as q
+             join user as u on q.uid = u.uid
+    where createAt >= start_date
+    group by uid;
 end //
 delimiter ;
 
@@ -777,6 +794,61 @@ begin
     where uid = p_uid;
 end //
 delimiter ;
+
+-- 사용자별 평균 질문 or 코멘트 개수
+drop procedure if exists getAverageCount;
+
+-- 질문, 코멘트를 입력받아 가장 많이 작성한 사용자 분석
+drop procedure if exists getTopUserByCnt;
+delimiter //
+create procedure getTopUserByCnt(
+    in p_tableName varchar(20),
+    in p_colCount varchar(20)
+)
+begin
+    -- 안전한 컬럼 및 테이블 검증 (comment와 question 테이블만 허용)
+    if p_tableName not in ('comment', 'question') then
+        signal sqlstate '45000' set message_text = 'Invalid table name';
+    elseif p_colCount not in ('cid', 'qid') then
+        signal sqlstate '45000' set message_text = 'Invalid column name';
+    end if;
+
+    -- 동적 쿼리 생성
+    set @query = concat(
+            'select u.uid, u.name, u.company, count(*) as ', p_tableName, '_cnt ',
+            'from ', p_tableName, ' as q ',
+            'join user as u on q.uid = u.uid ',
+            'group by u.uid ',
+        -- 질문 갯수 기준으로 내림차순 정렬
+            'order by ', p_tableName, '_cnt desc'
+                 );
+
+    -- 동적 쿼리 실행
+    prepare stmt from @query;
+    execute stmt;
+    deallocate prepare stmt;
+end //
+delimiter ;
+
+-- 특정 회사 내 최다 질문 또는 코멘트를 작성한 사용자
+-- 회사 이름과 질문 or 코멘트 테이블을 입력받아 가장 많이 작성한 회사를 내림차순으로 출력
+drop procedure if exists getTopUserCompanyByCnt;
+delimiter //
+create procedure getTopUserCompanyByCnt(
+    in p_company varchar(10),
+    in p_tableName varchar(20)
+)
+begin
+    set @query = concat(
+        'select u.company, count(*) as ', p_tableName, '_cnt',
+        'from ', p_tableName , ' as tname ',
+        'join user as u on tname.uid = u.uid ',
+        'group by u.company ',
+        'order by ', p_tableName, '_cnt'
+    );
+end //
+delimiter ;
+
 
 -- 최근 인기있는 주제 분석
 drop procedure if exists get_popular_topics;
@@ -826,7 +898,7 @@ create procedure get_user_response_time(in p_uid int)
 begin
     select q.qid, timestampdiff(minute, q.createAt, min(c.createAt)) as response_time_minutes
     from question as q
-    join comment as c on q.qid = c.qid
+             join comment as c on q.qid = c.qid
     where q.uid = p_uid
     group by q.qid;
 end //
