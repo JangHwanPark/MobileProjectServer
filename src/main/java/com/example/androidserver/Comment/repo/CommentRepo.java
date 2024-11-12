@@ -27,9 +27,9 @@ public class CommentRepo extends AbstractRepo {
     protected void initJdbcCalls() {
         createCommentCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("create_comment");
         updateCommentCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("update_comment");
-        deleteCommentCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("delete_comment_condition_integer").returningResultSet("result", new CommentRowMapper());
+        deleteCommentCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("delete_comment_by_id").returningResultSet("result", new CommentRowMapper());
         deleteAllCommentCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("delete_comment");
-        selectCommentByQuestionIdCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_comment_by_question_id");
+        selectCommentByQuestionIdCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_comment_by_question_id").returningResultSet("result", new CommentRowMapper());
     }
 
     // 댓글 저장
@@ -81,6 +81,12 @@ public class CommentRepo extends AbstractRepo {
         Map<String, Object> params = createParamsMap("p_qid", qid);
         try {
             Map<String, Object> result = selectCommentByQuestionIdCall.execute(params);
+
+            if (result.get("result") == null) {
+                log.warn("No comments found for question ID => " + qid);
+                return List.of();  // 빈 리스트 반환
+            }
+
             return (List<Comment>) result.get("result");
         } catch (Exception e) {
             log.error("Error occurred while executing stored procedure => ", e);
@@ -89,11 +95,8 @@ public class CommentRepo extends AbstractRepo {
     }
 
     // 댓글 삭제
-    public int deleteComment(String colName, int value) {
-        Map<String, Object> params = createParamsMap(
-            "p_colum_name", colName,
-                "p_value", value
-        );
+    public int deleteComment(int cid) {
+        Map<String, Object> params = createParamsMap("p_cid", cid);
 
         try {
             deleteCommentCall.execute(params);

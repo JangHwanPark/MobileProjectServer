@@ -267,21 +267,50 @@ VALUES (null, 1, '프로그래밍', '자바 기초 질문', '자바 변수 선�
 
 -- 태그 추가
 INSERT INTO tag (tid, tname)
-VALUES (1, 'JavaScript'),
-       (2, 'Python'),
-       (3, 'Java'),
-       (4, 'Database'),
-       (5, 'Web Development'),
-       (6, 'React'),
-       (7, 'Angular'),
-       (8, 'Vue.js'),
-       (9, 'SQL'),
-       (10, 'Node.js'),
-       (11, 'Express.js'),
-       (12, 'Spring Boot'),
-       (13, 'Django'),
-       (14, 'Flask'),
-       (15, 'Ruby on Rails');
+VALUES
+    -- 기존 IT 및 공학 태그
+    (1, '프로그래밍'),
+    (2, '인공지능'),
+    (3, '데이터베이스'),
+    (4, '네트워크'),
+    (5, '보안'),
+    (6, '웹 개발'),
+    (7, '모바일 개발'),
+    (8, '빅데이터'),
+    (9, '클라우드 컴퓨팅'),
+    (10, '사물인터넷(IoT)'),
+    (11, '블록체인'),
+    (12, '머신러닝'),
+    (13, '딥러닝'),
+    (14, '데이터 분석'),
+    (15, '컴퓨터 그래픽스'),
+    (16, '게임 개발'),
+    (17, '운영체제'),
+    (18, '소프트웨어 엔지니어링'),
+    (19, '자연어 처리(NLP)'),
+    (20, '로보틱스'),
+
+    -- 추가된 다양한 분야 태그
+    (21, '경영학'),
+    (22, '경제학'),
+    (23, '심리학'),
+    (24, '사회학'),
+    (25, '교육학'),
+    (26, '문학'),
+    (27, '역사'),
+    (28, '철학'),
+    (29, '미술'),
+    (30, '음악'),
+    (31, '영화'),
+    (32, '생물학'),
+    (33, '화학'),
+    (34, '물리학'),
+    (35, '천문학'),
+    (36, '지구과학'),
+    (37, '의학'),
+    (38, '약학'),
+    (39, '간호학'),
+    (40, '법학');
 
 INSERT INTO question_tag (qid, tid)
 VALUES (1, 2),
@@ -550,9 +579,7 @@ delimiter ;
 drop procedure if exists delete_question;
 delimiter
 //
-create procedure delete_question(
-    in p_qid int
-)
+create procedure delete_question(in p_qid int)
 begin
     delete
     from question
@@ -581,9 +608,7 @@ delimiter ;
 drop procedure if exists select_my_question;
 delimiter
 //
-create procedure select_my_question(
-    in p_uid int
-)
+create procedure select_my_question(in p_uid int)
 begin
     select *
     from question_with_user
@@ -627,9 +652,7 @@ delimiter ;
 drop procedure if exists select_great_count;
 delimiter
 //
-create procedure select_great_count(
-    in p_qid int
-)
+create procedure select_great_count(in p_qid int)
 begin
     select great
     from question
@@ -680,42 +703,22 @@ delimiter ;
 drop procedure if exists select_comment_by_question_id;
 delimiter
 //
-create procedure select_comment_by_question_id(
-    in p_qid int
-)
+create procedure select_comment_by_question_id(in p_qid int)
 begin
     select *
     from comment_with_user
     where qid = p_qid
     group by cid;
-end
-//
+end //
 delimiter ;
 
--- 코멘트 삭제 (동적 쿼리)
-drop procedure if exists delete_comment_condition_integer;
-delimiter
-//
-create procedure delete_comment_condition_integer(
-    in p_column_name varchar(50),
-    in p_value int
-)
+-- 코멘트 삭제
+drop procedure if exists delete_comment_by_id;
+delimiter //
+create procedure delete_comment_by_id(in p_cid int)
 begin
-    -- 미리 정의된 안전한 컬럼 이름 목록
-    if
-        p_column_name not in ('cid', 'qid') then
-        signal sqlstate '45000' set message_text = 'Invalid column name';
-    end if;
-
-    set
-        @value = p_value;
-    set
-        @query = concat('delete from comment where', p_column_name, '= ?');
-    prepare stmt from @query;
-    execute stmt using @value;
-    deallocate prepare stmt;
-end
-//
+    delete from comment where cid = p_cid;
+end //
 delimiter ;
 
 -- 전체 코멘트 삭제
@@ -724,9 +727,7 @@ delimiter
 //
 create procedure delete_comment(in p_qid int)
 begin
-    delete
-    from comment
-    where qid = p_qid;
+    delete from comment where qid = p_qid;
 end
 //
 delimiter ;

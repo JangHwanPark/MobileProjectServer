@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Id;
 @Table(name = "user") // 매핑할 테이블 이름 지정
 @Getter
 @Setter
+@ToString
 @AllArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)

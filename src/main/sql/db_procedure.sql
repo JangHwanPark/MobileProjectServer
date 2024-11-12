@@ -44,7 +44,17 @@ select c.cid,
 from comment as c
          join user as u on c.uid = u.uid;
 
--- drop view if exists
+drop view if exists question_with_comment;
+create view question_with_comment as
+select q.qid,
+       q.uid as question_uid,
+       q.content as question_content,
+       q.category,
+       q.title,
+       q.createAt as question_createAt,
+       c.createAt as comment_createAt
+from question as q
+join comment as c on q.qid = c.qid;
 
 
 -- Trigger
