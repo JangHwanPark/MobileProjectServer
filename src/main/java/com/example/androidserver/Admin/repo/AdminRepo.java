@@ -29,6 +29,13 @@ public class AdminRepo extends AbstractRepo {
     protected void initJdbcCalls() {
         getPopularTopicsCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_popular_topics");
         getActivityCompanyCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_activity_by_company");
+        getActivityTimeCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_activity_by_time");
+        getUserActivityStatsCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_user_activity_stats");
+        getUserQuestionCountCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_user_question_count");
+        getUserCommentCountCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_user_comment_count");
+        getTopUserCompanyByCountCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_top_user_company_by_count");
+        getTopCompanyByCountCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_top_company_by_count");
+        getResponseTimeCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_user_response_time");
     }
 
     // 최근 인기있는 주제 분석
@@ -54,37 +61,44 @@ public class AdminRepo extends AbstractRepo {
     }
 
     // 시간대별 활동 분석
-    public int getActivityTimeRepo() {
-        return 1;
+    public List<Map<String, Object>> getActivityTimeRepo() {
+        Map<String, Object> result = getActivityTimeCall.execute();
+        return (List<Map<String, Object>>) result.get("#result-set-1");
     }
 
     // 사용자별 활동 통계
-    public int getUserActivityStatsRepo(String stats) {
-        return 1;
+    public List<Map<String, Object>> getUserActivityStatsRepo(String stats) {
+        Map<String, Object> result = getUserActivityStatsCall.execute(createParamsMap("p_period", stats));
+        return (List<Map<String, Object>>) result.get("#result-set-1");
     }
 
     // 사용자가 작성한 질문의 개수
     public int getUserQuestionCountRepo(int uid) {
-        return 1;
+        Map<String, Object> result = getUserQuestionCountCall.execute(createParamsMap("p_uid", uid));
+        return (int) result.get("question_count");
     }
 
     // 사용자가 작성한 코멘트 개수
     public int getUserCommentCountRepo(int uid) {
-        return 1;
+        Map<String, Object> result = getUserCommentCountCall.execute(createParamsMap("p_uid", uid));
+        return (int) result.get("comment_count");
     }
 
     // 특정 회사 내 최다 질문 또는 코멘트를 작성한 사용자
-    public int getTopUserCompanyByCountRepo(String table) {
-        return 1;
+    public List<Map<String, Object>> getTopUserCompanyByCountRepo(String table) {
+        Map<String, Object> result = getTopUserCompanyByCountCall.execute(createParamsMap("p_table", table));
+        return (List<Map<String, Object>>) result.get("#result-set-1");
     }
 
     // 가장 많은 질문 또는 코멘트를 작성한 회사
-    public int getTopCompanyByCountRepo(String table) {
-        return 1;
+    public List<Map<String, Object>> getTopCompanyByCountRepo(String table) {
+        Map<String, Object> result = getTopCompanyByCountCall.execute(createParamsMap("p_table", table));
+        return (List<Map<String, Object>>) result.get("#result-set-1");
     }
 
     // 사용자 응답 시간 분석
-    public int getResponseTimeRepo(int uid) {
-        return 1;
+    public List<Map<String, Object>> getResponseTimeRepo(int uid) {
+        Map<String, Object> result = getResponseTimeCall.execute(createParamsMap("p_uid", uid));
+        return (List<Map<String, Object>>) result.get("#result-set-1");
     }
 }

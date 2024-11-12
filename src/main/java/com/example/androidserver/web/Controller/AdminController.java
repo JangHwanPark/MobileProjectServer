@@ -27,43 +27,43 @@ public class AdminController {
 
     // 시간대별 활동 분석
     @GetMapping("/get/activity/time")
-    public int getActivityTime() {
-        return 1;
+    public List<Map<String, Object>> getActivityTime() {
+        return adminService.getActivityTimeService();
     }
 
     // 사용자별 활동 통계
     @PostMapping("/post/activity/user/stats")
-    public int getUserActivityStats(@RequestBody String stats) {
-        return 1;
+    public List<Map<String, Object>> getUserActivityStats(@RequestBody String stats) {
+        return adminService.getUserActivityStatsService(stats);
     }
 
     // 사용자가 작성한 질문의 개수
     @PostMapping("/post/question/{uid}/count")
     public int getUserQuestionCount(@PathVariable int uid) {
-        return 1;
+        return adminService.getUserQuestionCountService(uid);
     }
 
     // 사용자가 작성한 코멘트 개수
     @PostMapping("/post/comment/{uid}/count")
     public int getUserCommentCount(@PathVariable int uid) {
-        return 1;
+        return adminService.getUserCommentCountService(uid);
     }
 
     // 특정 회사 내 최다 질문 또는 코멘트를 작성한 사용자
-    @PostMapping("/post/{table}/user")
-    public int getTopUserCompanyByCntService(@PathVariable String table) {
-        return 1;
+    @PostMapping("/post/company/{table}/top/user")
+    public List<Map<String, Object>> getTopUserCompanyByCount(@PathVariable String table) {
+        return adminService.getTopUserCompanyByCountService(table);
     }
 
     // 가장 많은 질문 또는 코멘트를 작성한 회사
-    @PostMapping("/post/{table}/company")
-    public int getTopCompanyByCnt(@PathVariable String table) {
-        return 1;
+    @PostMapping("/post/company/{table}/top")
+    public List<Map<String, Object>> getTopCompanyByCount(@PathVariable String table) {
+        return adminService.getTopCompanyByCountService(table);
     }
 
     // 사용자 응답 시간 분석
     @PostMapping("/post/{uid}/response/time")
-    public int getResponseTime(@PathVariable int uid) {
-        return 1;
+    public List<Map<String, Object>> getResponseTime(@PathVariable int uid) {
+        return adminService.getResponseTimeService(uid);
     }
 }
