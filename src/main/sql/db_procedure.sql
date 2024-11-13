@@ -338,7 +338,7 @@ end;
 select q.uid, u.name, u.email, u.company, count(*) as question_count
 from question as q
          join user as u on q.uid = u.uid
-where createAt >= start_date
+where q.createAt >= start_date
 group by q.uid;
 end //
 delimiter ;
@@ -389,28 +389,24 @@ end //
 delimiter ;
 
 -- 질문, 코멘트를 입력받아 가장 많이 작성한 사용자 분석
+-- 사용자가 작성한 질문의 개수
 drop procedure if exists get_top_user_by_cnt;
 delimiter //
-create procedure get_top_user_by_cnt(
-    in p_tableName varchar(20),
-    in p_colCount varchar(20)
-)
+create procedure get_top_user_by_cnt(in p_tableName varchar(20))
 begin
     -- 안전한 컬럼 및 테이블 검증 (comment와 question 테이블만 허용)
     if p_tableName not in ('comment', 'question') then
         signal sqlstate '45000' set message_text = 'Invalid table name';
-    elseif p_colCount not in ('cid', 'qid') then
-        signal sqlstate '45000' set message_text = 'Invalid column name';
 end if;
 
     -- 동적 쿼리 생성
     set @query = concat(
-            'select u.uid, u.name, u.company, count(*) as cnt ',
-            'from ', p_tableName, ' as q ',
-            'join user as u on q.uid = u.uid ',
+            'select u.uid, u.name, u.company, count(*) as ', p_tableName ,'_count ',
+            'from ', p_tableName, ' as t ',
+            'join user as u on t.uid = u.uid ',
             'group by u.uid ',
         -- 질문 갯수 기준으로 내림차순 정렬
-            'order by cnt desc'
+            'order by ', p_tableName, '_count desc'
                  );
 
     -- 동적 쿼리 실행
@@ -420,11 +416,13 @@ deallocate prepare stmt;
 end //
 delimiter ;
 
+call get_top_user_by_cnt('question');
+
 -- 특정 회사 내 최다 질문 또는 코멘트를 작성한 사용자
 -- 회사 이름과 질문 or 코멘트 테이블을 입력받아 가장 많이 작성한 회사를 내림차순으로 출력
-drop procedure if exists get_top_user_company_by_cnt;
+drop procedure if exists get_top_user_company_by_count;
 delimiter //
-create procedure get_top_user_company_by_cnt(
+create procedure get_top_user_company_by_count(
     in p_company varchar(10),
     in p_tableName varchar(20)
 )
@@ -437,6 +435,10 @@ begin
             'group by u.company ',
             'order by ', p_tableName, '_cnt desc'
                  );
+
+prepare stmt from @query;
+execute stmt;
+deallocate prepare stmt;
 end //
 delimiter ;
 
@@ -492,5 +494,83 @@ from question as q
          join comment as c on q.qid = c.qid
 where q.uid = p_uid
 group by q.qid;
+end //
+delimiter ;
+
+-- 추가 2024.11.13
+-- 사용자의 평균 질문 및 댓글 처리 시간
+drop procedure if exists get_avg_question_comment_time;
+delimiter //
+create procedure get_avg_question_comment_time(in p_uid int)
+begin
+select
+    avg(timestampdiff(minute, q.createAt, c.createAt)) as avg_response_time
+from question q
+         join comment c on q.qid = c.qid
+where q.uid = p_uid;
+end //
+delimiter ;
+
+-- 주제별 활동 분석
+drop procedure if exists get_activity_by_topic;
+delimiter //
+create procedure get_activity_by_topic()
+begin
+select
+    t.tname as topic,
+    count(distinct q.qid) as question_count,
+    count(distinct c.cid) as comment_count
+from question q
+         join question_tag qt on q.qid = qt.qid
+         join tag t on qt.tid = t.tid
+         left join comment c on q.qid = c.qid
+group by t.tname;
+end //
+delimiter ;
+
+-- 특정 시간대의 질문과 댓글 수 분석
+drop procedure if exists get_activity_by_time_range;
+delimiter //
+create procedure get_activity_by_time_range()
+begin
+select
+    hour(q.createAt) as hour_of_day,
+    count(distinct q.qid) as question_count,
+    count(distinct c.cid) as comment_count
+from question q
+    left join comment c on q.qid = c.qid
+group by hour(q.createAt)
+order by hour_of_day;
+end //
+delimiter ;
+
+-- 사용자가 작성한 질문의 카테고리별 분포
+drop procedure if exists get_question_category_distribution;
+delimiter //
+create procedure get_question_category_distribution(in p_uid int)
+begin
+select
+    q.category,
+    count(*) as question_count
+from question q
+where q.uid = p_uid
+group by q.category;
+end //
+delimiter ;
+
+-- 사용자 활동의 월별 변화 분석
+drop procedure if exists get_monthly_user_activity;
+delimiter //
+create procedure get_monthly_user_activity(in p_uid int)
+begin
+select
+    month(q.createAt) as month,
+    count(distinct q.qid) as question_count,
+    count(distinct c.cid) as comment_count
+from question q
+    left join comment c on q.qid = c.qid
+where q.uid = p_uid
+group by month(q.createAt)
+order by month(q.createAt);
 end //
 delimiter ;

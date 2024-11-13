@@ -1410,3 +1410,82 @@ begin
     group by q.qid;
 end //
 delimiter ;
+
+
+-- 추가 2024.11.13
+-- 사용자의 평균 질문 및 댓글 처리 시간
+drop procedure if exists get_avg_question_comment_time;
+delimiter //
+create procedure get_avg_question_comment_time(in p_uid int)
+begin
+    select
+        avg(timestampdiff(minute, q.createAt, c.createAt)) as avg_response_time
+    from question q
+             join comment c on q.qid = c.qid
+    where q.uid = p_uid;
+end //
+delimiter ;
+
+-- 주제별 활동 분석
+drop procedure if exists get_activity_by_topic;
+delimiter //
+create procedure get_activity_by_topic()
+begin
+    select
+        t.tname as topic,
+        count(distinct q.qid) as question_count,
+        count(distinct c.cid) as comment_count
+    from question q
+             join question_tag qt on q.qid = qt.qid
+             join tag t on qt.tid = t.tid
+             left join comment c on q.qid = c.qid
+    group by t.tname;
+end //
+delimiter ;
+
+-- 특정 시간대의 질문과 댓글 수 분석
+drop procedure if exists get_activity_by_time_range;
+delimiter //
+create procedure get_activity_by_time_range()
+begin
+    select
+        hour(q.createAt) as hour_of_day,
+        count(distinct q.qid) as question_count,
+        count(distinct c.cid) as comment_count
+    from question q
+             left join comment c on q.qid = c.qid
+    group by hour(q.createAt)
+    order by hour_of_day;
+end //
+delimiter ;
+
+-- 사용자가 작성한 질문의 카테고리별 분포
+drop procedure if exists get_question_category_distribution;
+delimiter //
+create procedure get_question_category_distribution(in p_uid int)
+begin
+    select
+        q.category,
+        count(*) as question_count
+    from question q
+    where q.uid = p_uid
+    group by q.category;
+end //
+delimiter ;
+
+-- 사용자 활동의 월별 변화 분석
+drop procedure if exists get_monthly_user_activity;
+delimiter //
+create procedure get_monthly_user_activity(in p_uid int)
+begin
+    select
+        month(q.createAt) as month,
+        count(distinct q.qid) as question_count,
+        count(distinct c.cid) as comment_count
+    from question q
+             left join comment c on q.qid = c.qid
+    where q.uid = p_uid
+    group by month(q.createAt)
+    order by month(q.createAt);
+end //
+delimiter ;
