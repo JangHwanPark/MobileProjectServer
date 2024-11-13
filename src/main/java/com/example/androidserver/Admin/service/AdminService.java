@@ -32,14 +32,9 @@ public class AdminService {
         return adminRepo.getUserActivityStatsRepo(stats);
     }
 
-    // 사용자가 작성한 질문의 개수
-    public int getUserQuestionCountService(String table, int uid) {
-        return adminRepo.getUserQuestionCountRepo(table, uid);
-    }
-
-    // 사용자가 작성한 코멘트 개수
-    public int getUserCommentCountService(int uid) {
-        return adminRepo.getUserCommentCountRepo(uid);
+    // 사용자가 작성한 질문 or 코멘트의 개수
+    public List<Map<String, Object>> getUserTableCountService(String table) {
+        return adminRepo.getUserTableCountRepo(table);
     }
 
     // 특정 회사 내 최다 질문 또는 코멘트를 작성한 사용자

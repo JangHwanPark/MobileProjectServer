@@ -85,18 +85,15 @@ public class AdminRepo extends AbstractRepo {
         }
     }
 
-    // 사용자가 작성한 질문의 개수
-    public int getUserQuestionCountRepo(String table, int uid) {
-        Map<String, Object> result = getUserQuestionCountCall.execute(
-                createParamsMap("p_tableName", table, "p_colCount", uid));
-        return (int) result.get("question_count");
-    }
-
-    // 사용자가 작성한 코멘트 개수
-    public int getUserCommentCountRepo(int uid) {
-        Map<String, Object> result = getUserCommentCountCall.execute(
-                createParamsMap("p_colCount", uid));
-        return (int) result.get("comment_count");
+    // 사용자가 작성한 질문 or 코멘트의 개수
+    public List<Map<String, Object>> getUserTableCountRepo(String table) {
+        Map<String, Object> result = getUserQuestionCountCall.execute(createParamsMap("p_tableName", table));
+        // 결과 확인
+        if (result != null && result.get("#result-set-1") != null) {
+            return (List<Map<String, Object>>) result.get("#result-set-1");
+        } else {
+            throw new RuntimeException("No result found for table: " + table);
+        }
     }
 
     // 특정 회사 내 최다 질문 또는 코멘트를 작성한 사용자

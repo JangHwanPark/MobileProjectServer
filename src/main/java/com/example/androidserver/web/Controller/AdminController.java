@@ -11,6 +11,7 @@ import java.util.Map;
 @AllArgsConstructor
 @RequestMapping("/api/v1/admin")
 public class AdminController {
+
     private final AdminService adminService;
 
     // 최근 인기있는 주제 분석
@@ -45,16 +46,14 @@ public class AdminController {
         return adminService.getUserActivityStatsService(stats);
     }
 
-    // 사용자가 작성한 질문의 개수 X
-    @PostMapping("/post/{table}/{uid}/count")
-    public int getUserQuestionCount(@PathVariable String table, @PathVariable int uid) {
-        return adminService.getUserQuestionCountService(table, uid);
-    }
+    // 사용자가 작성한 질문 or 코멘트의 개수 (테이블 선택)
+    @PostMapping("/post/{table}/count")
+    public List<Map<String, Object>> getUserTableCount(@PathVariable String table) {
+        if (!table.equals("question") && !table.equals("comment")) {
+            throw new IllegalArgumentException("Invalid table name: " + table);
+        }
 
-    // 사용자가 작성한 코멘트 개수 X
-    @PostMapping("/post/comment/{uid}/count")
-    public int getUserCommentCount(@PathVariable int uid) {
-        return adminService.getUserCommentCountService(uid);
+        return adminService.getUserTableCountService(table);
     }
 
     // 특정 회사 내 최다 질문 또는 코멘트를 작성한 사용자
@@ -63,13 +62,11 @@ public class AdminController {
         return adminService.getTopUserCompanyByCountService(company, table);
     }
 
-    // 소속 회사별 활동 현황 분석
+    // 가장 많은 질문 또는 코멘트를 작성한 회사
     @PostMapping("/post/company/{table}/top")
-    public List<Map<String, Object>> getActivityByCompany(@PathVariable String table) {
+    public List<Map<String, Object>> getTopCompanyByCount(@PathVariable String table) {
         return adminService.getActivityByCompanyService(table);
     }
-
-    // 시간대별 활동 분석
 
     // 사용자 응답 시간 분석
     @PostMapping("/post/{uid}/response/time")

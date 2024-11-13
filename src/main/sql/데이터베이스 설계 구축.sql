@@ -1306,26 +1306,21 @@ delimiter ;
 -- 사용자가 작성한 질문의 개수
 drop procedure if exists get_top_user_by_cnt;
 delimiter //
-create procedure get_top_user_by_cnt(
-    in p_tableName varchar(20),
-    in p_colCount varchar(20)
-)
+create procedure get_top_user_by_cnt(in p_tableName varchar(20))
 begin
     -- 안전한 컬럼 및 테이블 검증 (comment와 question 테이블만 허용)
     if p_tableName not in ('comment', 'question') then
         signal sqlstate '45000' set message_text = 'Invalid table name';
-    elseif p_colCount not in ('cid', 'qid') then
-        signal sqlstate '45000' set message_text = 'Invalid column name';
     end if;
 
     -- 동적 쿼리 생성
     set @query = concat(
-            'select u.uid, u.name, u.company, count(*) as cnt ',
-            'from ', p_tableName, ' as q ',
-            'join user as u on q.uid = u.uid ',
+            'select u.uid, u.name, u.company, count(*) as ', p_tableName ,'_count ',
+            'from ', p_tableName, ' as t ',
+            'join user as u on t.uid = u.uid ',
             'group by u.uid ',
         -- 질문 갯수 기준으로 내림차순 정렬
-            'order by cnt desc'
+            'order by ', p_tableName, '_count desc'
                  );
 
     -- 동적 쿼리 실행
@@ -1334,6 +1329,8 @@ begin
     deallocate prepare stmt;
 end //
 delimiter ;
+
+call get_top_user_by_cnt('question');
 
 -- 특정 회사 내 최다 질문 또는 코멘트를 작성한 사용자
 -- 회사 이름과 질문 or 코멘트 테이블을 입력받아 가장 많이 작성한 회사를 내림차순으로 출력
