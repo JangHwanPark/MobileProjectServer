@@ -1,16 +1,7 @@
 ﻿uid,name,email,password,interest,company,role,birth,
-null,박길동,홍길동47@gmail.com,password,프로그래밍,NAVER,customer,1997-5-27,"INSERT INTO user (uid, name, email, password, interest, company, role, birth) VALUES (null, '박길동', '홍길동47@gmail.com', 'password', '프로그래밍' ,'NAVER', 'customer', '1997-05-27');"
-null,김현우,이지민75@gmail.com,password,프로그래밍,NAVER,customer,1994-3-23,"INSERT INTO user (uid, name, email, password, interest, company, role, birth) VALUES (null, '김현우', '이지민75@gmail.com', 'password', '프로그래밍' ,'NAVER', 'customer', '1994-03-23');"
-null,박철수,홍철수57@gmail.com,password,프로그래밍,NAVER,customer,1993-4-04,"INSERT INTO user (uid, name, email, password, interest, company, role, birth) VALUES (null, '박철수', '홍철수57@gmail.com', 'password', '프로그래밍' ,'NAVER', 'customer', '1993-04-04');"
-null,김현우,이길동66@gmail.com,password,프로그래밍,NAVER,customer,1997-8-15,"INSERT INTO user (uid, name, email, password, interest, company, role, birth) VALUES (null, '김현우', '이길동66@gmail.com', 'password', '프로그래밍' ,'NAVER', 'customer', '1997-08-15');"
-null,이현우,최철수48@gmail.com,password,프로그래밍,NAVER,customer,2000-10-28,"INSERT INTO user (uid, name, email, password, interest, company, role, birth) VALUES (null, '이현우', '최철수48@gmail.com', 'password', '프로그래밍' ,'NAVER', 'customer', '2000-10-28');"
-null,,,password,,,customer,,
-null,,,password,,,customer,,
-null,,,password,,,customer,,
-null,,,password,,,customer,,
-null,,,password,,,customer,,
-null,,,password,,,customer,,
-null,,,password,,,customer,,
-null,,,password,,,customer,,
-null,,,password,,,customer,,
-null,,,password,,,customer,,
+,박길동,홍길동47@gmail.com,password,프로그래밍,NAVER,customer,1997-5-27,"INSERT INTO user (uid, name, email, password, interest, company, role, birth) VALUES (null, '박길동', '홍길동47@gmail.com', 'password', '프로그래밍', 'NAVER', 'customer', '1997-05-27');"
+,김현우,이지민75@gmail.com,password,프로그래밍,NAVER,customer,1994-3-23,"INSERT INTO user (uid, name, email, password, interest, company, role, birth) VALUES (null, '김현우', '이지민75@gmail.com', 'password', '프로그래밍', 'NAVER', 'customer', '1994-03-23');"
+,박철수,홍철수57@gmail.com,password,프로그래밍,NAVER,customer,1993-4-04,"INSERT INTO user (uid, name, email, password, interest, company, role, birth) VALUES (null, '박철수', '홍철수57@gmail.com', 'password', '프로그래밍', 'NAVER', 'customer', '1993-04-04');"
+,김현우,이길동66@gmail.com,password,프로그래밍,NAVER,customer,1997-8-15,"INSERT INTO user (uid, name, email, password, interest, company, role, birth) VALUES (null, '김현우', '이길동66@gmail.com', 'password', '프로그래밍', 'NAVER', 'customer', '1997-08-15');"
+,이현우,최철수48@gmail.com,password,프로그래밍,NAVER,customer,2000-10-28,"INSERT INTO user (uid, name, email, password, interest, company, role, birth) VALUES (null, '이현우', '최철수48@gmail.com', 'password', '프로그래밍', 'NAVER', 'customer', '2000-10-28');"
+,test,test@test.com,password,프로그래밍,NAVER,customer,1998-9-17,"INSERT INTO user (uid, name, email, password, interest, company, role, birth) VALUES (null, 'test', 'test@test.com', 'password', '프로그래밍', 'NAVER', 'customer', '1998-09-17');"
