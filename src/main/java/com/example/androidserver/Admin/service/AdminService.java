@@ -33,8 +33,8 @@ public class AdminService {
     }
 
     // 사용자가 작성한 질문의 개수
-    public int getUserQuestionCountService(int uid) {
-        return adminRepo.getUserQuestionCountRepo(uid);
+    public int getUserQuestionCountService(String table, int uid) {
+        return adminRepo.getUserQuestionCountRepo(table, uid);
     }
 
     // 사용자가 작성한 코멘트 개수
@@ -43,13 +43,13 @@ public class AdminService {
     }
 
     // 특정 회사 내 최다 질문 또는 코멘트를 작성한 사용자
-    public List<Map<String, Object>> getTopUserCompanyByCountService(String table) {
-        return adminRepo.getTopUserCompanyByCountRepo(table);
+    public List<Map<String, Object>> getTopUserCompanyByCountService(String company, String table) {
+        return adminRepo.getTopUserCompanyByCountRepo(company, table);
     }
 
     // 가장 많은 질문 또는 코멘트를 작성한 회사
-    public List<Map<String, Object>> getTopCompanyByCountService(String table) {
-        return adminRepo.getTopCompanyByCountRepo(table);
+    public List<Map<String, Object>> getActivityByCompanyService(String table) {
+        return adminRepo.getActivityByCompanyRepo(table);
     }
 
     // 사용자 응답 시간 분석

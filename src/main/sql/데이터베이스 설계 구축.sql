@@ -1252,7 +1252,7 @@ begin
     select q.uid, u.name, u.email, u.company, count(*) as question_count
     from question as q
              join user as u on q.uid = u.uid
-    where createAt >= start_date
+    where q.createAt >= start_date
     group by q.uid;
 end //
 delimiter ;
@@ -1303,6 +1303,7 @@ end //
 delimiter ;
 
 -- 질문, 코멘트를 입력받아 가장 많이 작성한 사용자 분석
+-- 사용자가 작성한 질문의 개수
 drop procedure if exists get_top_user_by_cnt;
 delimiter //
 create procedure get_top_user_by_cnt(
@@ -1336,9 +1337,9 @@ delimiter ;
 
 -- 특정 회사 내 최다 질문 또는 코멘트를 작성한 사용자
 -- 회사 이름과 질문 or 코멘트 테이블을 입력받아 가장 많이 작성한 회사를 내림차순으로 출력
-drop procedure if exists get_top_user_company_by_cnt;
+drop procedure if exists get_top_user_company_by_count;
 delimiter //
-create procedure get_top_user_company_by_cnt(
+create procedure get_top_user_company_by_count(
     in p_company varchar(10),
     in p_tableName varchar(20)
 )
@@ -1351,6 +1352,10 @@ begin
             'group by u.company ',
             'order by ', p_tableName, '_cnt desc'
                  );
+
+    prepare stmt from @query;
+    execute stmt;
+    deallocate prepare stmt;
 end //
 delimiter ;
 
