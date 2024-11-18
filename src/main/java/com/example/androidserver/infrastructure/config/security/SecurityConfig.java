@@ -73,30 +73,8 @@ public class SecurityConfig {
                     .anyRequest()
                     .authenticated());
 
-    // CORS 설정
-    /*http.cors(cors ->
-            cors.configurationSource(
-                    new CorsConfigurationSource() {
-                      @Override
-                      public CorsConfiguration getCorsConfiguration(
-                              HttpServletRequest request
-                      ) {
-                        CorsConfiguration config = new CorsConfiguration();
-                        config.setAllowedOrigins(List.of("*")); // 모든 도메인 허용
-                        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 허용할 HTTP 메서드
-                        config.setAllowCredentials(true);
-                        config.setAllowedHeaders(List.of("*")); // 모든 헤더 허용
-                        config.setMaxAge(3600L); // CORS preflight 요청 캐싱 시간 (초)
-                        config.setExposedHeaders(List.of("x-access-token")); // 노출할 헤더 설정
-                        return config;
-                      }
-                    }
-            )
-    );
-
-    http.sessionManagement(session ->
-            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    );*/
+    // CORS 설정 활성화
+    http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
     // 커스텀 필터 추가
     // 필터 추가
