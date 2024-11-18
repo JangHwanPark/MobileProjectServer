@@ -19,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
@@ -33,6 +34,22 @@ public class SecurityConfig {
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
     return authenticationConfiguration.getAuthenticationManager();
+  }
+
+  // 전역적으로 사용할 CORS 설정 Bean
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(List.of("http://localhost:5173")); // React 개발 서버 도메인
+    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 허용할 HTTP 메서드
+    configuration.setAllowedHeaders(List.of("*")); // 모든 헤더 허용
+    configuration.setExposedHeaders(List.of("x-access-token")); // 노출할 헤더 설정
+    configuration.setAllowCredentials(true); // 인증 정보 허용 (쿠키 등)
+    configuration.setMaxAge(3600L); // Preflight 요청 캐싱 시간 (초)
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration); // 모든 경로에 CORS 설정 적용
+    return source;
   }
 
   @Bean
@@ -57,7 +74,7 @@ public class SecurityConfig {
                     .authenticated());
 
     // CORS 설정
-    http.cors(cors ->
+    /*http.cors(cors ->
             cors.configurationSource(
                     new CorsConfigurationSource() {
                       @Override
@@ -79,8 +96,9 @@ public class SecurityConfig {
 
     http.sessionManagement(session ->
             session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    );
+    );*/
 
+    // 커스텀 필터 추가
     // 필터 추가
     LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil);
 
