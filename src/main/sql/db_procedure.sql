@@ -120,7 +120,7 @@ delimiter ;
 
 
 -- 질문 등록 프로시저
-drop procedure if exists createQuestion;
+drop procedure if exists create_question;
 DELIMITER
 //
 CREATE PROCEDURE create_question(

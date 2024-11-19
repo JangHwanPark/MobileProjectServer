@@ -1,3 +1,7 @@
+drop database elk;
+create database elk;
+use elk;
+
 create table user
 (
     uid      int auto_increment primary key,

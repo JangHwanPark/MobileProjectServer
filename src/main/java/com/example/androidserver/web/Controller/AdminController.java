@@ -56,6 +56,13 @@ public class AdminController {
         return adminService.getUserTableCountService(table);
     }
 
+    // 사용자 응답 시간 분석
+    @PostMapping("/post/{uid}/response/time")
+    public List<Map<String, Object>> getResponseTime(@PathVariable int uid) {
+        return adminService.getResponseTimeService(uid);
+    }
+
+    // 회사
     // 특정 회사 내 최다 질문 또는 코멘트를 작성한 사용자
     @PostMapping("/post/{company}/{table}/top/user")
     public List<Map<String, Object>> getTopUserCompanyByCount(@PathVariable String company, @PathVariable String table) {
@@ -66,11 +73,5 @@ public class AdminController {
     @PostMapping("/post/company/{table}/top")
     public List<Map<String, Object>> getTopCompanyByCount(@PathVariable String table) {
         return adminService.getActivityByCompanyService(table);
-    }
-
-    // 사용자 응답 시간 분석
-    @PostMapping("/post/{uid}/response/time")
-    public List<Map<String, Object>> getResponseTime(@PathVariable int uid) {
-        return adminService.getResponseTimeService(uid);
     }
 }
