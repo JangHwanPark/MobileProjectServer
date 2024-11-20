@@ -100,3 +100,18 @@ VALUES
     (39, '간호학'),
     (40, '법학'),
     (41, '알고리즘');
+
+-- 카테고리별 조회에 대한 인덱스
+create index idx_question_category on question (category);
+
+-- 사용자별 조회에 대한 인덱스
+create index idx_question_uid on question (uid);
+
+-- 제목 검색에 대한 인덱스
+create index idx_question_title on question (title);
+
+-- 코멘트 테이블에서 질문 ID(qid)로 조회 성능 향상을 위한 인덱스
+create index idx_comment_qid on comment (qid);
+
+-- 코멘트 테이블에서 사용자 ID(uid)로 조회 성능 향상을 위한 인덱스
+create index idx_comment_uid on comment (uid);

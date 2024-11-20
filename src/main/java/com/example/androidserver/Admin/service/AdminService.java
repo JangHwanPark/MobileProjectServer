@@ -32,14 +32,18 @@ public class AdminService {
         return adminRepo.getUserActivityStatsRepo(stats);
     }
 
+    public List<Map<String, Object>> getPeriodQuestionCountService() {
+        return adminRepo.getPeriodQuestionCountRepo();
+    }
+
     // 특정 회사 내 최다 질문 또는 코멘트를 작성한 사용자
     public List<Map<String, Object>> getTopUserCompanyByCountService(String company, String table) {
         return adminRepo.getTopUserCompanyByCountRepo(company, table);
     }
 
     // 가장 많은 질문 또는 코멘트를 작성한 회사
-    public List<Map<String, Object>> getActivityByCompanyService(String table) {
-        return adminRepo.getActivityByCompanyRepo(table);
+    public List<Map<String, Object>> getActivityByCompanyService() {
+        return adminRepo.getActivityByCompanyRepo();
     }
 
     // 회사별 연도별 질문 및 댓글 작성 횟수 분석
@@ -48,8 +52,8 @@ public class AdminService {
     }
 
     // 월별 질문, 코멘트 등록 횟수
-    public List<Map<String, Object>> postMonthQuestionCountService(String keyword, int month, int year) {
-        return adminRepo.postMonthQuestionCountRepo(keyword, month, year);
+    public List<Map<String, Object>> postMonthQuestionCountService(String keyword, int year) {
+        return adminRepo.postMonthQuestionCountRepo(keyword, year);
     }
 
     // 년별 질문 등록 횟수

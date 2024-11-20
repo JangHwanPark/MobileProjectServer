@@ -33,7 +33,7 @@ public class UserRepo extends AbstractRepo {
     @Override
     protected void initJdbcCalls() {
         registerUserCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("create_user");
-        selectAllUsersCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_all_data").returningResultSet("result", new UserRowMapper());
+        selectAllUsersCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_all_users");
         findUidByEmailCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("select_uid_by_email");
     }
 
@@ -75,7 +75,7 @@ public class UserRepo extends AbstractRepo {
     public List<User> selectAllUsersRepo() {
         try {
             Map<String, Object> result = selectAllUsersCall.execute();
-            return (List<User>) result.get("result");
+            return (List<User>) result.get("#result-set-1");
         } catch (Exception e) {
             e.printStackTrace();
             return List.of(); // 예외 발생 시 빈 리스트 반환
@@ -86,21 +86,16 @@ public class UserRepo extends AbstractRepo {
     // tlqkf 왜 null 이 뜨냐 프로시저는 잘돌아가는데
     public Long findUidByEmailRepo(String email) {
         Map<String, Object> params = createParamsMap("p_email", email);
-        log.info("findUidByEmailRepo email: " + email);
-        log.info("findUidByEmailRepo: " + params);
 
         try {
             Map<String, Object> result = findUidByEmailCall.execute(params);
-            log.info("findUidByEmailRepo result keys: " + result.keySet());
             // 결과가 #result-set-1에 있을 경우 처리
             List<Map<String, Object>> resultSet = (List<Map<String, Object>>) result.get("#result-set-1");
 
             if (resultSet != null && !resultSet.isEmpty()) {
                 Long uid = ((Number) resultSet.get(0).get("uid")).longValue(); // 형 변환
-                log.info("findUidByEmailRepo uid: " + uid);
                 return uid;
             } else {
-                log.warn("No result found for email: " + email);
                 return null;
             }
         } catch (Exception e) {

@@ -35,6 +35,7 @@ public class QuestionController {
     // 질문 수정
     @PostMapping("/post/{qid}/update")
     public int updateQuestionController(@RequestBody Question question) {
+        log.info("Update question: " + question);
         return questionService.updateQuestionService(question);
     }
 

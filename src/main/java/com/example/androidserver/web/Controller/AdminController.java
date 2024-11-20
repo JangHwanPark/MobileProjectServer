@@ -14,6 +14,7 @@ public class AdminController {
 
     private final AdminService adminService;
 
+    // Home
     // 최근 인기있는 주제 분석
     @GetMapping("/get/popular/topics")
     public List<Map<String, Object>> getPopularTopics() {
@@ -26,11 +27,11 @@ public class AdminController {
         return adminService.getActivityByTopicService();
     }
 
-    // 질문
+    // 질문 (Question)
     // 월별 질문, 코멘트 등록 횟수 통계
-    @PostMapping("/post/{year}/{month}/{keyword}/count")
-    public List<Map<String, Object>> postMonthQuestionCount(@PathVariable String keyword, @PathVariable int month, @PathVariable int year) {
-        return adminService.postMonthQuestionCountService(keyword, month, year);
+    @PostMapping("/post/{year}/{keyword}/count")
+    public List<Map<String, Object>> postMonthQuestionCount(@PathVariable String keyword, @PathVariable int year) {
+        return adminService.postMonthQuestionCountService(keyword, year);
     }
 
     // 년별 질문 등록 횟수 통계
@@ -39,7 +40,12 @@ public class AdminController {
         return adminService.getYearlyQuestionCountService();
     }
 
-    // 사용자
+    @GetMapping("/get/question/period/count")
+    public List<Map<String, Object>> getPeriodQuestionCount() {
+        return adminService.getPeriodQuestionCountService();
+    }
+
+    // 사용자 (User)
     // 사용자별 활동 통계
     @PostMapping("/post/activity/user/stats")
     public List<Map<String, Object>> getUserActivityStats(@RequestBody Map<String, String> requestBody) {
@@ -54,7 +60,7 @@ public class AdminController {
         return adminService.getUserActivityStatsService(stats);
     }
 
-    // 회사
+    // 회사 (Company)
     // 소속 회사별 활동 현황 분석
     @GetMapping("/get/activity/company")
     public List<Map<String, Object>> getActivityCompany() {
@@ -67,10 +73,11 @@ public class AdminController {
         return adminService.getTopUserCompanyByCountService(company, table);
     }
 
-    // 가장 많은 질문 또는 코멘트를 작성한 회사 - 변경
-    @PostMapping("/post/company/{table}/top")
-    public List<Map<String, Object>> getTopCompanyByCount(@PathVariable String table) {
-        return adminService.getActivityByCompanyService(table);
+    // 가장 많은 질문 또는 코멘트를 작성한 회사
+    // 소속 회사별 활동 현황 분석
+    @GetMapping("/post/company/question/top")
+    public List<Map<String, Object>> getTopCompanyByCount() {
+        return adminService.getActivityByCompanyService();
     }
 
     // 회사별 연도별 질문 및 댓글 작성 횟수 분석
