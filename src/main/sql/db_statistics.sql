@@ -132,7 +132,8 @@ create procedure get_activity_by_topic()
 begin
     select t.tname               as topic,
            count(distinct q.qid) as question_count,
-           count(distinct c.cid) as comment_count
+           count(distinct c.cid) as comment_count,
+           count(distinct q.qid) + count(distinct c.cid) as total_count
     from question q
              join question_tag qt on q.qid = qt.qid
              join tag t on qt.tid = t.tid

@@ -21,6 +21,7 @@ public class AdminController {
         return adminService.getPopularTopicsService();
     }
 
+    // Topic
     // 주제별 활동 분석
     @GetMapping("/get/activity/topics")
     public List<Map<String, Object>> getActivityByTopic() {
