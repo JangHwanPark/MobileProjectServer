@@ -15,6 +15,7 @@ import java.util.Map;
 public class AdminRepo extends AbstractRepo {
     private final JdbcTemplate jdbcTemplate;
     private SimpleJdbcCall getPopularTopicsCall;
+    private SimpleJdbcCall getAllDataCall;
     private SimpleJdbcCall getActivityCompanyCall;
     private SimpleJdbcCall getUserActivityStatsCall;
     private SimpleJdbcCall getTopUserCompanyByCountCall;
@@ -29,6 +30,7 @@ public class AdminRepo extends AbstractRepo {
     @Override
     protected void initJdbcCalls() {
         getPopularTopicsCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_popular_topics");
+        getAllDataCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_post_comment_user_count");
         getActivityCompanyCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_activity_by_company");
         getUserActivityStatsCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_user_activity_stats");
         getPeriodQuestionCountCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_post_count_by_period");
@@ -49,6 +51,12 @@ public class AdminRepo extends AbstractRepo {
             e.printStackTrace();
             return List.of(); // 예외 발생 시 빈 리스트 반환
         }
+    }
+
+    // 모든 질문, 코멘트, 사용자 수 출력
+    public List<Map<String, Object>> getAllDataRepo() {
+        Map<String, Object> result = getAllDataCall.execute();
+        return (List<Map<String, Object>>) result.get("#result-set-1");
     }
 
     // 주제별 활동 분석

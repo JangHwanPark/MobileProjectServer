@@ -21,6 +21,10 @@ public class AdminController {
         return adminService.getPopularTopicsService();
     }
 
+    // 모든 질문, 코멘트, 사용자 수 출력
+    @GetMapping("/get/all/data")
+    public List<Map<String, Object>> getAllData() { return adminService.getAllDataService(); }
+
     // Topic
     // 주제별 활동 분석
     @GetMapping("/get/activity/topics")

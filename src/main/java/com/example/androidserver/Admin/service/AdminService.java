@@ -17,6 +17,9 @@ public class AdminService {
         return adminRepo.getPopularTopicsRepo();
     }
 
+    // 모든 질문, 코멘트, 사용자 수 출력
+    public List<Map<String, Object>> getAllDataService() { return adminRepo.getAllDataRepo(); }
+
     // 주제별 활동 분석
     public List<Map<String, Object>> getActivityByTopicService() {
         return adminRepo.getActivityByTopicRepo();

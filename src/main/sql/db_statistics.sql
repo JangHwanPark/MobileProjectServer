@@ -212,7 +212,7 @@ begin
 end //
 delimiter ;
 
--- 오늘, 주별, 월별, 년별 등록된 게시글 갯수
+-- 12. 오늘, 주별, 월별, 년별 등록된 게시글 갯수
 drop procedure if exists get_post_count_by_period;
 delimiter //
 create procedure get_post_count_by_period()
@@ -239,5 +239,20 @@ begin
     select '이번 년도', count(*) as post_count
     from question
     where year(createAt) = year(current_date);
+end //
+delimiter ;
+
+-- 13. 게시글, 코멘트, 사용자 수 반환
+drop procedure if exists get_post_comment_user_count;
+delimiter //
+create procedure get_post_comment_user_count()
+begin
+    select
+        count(u.uid) as total_user_count,
+        count(q.qid) as total_question_count,
+        count(c.cid) as total_comment_count
+    from user as u
+    left join comment as c on u.uid = c.uid
+    left join question as q on u.uid = q.uid;
 end //
 delimiter ;
