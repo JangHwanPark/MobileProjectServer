@@ -57,20 +57,6 @@ public class AdminController {
     }
 
     // 사용자 (User)
-    // 사용자별 활동 통계
-    @PostMapping("/post/activity/user/stats")
-    public List<Map<String, Object>> getUserActivityStats(@RequestBody Map<String, String> requestBody) {
-        // "stats"라는 키로 값이 넘어온다고 가정
-        String stats = requestBody.get("stats");
-
-        // stats 값이 null이 아닌지 확인
-        if (stats == null || stats.isEmpty()) {
-            throw new IllegalArgumentException("Period parameter 'stats' is missing or empty");
-        }
-
-        return adminService.getUserActivityStatsService(stats);
-    }
-
     // 사용자 활동 순위 (활동이 가장 많은 사용자)
     @GetMapping("/get/top/activity/users")
     public List<Map<String, Object>> getTopActivityUsers() {
@@ -81,6 +67,18 @@ public class AdminController {
     @PostMapping("/post/user/activity/summary/{uid}")
     public List<Map<String, Object>> getUserActivitySummary(@PathVariable int uid) {
         return adminService.getUserActivitySummaryService(uid);
+    }
+
+    // 월별 사용자 생성 수
+    @GetMapping("/get/monthly/user/signup/count")
+    public List<Map<String, Object>> getMonthlyUserSignupCount() {
+        return adminService.getMonthlyUserSignupCountService();
+    }
+
+    // 년도별 사용자 생성 수
+    @GetMapping("/get/yearly/user/signup/count")
+    public List<Map<String, Object>> getYearlyUserSignupCount() {
+        return adminService.getYearlyUserSignupCountService();
     }
 
     // 회사 (Company)

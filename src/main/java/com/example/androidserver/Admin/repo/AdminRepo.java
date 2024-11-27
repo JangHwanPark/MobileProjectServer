@@ -20,7 +20,6 @@ public class AdminRepo extends AbstractRepo {
     private SimpleJdbcCall getTopActivityUsersCall;
     private SimpleJdbcCall getUserActivitySummaryCall;
     private SimpleJdbcCall getQuestionCommentRatioCall;
-    private SimpleJdbcCall getUserActivityStatsCall;
     private SimpleJdbcCall getTopUserCompanyByCountCall;
     private SimpleJdbcCall getActivityByCompanyCall;
     private SimpleJdbcCall getCompanyByKeywordCall;
@@ -28,6 +27,8 @@ public class AdminRepo extends AbstractRepo {
     private SimpleJdbcCall getYearlyQuestionCountCall;
     private SimpleJdbcCall postMonthQuestionCountCall;
     private SimpleJdbcCall getPeriodQuestionCountCall;
+    private SimpleJdbcCall getMonthlyUserSignupCountCall;
+    private SimpleJdbcCall getYearlyUserSignupCountCall;
 
     @PostConstruct
     @Override
@@ -38,7 +39,6 @@ public class AdminRepo extends AbstractRepo {
         getTopActivityUsersCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_top_active_users");
         getUserActivitySummaryCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_user_activity_summary");
         getQuestionCommentRatioCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_question_comment_ratio");
-        getUserActivityStatsCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_user_activity_stats");
         getPeriodQuestionCountCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_post_count_by_period");
         getTopUserCompanyByCountCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_top_user_company_by_count");
         getActivityByCompanyCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_activity_by_company");
@@ -46,6 +46,8 @@ public class AdminRepo extends AbstractRepo {
         getActivityByTopicCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_activity_by_topic");
         getYearlyQuestionCountCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_yearly_question_count");
         postMonthQuestionCountCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_monthly_question_count");
+        getMonthlyUserSignupCountCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_monthly_user_signup_count");
+        getYearlyUserSignupCountCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_yearly_user_signup_count");
     }
 
     // 최근 인기있는 주제 분석
@@ -82,25 +84,6 @@ public class AdminRepo extends AbstractRepo {
         }
     }
 
-    // 사용자별 활동 통계
-    public List<Map<String, Object>> getUserActivityStatsRepo(String stats) {
-        Map<String, Object> params = createParamsMap("p_period", stats);
-
-        try {
-            Map<String, Object> result = getUserActivityStatsCall.execute(params);
-
-            // result에서 '#result-set-1'을 안전하게 가져오기
-            if (result.containsKey("#result-set-1")) {
-                return (List<Map<String, Object>>) result.get("#result-set-1");
-            } else {
-                return List.of();  // 반환값이 없으면 빈 리스트 반환
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error executing get_user_activity_stats procedure", e);
-        }
-    }
-
     // 사용자 활동 순위 (활동이 가장 많은 사용자)
     public List<Map<String, Object>> getTopActivityUsersRepo() {
         Map<String, Object> result = getTopActivityUsersCall.execute();
@@ -110,6 +93,18 @@ public class AdminRepo extends AbstractRepo {
     // 사용자별 활동 요약 (최근 활동한 사용자)
     public List<Map<String, Object>> getUserActivitySummaryRepo(int uid) {
         Map<String, Object> result = getUserActivitySummaryCall.execute("p_uid", uid);
+        return (List<Map<String, Object>>) result.get("#result-set-1");
+    }
+
+    // 월별 사용자 생성 수
+    public List<Map<String, Object>> getMonthlyUserSignupCountRepo() {
+        Map<String, Object> result = getMonthlyUserSignupCountCall.execute();
+        return (List<Map<String, Object>>) result.get("#result-set-1");
+    }
+
+    // 년도별 사용자 생성 수
+    public List<Map<String, Object>> getYearlyUserSignupCountRepo() {
+        Map<String, Object> result = getYearlyUserSignupCountCall.execute();
         return (List<Map<String, Object>>) result.get("#result-set-1");
     }
 

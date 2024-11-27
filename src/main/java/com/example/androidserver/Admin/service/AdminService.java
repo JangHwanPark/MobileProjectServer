@@ -30,11 +30,6 @@ public class AdminService {
         return adminRepo.getActivityCompanyRepo();
     }
 
-    // 사용자별 활동 통계
-    public List<Map<String, Object>> getUserActivityStatsService(String stats) {
-        return adminRepo.getUserActivityStatsRepo(stats);
-    }
-
     // 사용자 활동 순위 (활동이 가장 많은 사용자)
     public List<Map<String, Object>> getTopActivityUsersService() {
         return adminRepo.getTopActivityUsersRepo();
@@ -43,6 +38,16 @@ public class AdminService {
     // 사용자별 활동 요약 (최근 활동한 사용자)
     public List<Map<String, Object>> getUserActivitySummaryService(int uid) {
         return adminRepo.getUserActivitySummaryRepo(uid);
+    }
+
+    // 월별 사용자 생성 수
+    public List<Map<String, Object>> getMonthlyUserSignupCountService() {
+        return adminRepo.getMonthlyUserSignupCountRepo();
+    }
+
+    // 년도별 사용자 생성 수
+    public List<Map<String, Object>> getYearlyUserSignupCountService() {
+        return adminRepo.getYearlyUserSignupCountRepo();
     }
 
     public List<Map<String, Object>> getPeriodQuestionCountService() {

@@ -1,72 +1,3 @@
--- 1. 사용자별 활동 통계
-drop procedure if exists get_user_activity_stats;
-delimiter //
-create procedure get_user_activity_stats(in p_period varchar(20))
-begin
-    declare start_date date;
-    set start_date =
-            case
-                when p_period = 'daily' then curdate()
-                when p_period = 'weekly' then date_sub(curdate(), interval 7 day)
-                when p_period = 'monthly' then date_sub(curdate(), interval 1 month)
-                when p_period = 'yearly' then date_sub(curdate(), interval 1 year)
-                else curdate()
-                end;
-
-    select q.uid, u.name, u.email, u.company, count(*) as question_count
-    from question as q
-             join user as u on q.uid = u.uid
-    where q.createAt >= start_date
-    group by q.uid;
-end //
-delimiter ;
-call get_user_activity_stats('weekly');
-
--- 2. 사용자가 작성한 코멘트 or 질문의 개수 (미사용)
-drop procedure if exists get_written_count;
-delimiter //
-create procedure get_written_count(
-    in p_uName varchar(10),
-    in p_tableName varchar(20)
-)
-begin
-    set @query = concat(
-            'select u.uid, u.name, u.email, count(*) as ', p_uName, '_cnt '
-                'from ', p_tableName, ' as tname '
-                'inner join user as u on u.uid = tname.uid ',
-            'where u.name = ''', p_uName, ''' ',
-            'group by u.uid');
-
-    prepare stmt from @query;
-    execute stmt;
-    deallocate prepare stmt;
-end //
-delimiter ;
-
--- 3. 사용자별 평균 질문 or 코멘트 개수 (미사용)
-drop procedure if exists get_average_count;
-delimiter //
-create procedure get_average_count(
-    in p_tName varchar(20)
-)
-begin
-    set @query = concat(
-            'select u.uid, u.name, u.email, avg(user_counts.cnt) as average_', p_tName, '_count ',
-            'from user as u ',
-            'join (',
-            '   select uid, count(*) as cnt ',
-            '   from ', p_tName, ' as t ',
-            '   group by uid',
-            ') as user_counts on u.uid = user_counts.uid ',
-            'group by u.uid'
-                 );
-
-    prepare stmt from @query;
-    execute stmt;
-    deallocate prepare stmt;
-end //
-delimiter ;
-
 -- 4. 특정 회사 내 최다 질문 또는 코멘트를 작성한 사용자
 -- 회사 이름과 질문 or 코멘트 테이블을 입력받아 가장 많이 작성한 회사를 내림차순으로 출력
 drop procedure if exists get_top_user_company_by_count;
@@ -262,7 +193,7 @@ drop procedure if exists get_top_active_users;
 delimiter //
 create procedure get_top_active_users()
 begin
-    select u.uid, u.name, u.email,
+    select u.uid, u.name, u.email, u.company,
            (count(distinct q.qid) + count(distinct c.cid)) as total_activity_count
     from user as u
              left join question as q on u.uid = q.uid
@@ -304,5 +235,32 @@ begin
              left join question as q on u.uid = q.uid
              left join comment as c on u.uid = c.uid
     group by u.uid;
+end //
+delimiter ;
+
+-- 월별 사용자 생성 수
+drop procedure if exists get_monthly_user_signup_count;
+delimiter //
+create procedure get_monthly_user_signup_count()
+begin
+    select year(createAt) as year,
+           month(createAt) as month,
+           count(uid) as user_signup_count
+    from user
+    group by year(createAt), month(createAt)
+    order by year(createAt), month(createAt);
+end //
+delimiter ;
+
+-- 년도별 사용자 생성 수
+drop procedure if exists get_yearly_user_signup_count;
+delimiter //
+create procedure get_yearly_user_signup_count()
+begin
+    select year(createAt) as year,
+           count(uid) as user_signup_count
+    from user
+    group by year(createAt)
+    order by year(createAt);
 end //
 delimiter ;

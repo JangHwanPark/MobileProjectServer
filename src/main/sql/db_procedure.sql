@@ -72,11 +72,12 @@ create procedure create_user(
     in p_interest varchar(100),
     in p_role varchar(50),
     in p_birth date,
-    in p_company varchar(100)
+    in p_company varchar(100),
+    in p_createAt date
 )
 begin
-    insert into user (name, email, password, interest, company, role, birth)
-    values (p_name, p_email, p_password, p_interest, p_company, p_role, p_birth);
+    insert into user (name, email, password, interest, company, role, birth, createAt)
+    values (p_name, p_email, p_password, p_interest, p_company, p_role, p_birth, p_createAt);
 end
 //
 delimiter ;
@@ -104,6 +105,7 @@ DELIMITER
 CREATE PROCEDURE create_question(
     IN p_qid INT,
     IN p_uid INT,
+    IN p_interest varchar(50),
     IN p_content TEXT,
     IN p_category VARCHAR(50),
     IN p_title VARCHAR(255),
@@ -111,8 +113,8 @@ CREATE PROCEDURE create_question(
     IN p_updateAt TIMESTAMP
 )
 BEGIN
-    INSERT INTO question (qid, uid, content, category, title, createAt, updateAt, great)
-    VALUES (p_qid, p_uid, p_content, p_category, p_title, p_createAt, p_updateAt, 0);
+    INSERT INTO question (qid, uid, interest, content, category, title, createAt, updateAt, great)
+    VALUES (p_qid, p_uid, p_interest, p_content, p_category, p_title, p_createAt, p_updateAt, 0);
 END
 //
 DELIMITER ;

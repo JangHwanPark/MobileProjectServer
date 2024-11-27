@@ -52,6 +52,7 @@ public class QuestionRepo extends AbstractRepo {
         Map<String, Object> params = createParamsMap(
                 "p_qid", question.getQid(),
                 "p_uid", question.getUid(),
+                "p_interest", question.getInterest(),
                 "p_content", question.getContent(),
                 "p_category", question.getCategory(),
                 "p_title", question.getTitle(),

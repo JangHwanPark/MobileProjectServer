@@ -51,6 +51,9 @@ public class UserRepo extends AbstractRepo {
             return 0;
         }
 
+        // 현재 시간으로 CreateAt 설정
+        Date sqlCreateAt = new Date(System.currentTimeMillis());
+
         Map<String, Object> params = createParamsMap(
                 "p_name", user.getName(),
                 "p_email", user.getEmail(),
@@ -58,7 +61,8 @@ public class UserRepo extends AbstractRepo {
                 "p_interest", user.getInterest(),
                 "p_role", "customer",
                 "p_birth", sqlBirthDate,
-                "p_company", user.getCompany()
+                "p_company", user.getCompany(),
+                "p_createAt", sqlCreateAt
         );
 
         try {

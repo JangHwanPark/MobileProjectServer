@@ -11,7 +11,8 @@ create table user
     interest varchar(100),
     company  varchar(100),
     role     varchar(10),
-    birth    varchar(20)
+    birth    varchar(20),
+    createAt date
 );
 
 create table question

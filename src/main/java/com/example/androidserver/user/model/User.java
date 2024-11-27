@@ -6,6 +6,8 @@ import jakarta.persistence.Table;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "user") // 매핑할 테이블 이름 지정
 @Getter
@@ -27,4 +29,5 @@ public class User {
     // 관심?
     private String interest;
     private String company;
+    private Date createAt;
 }
