@@ -35,6 +35,16 @@ public class AdminService {
         return adminRepo.getUserActivityStatsRepo(stats);
     }
 
+    // 사용자 활동 순위 (활동이 가장 많은 사용자)
+    public List<Map<String, Object>> getTopActivityUsersService() {
+        return adminRepo.getTopActivityUsersRepo();
+    }
+
+    // 사용자별 활동 요약 (최근 활동한 사용자)
+    public List<Map<String, Object>> getUserActivitySummaryService(int uid) {
+        return adminRepo.getUserActivitySummaryRepo(uid);
+    }
+
     public List<Map<String, Object>> getPeriodQuestionCountService() {
         return adminRepo.getPeriodQuestionCountRepo();
     }
@@ -57,6 +67,11 @@ public class AdminService {
     // 월별 질문, 코멘트 등록 횟수
     public List<Map<String, Object>> postMonthQuestionCountService(String keyword, int year) {
         return adminRepo.postMonthQuestionCountRepo(keyword, year);
+    }
+
+    // 댓글/질문 비율 분석
+    public List<Map<String, Object>> getQuestionCommentRatioService() {
+        return adminRepo.getQuestionCommentRatioRepo();
     }
 
     // 년별 질문 등록 횟수

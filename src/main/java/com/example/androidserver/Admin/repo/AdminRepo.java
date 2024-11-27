@@ -17,6 +17,9 @@ public class AdminRepo extends AbstractRepo {
     private SimpleJdbcCall getPopularTopicsCall;
     private SimpleJdbcCall getAllDataCall;
     private SimpleJdbcCall getActivityCompanyCall;
+    private SimpleJdbcCall getTopActivityUsersCall;
+    private SimpleJdbcCall getUserActivitySummaryCall;
+    private SimpleJdbcCall getQuestionCommentRatioCall;
     private SimpleJdbcCall getUserActivityStatsCall;
     private SimpleJdbcCall getTopUserCompanyByCountCall;
     private SimpleJdbcCall getActivityByCompanyCall;
@@ -32,6 +35,9 @@ public class AdminRepo extends AbstractRepo {
         getPopularTopicsCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_popular_topics");
         getAllDataCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_post_comment_user_count");
         getActivityCompanyCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_activity_by_company");
+        getTopActivityUsersCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_top_active_users");
+        getUserActivitySummaryCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_user_activity_summary");
+        getQuestionCommentRatioCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_question_comment_ratio");
         getUserActivityStatsCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_user_activity_stats");
         getPeriodQuestionCountCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_post_count_by_period");
         getTopUserCompanyByCountCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_top_user_company_by_count");
@@ -95,6 +101,18 @@ public class AdminRepo extends AbstractRepo {
         }
     }
 
+    // 사용자 활동 순위 (활동이 가장 많은 사용자)
+    public List<Map<String, Object>> getTopActivityUsersRepo() {
+        Map<String, Object> result = getTopActivityUsersCall.execute();
+        return (List<Map<String, Object>>) result.get("#result-set-1");
+    }
+
+    // 사용자별 활동 요약 (최근 활동한 사용자)
+    public List<Map<String, Object>> getUserActivitySummaryRepo(int uid) {
+        Map<String, Object> result = getUserActivitySummaryCall.execute("p_uid", uid);
+        return (List<Map<String, Object>>) result.get("#result-set-1");
+    }
+
     // 오늘, 주별, 월별, 년별 등록된 게시글 갯수
     public List<Map<String, Object>> getPeriodQuestionCountRepo() {
         Map<String, Object> result = getPeriodQuestionCountCall.execute();
@@ -105,6 +123,12 @@ public class AdminRepo extends AbstractRepo {
     public List<Map<String, Object>> getTopUserCompanyByCountRepo(String company, String table) {
         Map<String, Object> result = getTopUserCompanyByCountCall.execute(
                 createParamsMap("p_company", company, "p_tableName", table));
+        return (List<Map<String, Object>>) result.get("#result-set-1");
+    }
+
+    // 댓글/질문 비율 분석
+    public List<Map<String, Object>> getQuestionCommentRatioRepo() {
+        Map<String, Object> result = getQuestionCommentRatioCall.execute();
         return (List<Map<String, Object>>) result.get("#result-set-1");
     }
 

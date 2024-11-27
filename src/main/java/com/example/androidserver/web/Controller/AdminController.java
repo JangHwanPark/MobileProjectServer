@@ -39,6 +39,12 @@ public class AdminController {
         return adminService.postMonthQuestionCountService(keyword, year);
     }
 
+    // 댓글/질문 비율 분석
+    @GetMapping("/get/question/comment/ratio")
+    public List<Map<String, Object>> getQuestionCommentRatio() {
+        return adminService.getQuestionCommentRatioService();
+    }
+
     // 년별 질문 등록 횟수 통계
     @GetMapping("/get/yearly/question/count")
     public List<Map<String, Object>> getYearlyQuestionCount() {
@@ -63,6 +69,18 @@ public class AdminController {
         }
 
         return adminService.getUserActivityStatsService(stats);
+    }
+
+    // 사용자 활동 순위 (활동이 가장 많은 사용자)
+    @GetMapping("/get/top/activity/users")
+    public List<Map<String, Object>> getTopActivityUsers() {
+        return adminService.getTopActivityUsersService();
+    }
+
+    // 사용자별 활동 요약 (최근 활동한 사용자)
+    @PostMapping("/post/user/activity/summary/{uid}")
+    public List<Map<String, Object>> getUserActivitySummary(@PathVariable int uid) {
+        return adminService.getUserActivitySummaryService(uid);
     }
 
     // 회사 (Company)

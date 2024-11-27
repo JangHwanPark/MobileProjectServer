@@ -256,3 +256,53 @@ begin
     left join question as q on u.uid = q.uid;
 end //
 delimiter ;
+
+-- 14. 사용자 활동 순위 (활동이 가장 많은 사용자)
+drop procedure if exists get_top_active_users;
+delimiter //
+create procedure get_top_active_users()
+begin
+    select u.uid, u.name, u.email,
+           (count(distinct q.qid) + count(distinct c.cid)) as total_activity_count
+    from user as u
+             left join question as q on u.uid = q.uid
+             left join comment as c on u.uid = c.uid
+    group by u.uid
+    order by total_activity_count desc
+    limit 10;
+end //
+delimiter ;
+
+-- 15. 사용자별 활동 요약 (최근 활동한 사용자)
+drop procedure if exists get_user_activity_summary;
+delimiter //
+create procedure get_user_activity_summary(in p_uid int)
+begin
+    select u.uid, u.name, u.email,
+           count(distinct q.qid) as question_count,
+           count(distinct c.cid) as comment_count,
+           (count(distinct q.qid) + count(distinct c.cid)) as total_activity_count
+    from user as u
+             left join question as q on u.uid = q.uid
+             left join comment as c on u.uid = c.uid
+    where u.uid = p_uid
+    group by u.uid;
+end //
+delimiter ;
+
+-- 16. 댓글/질문 비율 분석
+drop procedure if exists get_question_comment_ratio;
+delimiter //
+create procedure get_question_comment_ratio()
+begin
+    select u.uid, u.name, u.email,
+           count(distinct q.qid) as question_count,
+           count(distinct c.cid) as comment_count,
+           (count(distinct q.qid) / (count(distinct q.qid) + count(distinct c.cid))) as question_ratio,
+           (count(distinct c.cid) / (count(distinct q.qid) + count(distinct c.cid))) as comment_ratio
+    from user as u
+             left join question as q on u.uid = q.uid
+             left join comment as c on u.uid = c.uid
+    group by u.uid;
+end //
+delimiter ;
