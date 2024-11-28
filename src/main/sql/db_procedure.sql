@@ -52,6 +52,52 @@ begin
     delete from comment where qid = OLD.qid;
 end;
 
+-- 사용자가 삭제될 때 해당 사용자가 작성한 모든 질문을 자동으로 삭제
+drop trigger if exists delete_user_questions;
+create trigger delete_user_questions
+    after delete
+    on user
+    for each row
+begin
+    delete from question where uid = old.uid;
+end;
+
+-- 댓글 삭제 시 해당 질문의 좋아요 수 감소
+drop trigger if exists decrement_great_on_comment_delete;
+create trigger decrement_great_on_comment_delete
+    after delete
+    on comment
+    for each row
+begin
+    update question
+    set great = great - 1
+    where qid = OLD.qid;
+end;
+
+-- great 수가 0 이하로 떨어지지 않도록 제한
+drop trigger if exists prevent_negative_great;
+create trigger prevent_negative_great
+    before update
+    on question
+    for each row
+begin
+    if NEW.great < 0 then
+        set NEW.great = 0;
+    end if;
+end;
+
+-- 사용자 등록 시 이메일 중복 체크
+drop trigger if exists check_duplicate_email;
+create trigger check_duplicate_email
+    before insert
+    on user
+    for each row
+begin
+    if exists(select 1 from user where email = NEW.email) then
+        signal sqlstate '45000' set message_text = 'Email already exists!';
+    end if;
+end;
+
 -- Procedure
 drop procedure if exists select_all_users;
 delimiter //

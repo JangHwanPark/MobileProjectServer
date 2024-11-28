@@ -108,6 +108,9 @@ create index idx_question_category on question (category);
 -- 사용자별 조회에 대한 인덱스
 create index idx_question_uid on question (uid);
 
+-- 사용자 이메일을 기준으로 사용자 조회
+create index idx_user_email on user (email);
+
 -- 제목 검색에 대한 인덱스
 create index idx_question_title on question (title);
 
